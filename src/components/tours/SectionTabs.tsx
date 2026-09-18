@@ -19,7 +19,7 @@ export default function SectionTabs<T extends Tab>({
   onChange,
   label,
 }: SectionTabsProps<T>) {
-  const scrollerRef = useRef<HTMLElement>(null)
+  const scrollerRef = useRef<HTMLDivElement>(null)
   const [canLeft, setCanLeft] = useState(false)
   const [canRight, setCanRight] = useState(false)
 
@@ -47,10 +47,22 @@ export default function SectionTabs<T extends Tab>({
   }, [sync, tabs])
 
   useEffect(() => {
-    const el = scrollerRef.current
-    if (!el) return
-    const active = el.querySelector<HTMLElement>('[data-active="true"]')
-    active?.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' })
+    const scroller = scrollerRef.current
+    if (!scroller) return
+    const active = scroller.querySelector<HTMLElement>('[data-active="true"]')
+    if (!active) return
+
+    const padding = 24
+    const left = active.offsetLeft - padding
+    const right = active.offsetLeft + active.offsetWidth + padding
+    const viewLeft = scroller.scrollLeft
+    const viewRight = viewLeft + scroller.clientWidth
+
+    if (left < viewLeft) {
+      scroller.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
+    } else if (right > viewRight) {
+      scroller.scrollTo({ left: right - scroller.clientWidth, behavior: 'smooth' })
+    }
   }, [value])
 
   const scrollByDir = (dir: -1 | 1) => {
@@ -58,36 +70,40 @@ export default function SectionTabs<T extends Tab>({
   }
 
   return (
-    <div className="relative border-b border-white/10">
-      <nav
+    <div className="relative min-w-0 max-w-full">
+      <div
         ref={scrollerRef}
-        aria-label={label}
-        className="no-scrollbar flex snap-x snap-mandatory flex-nowrap gap-8 overflow-x-auto overscroll-x-contain [touch-action:pan-x] sm:gap-7"
+        className="no-scrollbar min-w-0 overflow-x-auto overscroll-x-contain border-b border-white/10 [touch-action:pan-x]"
       >
-        {tabs.map((item) => {
-          const active = value === item.id
-          return (
-            <button
-              key={item.id}
-              type="button"
-              data-active={active}
-              aria-selected={active}
-              onClick={() => onChange(item.id)}
-              className={`relative snap-start shrink-0 pb-3.5 text-sm tracking-wide whitespace-nowrap transition-colors ${
-                active ? 'text-white' : 'text-silver/55 hover:text-silver'
-              }`}
-            >
-              {item.label}
-              <span
-                aria-hidden
-                className={`absolute inset-x-0 bottom-0 h-0.5 rounded-full ${
-                  active ? 'bg-gold' : 'bg-transparent'
+        <nav
+          aria-label={label}
+          className="flex w-max min-w-full snap-x snap-mandatory flex-nowrap gap-8 sm:gap-7"
+        >
+          {tabs.map((item) => {
+            const active = value === item.id
+            return (
+              <button
+                key={item.id}
+                type="button"
+                data-active={active}
+                aria-selected={active}
+                onClick={() => onChange(item.id)}
+                className={`relative snap-start shrink-0 pb-3.5 text-sm tracking-wide whitespace-nowrap transition-colors ${
+                  active ? 'text-white' : 'text-silver/55 hover:text-silver'
                 }`}
-              />
-            </button>
-          )
-        })}
-      </nav>
+              >
+                {item.label}
+                <span
+                  aria-hidden
+                  className={`absolute inset-x-0 bottom-0 h-0.5 rounded-full ${
+                    active ? 'bg-gold' : 'bg-transparent'
+                  }`}
+                />
+              </button>
+            )
+          })}
+        </nav>
+      </div>
 
       <div
         aria-hidden

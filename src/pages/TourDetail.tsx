@@ -72,7 +72,7 @@ export default function TourDetail() {
   const inquireHref = `/?tour=${encodeURIComponent(tour.title)}#contact`
 
   return (
-    <div className="min-h-svh bg-ink">
+    <div className="min-h-svh max-w-full overflow-x-clip bg-ink">
       <Header />
       <div className="relative h-[70svh] overflow-hidden lg:h-[62svh]">
         <div className="absolute inset-0">
@@ -109,9 +109,9 @@ export default function TourDetail() {
         </div>
       </div>
 
-      <main className="site-container pb-20">
-        <div className="grid items-stretch gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
-          <div className="relative z-10 flex flex-col overflow-hidden rounded-3xl lg:-mt-56 lg:h-[calc(100%+14rem)]">
+      <main className="site-container min-w-0 pb-20">
+        <div className="grid min-w-0 items-stretch gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-14">
+          <div className="relative z-10 flex min-w-0 flex-col overflow-hidden rounded-3xl lg:-mt-56 lg:h-[calc(100%+14rem)]">
             <div aria-hidden className="h-44 shrink-0 bg-gold-band lg:h-56" />
             <aside className="flex min-h-[22rem] flex-1 flex-col gap-7 bg-[#242424] px-6 py-8 sm:px-7">
               <dl className="space-y-5">
@@ -147,7 +147,7 @@ export default function TourDetail() {
             </aside>
           </div>
 
-          <div className="pt-8 lg:pt-10">
+          <div className="min-w-0 max-w-full pt-8 lg:pt-10">
             <SectionTabs
               label="Destination sections"
               tabs={TABS}
@@ -163,6 +163,7 @@ export default function TourDetail() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 6 }}
                   transition={{ duration: 0.28 }}
+                  className="min-w-0 max-w-full"
                 >
                   {tab === 'overview' && <OverviewPanel tour={tour} onSeeTrips={() => setTab('trips')} />}
                   {tab === 'trips' && <TripsPanel tour={tour} inquireHref={inquireHref} />}

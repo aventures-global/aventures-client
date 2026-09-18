@@ -30,11 +30,14 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
 
   body {
     margin: 0;
     min-height: 100svh;
+    max-width: 100%;
+    overflow-x: clip;
     background-color: var(--color-ink);
     color: var(--color-silver);
     font-family: var(--font-sans);
@@ -44,6 +47,8 @@
 
   #root {
     min-height: 100svh;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   ::selection {
@@ -61,6 +66,7 @@
     margin-inline: auto;
     width: 100%;
     max-width: 84rem;
+    min-width: 0;
     padding-inline: 1.5rem;
   }
 
