@@ -2,35 +2,30 @@ import { useEffect, useState } from 'react'
 import {
   getFeaturedTours,
   getOffers,
-  getPartners,
   getSite,
 } from '../api'
 import About from '../components/home/About'
 import Contact from '../components/home/Contact'
 import Hero from '../components/home/Hero'
 import Offers from '../components/home/Offers'
-import Partners from '../components/home/Partners'
 import SignatureExperiences from '../components/home/SignatureExperiences'
 import WhyUs from '../components/home/WhyUs'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
-import type { Partner, ServiceOffer, SiteInfo, Tour } from '../types/content'
+import type { ServiceOffer, SiteInfo, Tour } from '../types/content'
 
 export default function Home() {
   const [site, setSite] = useState<SiteInfo | null>(null)
-  const [partners, setPartners] = useState<Partner[]>([])
   const [offers, setOffers] = useState<ServiceOffer[]>([])
   const [featured, setFeatured] = useState<Tour[]>([])
 
   useEffect(() => {
     void Promise.all([
       getSite(),
-      getPartners(),
       getOffers(),
       getFeaturedTours(),
-    ]).then(([siteData, partnerData, offerData, featuredData]) => {
+    ]).then(([siteData, offerData, featuredData]) => {
       setSite(siteData)
-      setPartners(partnerData)
       setOffers(offerData)
       setFeatured(featuredData)
     })
@@ -62,7 +57,6 @@ export default function Home() {
       <Header />
       <main>
         <Hero site={site} />
-        {/* <Partners partners={partners} /> */}
         <About site={site} />
         <Offers offers={offers} />
         <SignatureExperiences tours={featured} />
