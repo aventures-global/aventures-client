@@ -1,0 +1,43 @@
+import { motion } from 'motion/react'
+import type { SiteInfo } from '../../types/content'
+
+type HeroProps = {
+  site: SiteInfo
+}
+
+export default function Hero({ site }: HeroProps) {
+  return (
+    <section className="relative flex min-h-svh items-center overflow-hidden">
+      {/* Reverse-T beam: light pools along the bottom, shaft rises from its centre. */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="beam-ambient absolute bottom-0 left-[72%] h-full w-[64rem] -translate-x-1/2" />
+        <div className="beam-glow absolute bottom-0 left-[72%] h-full w-36 -translate-x-1/2" />
+        <div className="beam-core absolute bottom-0 left-[72%] h-full w-5 -translate-x-1/2" />
+        <div className="beam-foot absolute bottom-0 left-[72%] h-56 w-[38rem] -translate-x-1/2" />
+        <div className="beam-foot-line absolute bottom-0 left-[72%] h-5 w-[30rem] -translate-x-1/2" />
+      </div>
+
+      <div className="site-container relative z-10 py-32">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: 'easeOut' }}
+          className="max-w-3xl"
+        >
+          <h1 className="font-serif text-[2.6rem] leading-[1.12] text-gold-gradient sm:text-5xl lg:text-[3.6rem]">
+            {site.heroTitle}
+          </h1>
+          <p className="mt-7 max-w-xl text-lg leading-relaxed text-silver/85 sm:text-xl sm:leading-relaxed">
+            {site.heroSubtitle}
+          </p>
+          <a
+            href="#contact"
+            className="btn-gold mt-11 inline-flex rounded-xl px-9 py-4 text-base shadow-[0_0_46px_rgba(255,195,0,0.22)] sm:text-lg"
+          >
+            Get started
+          </a>
+        </motion.div>
+      </div>
+    </section>
+  )
+}

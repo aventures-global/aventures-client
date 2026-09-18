@@ -1,0 +1,38 @@
+import { offers } from '../data/offers'
+import { partners } from '../data/partners'
+import { siteInfo } from '../data/site'
+import { tours } from '../data/tours'
+import type { Partner, ServiceOffer, SiteInfo, Tour } from '../types/content'
+
+/** Simulated network delay so skeletons are visible during development. */
+const delay = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms))
+
+export async function getSite(): Promise<SiteInfo> {
+  await delay()
+  return siteInfo
+}
+
+export async function getPartners(): Promise<Partner[]> {
+  await delay()
+  return partners
+}
+
+export async function getOffers(): Promise<ServiceOffer[]> {
+  await delay()
+  return offers
+}
+
+export async function getTours(): Promise<Tour[]> {
+  await delay()
+  return tours
+}
+
+export async function getFeaturedTours(): Promise<Tour[]> {
+  await delay()
+  return tours.filter((tour) => tour.featured)
+}
+
+export async function getTourBySlug(slug: string): Promise<Tour | null> {
+  await delay()
+  return tours.find((tour) => tour.slug === slug) ?? null
+}
