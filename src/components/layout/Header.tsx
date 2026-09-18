@@ -1,16 +1,17 @@
 import { Menu, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type MouseEvent } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import BrandLogo from '../ui/BrandLogo'
 
 const landingLinks = [
   { label: 'Home', to: '/' },
-  { label: 'About', to: '/#about' },
-  { label: 'Services', to: '/#services' },
-  { label: 'Destinations', to: '/#destinations' },
-  { label: 'Contact', to: '/#contact' },
-]
+  { label: 'About', hash: 'about' },
+  { label: 'Services', hash: 'services' },
+  { label: 'Destinations', hash: 'destinations' },
+  { label: 'Contact', hash: 'contact' },
+] as const
 
 function linkClass(active: boolean) {
   return `font-serif text-base tracking-wide transition-colors ${
@@ -31,7 +32,6 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Close the mobile sheet whenever the route changes.
   useEffect(() => setOpen(false), [location.pathname])
 
   const scrollHomeToTop = () => {
@@ -42,15 +42,22 @@ export default function Header() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  return (
-    <motion.header
-      initial={{ opacity: 0, y: -12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+  const onHashClick = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
+    setOpen(false)
+    if (!onHome) return
+    event.preventDefault()
+    window.history.replaceState(null, '', `/#${id}`)
+    window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    }, 50)
+  }
+
+  const header = (
+    <header
+      className={`fixed inset-x-0 top-0 z-[80] pt-[env(safe-area-inset-top,0px)] transition-colors duration-300 ${
         scrolled || open
-          ? 'border-b border-white/10 bg-ink/85 backdrop-blur-xl'
-          : 'border-b border-transparent'
+          ? 'border-b border-white/10 bg-ink/95 backdrop-blur-xl'
+          : 'border-b border-transparent bg-gradient-to-b from-black/55 to-transparent'
       }`}
     >
       <div
@@ -64,23 +71,23 @@ export default function Header() {
 
         <nav className="hidden items-center gap-9 md:flex">
           {landingLinks.map((link) => {
-            if (link.to.startsWith('/#')) {
-              const hash = link.to.slice(1)
+            if ('hash' in link) {
               return (
-                <a
+                <Link
                   key={link.label}
-                  href={onHome ? hash : `/${hash}`}
+                  to={`/#${link.hash}`}
                   className={linkClass(false)}
+                  onClick={(event) => onHashClick(event, link.hash)}
                 >
                   {link.label}
-                </a>
+                </Link>
               )
             }
             return (
               <NavLink
                 key={link.label}
                 to={link.to}
-                end={link.to === '/'}
+                end
                 className={({ isActive }) => linkClass(isActive)}
                 onClick={scrollHomeToTop}
               >
@@ -92,7 +99,7 @@ export default function Header() {
 
         <button
           type="button"
-          className="rounded-md p-2 text-white transition-colors hover:text-gold md:hidden"
+          className="relative z-[81] -mr-2 flex min-h-11 min-w-11 items-center justify-center rounded-md text-white transition-colors hover:text-gold md:hidden"
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -104,34 +111,35 @@ export default function Header() {
       <AnimatePresence>
         {open && (
           <motion.nav
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="overflow-hidden border-t border-white/10 md:hidden"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="border-t border-white/10 bg-ink md:hidden"
           >
-            <div className="site-container flex flex-col gap-5 py-6">
+            <div className="site-container flex flex-col gap-1 py-4">
               {landingLinks.map((link) => {
-                if (link.to.startsWith('/#')) {
-                  const hash = link.to.slice(1)
+                if ('hash' in link) {
                   return (
-                    <a
+                    <Link
                       key={link.label}
-                      href={onHome ? hash : `/${hash}`}
-                      className="font-serif text-base text-silver/75"
-                      onClick={() => setOpen(false)}
+                      to={`/#${link.hash}`}
+                      className="flex min-h-11 items-center font-serif text-base text-silver/80"
+                      onClick={(event) => onHashClick(event, link.hash)}
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   )
                 }
                 return (
                   <NavLink
                     key={link.label}
                     to={link.to}
-                    end={link.to === '/'}
+                    end
                     className={({ isActive }) =>
-                      `font-serif text-base ${isActive ? 'text-gold' : 'text-silver/75'}`
+                      `flex min-h-11 items-center font-serif text-base ${
+                        isActive ? 'text-gold' : 'text-silver/80'
+                      }`
                     }
                     onClick={() => {
                       scrollHomeToTop()
@@ -146,6 +154,8 @@ export default function Header() {
           </motion.nav>
         )}
       </AnimatePresence>
-    </motion.header>
+    </header>
   )
+
+  return createPortal(header, document.body)
 }

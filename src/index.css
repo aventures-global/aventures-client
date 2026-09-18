@@ -64,6 +64,15 @@
     padding-inline: 1.5rem;
   }
 
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   /*
    * Landing sections fill the viewport. Top padding only clears the fixed
    * header — extra scroll-margin was stacking on this and leaving a gap

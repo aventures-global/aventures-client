@@ -6,6 +6,7 @@ import { getSite, getTourBySlug } from '../api'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import SafeImage from '../components/ui/SafeImage'
+import SectionTabs from '../components/tours/SectionTabs'
 import type { SiteInfo, Tour } from '../types/content'
 import NotFound from './NotFound'
 
@@ -47,6 +48,7 @@ export default function TourDetail() {
   if (tour === undefined) {
     return (
       <div className="min-h-svh bg-ink">
+        <Header />
         <div className="relative h-[52svh] skeleton-shimmer" />
         <div className="site-container grid gap-10 py-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
           <div className="space-y-3">
@@ -71,6 +73,7 @@ export default function TourDetail() {
 
   return (
     <div className="min-h-svh bg-ink">
+      <Header />
       <div className="relative h-[70svh] overflow-hidden lg:h-[62svh]">
         <div className="absolute inset-0">
           <SafeImage
@@ -81,7 +84,6 @@ export default function TourDetail() {
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/50" />
-        <Header />
 
         <div className="site-container relative z-10 flex h-full flex-col justify-end">
           <div className="grid items-end gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
@@ -146,28 +148,12 @@ export default function TourDetail() {
           </div>
 
           <div className="pt-8 lg:pt-10">
-            <nav
-              aria-label="Destination sections"
-              className="flex flex-wrap gap-x-7 gap-y-2 border-b border-white/10"
-            >
-              {TABS.map((item) => {
-                const active = tab === item.id
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setTab(item.id)}
-                    className={`-mb-px border-b pb-4 text-sm tracking-wide transition-colors ${
-                      active
-                        ? 'border-gold text-white'
-                        : 'border-transparent text-silver/55 hover:text-silver'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                )
-              })}
-            </nav>
+            <SectionTabs
+              label="Destination sections"
+              tabs={TABS}
+              value={tab}
+              onChange={(id) => setTab(id)}
+            />
 
             <div className="pt-8">
               <AnimatePresence mode="wait">
