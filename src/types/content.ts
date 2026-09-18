@@ -18,6 +18,14 @@ export type WhyUsPoint = {
   label: string
 }
 
+export type Testimonial = {
+  id: string
+  quote: string
+  name: string
+  trip: string
+  rating: number
+}
+
 export type TourItineraryDay = {
   day: number
   title: string

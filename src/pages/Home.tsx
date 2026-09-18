@@ -4,32 +4,37 @@ import {
   getFeaturedTours,
   getOffers,
   getSite,
+  getTestimonials,
 } from '../api'
 import About from '../components/home/About'
 import Contact from '../components/home/Contact'
 import Hero from '../components/home/Hero'
 import Offers from '../components/home/Offers'
 import SignatureExperiences from '../components/home/SignatureExperiences'
+import Testimonials from '../components/home/Testimonials'
 import WhyUs from '../components/home/WhyUs'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
-import type { ServiceOffer, SiteInfo, Tour } from '../types/content'
+import type { ServiceOffer, SiteInfo, Testimonial, Tour } from '../types/content'
 
 export default function Home() {
   const location = useLocation()
   const [site, setSite] = useState<SiteInfo | null>(null)
   const [offers, setOffers] = useState<ServiceOffer[]>([])
   const [featured, setFeatured] = useState<Tour[]>([])
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
 
   useEffect(() => {
     void Promise.all([
       getSite(),
       getOffers(),
       getFeaturedTours(),
-    ]).then(([siteData, offerData, featuredData]) => {
+      getTestimonials(),
+    ]).then(([siteData, offerData, featuredData, testimonialData]) => {
       setSite(siteData)
       setOffers(offerData)
       setFeatured(featuredData)
+      setTestimonials(testimonialData)
     })
   }, [])
 
@@ -64,6 +69,7 @@ export default function Home() {
         <Offers offers={offers} />
         <SignatureExperiences tours={featured} />
         <WhyUs site={site} />
+        <Testimonials testimonials={testimonials} />
         <Contact site={site} />
       </main>
       <Footer site={site} />

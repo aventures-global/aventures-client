@@ -1,8 +1,9 @@
 import { offers } from '../data/offers'
 import { partners } from '../data/partners'
 import { siteInfo } from '../data/site'
+import { testimonials } from '../data/testimonials'
 import { tours } from '../data/tours'
-import type { Partner, ServiceOffer, SiteInfo, Tour } from '../types/content'
+import type { Partner, ServiceOffer, SiteInfo, Testimonial, Tour } from '../types/content'
 
 /** Simulated network delay so skeletons are visible during development. */
 const delay = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -20,6 +21,11 @@ export async function getPartners(): Promise<Partner[]> {
 export async function getOffers(): Promise<ServiceOffer[]> {
   await delay()
   return offers
+}
+
+export async function getTestimonials(): Promise<Testimonial[]> {
+  await delay()
+  return testimonials
 }
 
 export async function getTours(): Promise<Tour[]> {
