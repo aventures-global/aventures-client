@@ -46,8 +46,12 @@ export type SiteInfo = {
   brandName: string
   fullName: string
   tagline: string
+  heroEyebrow: string
   heroTitle: string
   heroSubtitle: string
+  heroPrimaryCta: string
+  heroSecondaryCta: string
+  heroFacts: string[]
   about: string
   aboutBody: string
   email: string

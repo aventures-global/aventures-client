@@ -4,9 +4,17 @@ export const siteInfo: SiteInfo = {
   brandName: 'AVENtures',
   fullName: 'AVENtures Global Resources and Travel Agency',
   tagline: 'Global Resources and Travel Agency',
-  heroTitle: 'Your Complete Travel Partner',
+  heroEyebrow: 'Signature journeys',
+  heroTitle: 'Private journeys across the Philippines, Asia, and beyond',
   heroSubtitle:
-    'Airfare, hotels, curated tours, and visa assistance — seamlessly arranged worldwide.',
+    'Airfare, hotels, visas, and a host who stays with you from the first inquiry to your return home.',
+  heroPrimaryCta: 'Plan a trip',
+  heroSecondaryCta: 'Browse destinations',
+  heroFacts: [
+    'Sacramento, CA',
+    '+1 (916) 268-7731',
+    'Flights, stays, visas, transfers',
+  ],
   about:
     'We craft private journeys across the Philippines, Asia, the Middle East, Europe, and beyond — planned personally from our Sacramento base.',
   aboutBody:

@@ -231,6 +231,42 @@
     filter: blur(13px);
     animation: beam-flicker 6.5s ease-in-out infinite;
   }
+
+  /*
+   * On small screens the beam sits behind the copy stack — dim and shrink it
+   * so the ivory headline stays readable.
+   */
+  @media (max-width: 639px) {
+    .hero-beam-field {
+      opacity: 0.4;
+    }
+
+    .hero-beam-field .beam-ambient {
+      left: 88%;
+      width: 36rem;
+    }
+
+    .hero-beam-field .beam-glow {
+      left: 88%;
+      width: 5rem;
+    }
+
+    .hero-beam-field .beam-core {
+      left: 88%;
+      width: 0.75rem;
+    }
+
+    .hero-beam-field .beam-foot {
+      left: 88%;
+      width: 18rem;
+      height: 8rem;
+    }
+
+    .hero-beam-field .beam-foot-line {
+      left: 88%;
+      width: 14rem;
+    }
+  }
 }
 
 @keyframes shimmer {
