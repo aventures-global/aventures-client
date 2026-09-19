@@ -5,13 +5,13 @@ export const siteInfo: SiteInfo = {
   fullName: 'AVENtures Global Resources and Travel Agency',
   tagline: 'Global Resources and Travel Agency',
   heroEyebrow: 'Signature journeys',
-  heroTitle: 'Private journeys across the Philippines, Asia, and beyond',
+  heroTitle: 'Private journeys across Asia, America, and beyond',
   heroSubtitle:
     'Airfare, hotels, visas, and a host who stays with you from the first inquiry to your return home.',
   heroPrimaryCta: 'Plan a trip',
   heroSecondaryCta: 'Browse destinations',
   heroFacts: [
-    'Sacramento, CA',
+    '3419 Arden Wy, Sacramento, CA',
     '+1 (916) 268-7731',
     'Flights, stays, visas, transfers',
   ],
@@ -22,9 +22,9 @@ export const siteInfo: SiteInfo = {
   email: 'aventures.globalresources@gmail.com',
   phone: '+19162687731',
   phoneDisplay: '+1 (916) 268-7731',
-  address: '3400 Watt Ave, Suite 200B, Sacramento, CA, United States',
+  address: '3419 Arden Wy, Sacramento, CA, United States',
   addressLines: [
-    '3400 Watt Ave, Suite 200B',
+    '3419 Arden Wy',
     'Sacramento, CA',
     'United States',
   ],

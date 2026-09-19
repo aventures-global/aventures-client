@@ -50,7 +50,7 @@ export default function Hero({ site }: HeroProps) {
             </Link>
           </div>
 
-          <ul className="mt-10 flex max-w-xl flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted">
+          <ul className="mt-10 flex max-w-2xl flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted">
             {site.heroFacts.map((fact, index) => (
               <li key={fact} className="flex items-center gap-3">
                 {index > 0 && (
