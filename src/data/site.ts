@@ -11,7 +11,7 @@ export const siteInfo: SiteInfo = {
   heroPrimaryCta: 'Plan a trip',
   heroSecondaryCta: 'Browse destinations',
   heroFacts: [
-    '3419 Arden Wy, Sacramento, CA',
+    '3419 Arden Way, Sacramento, CA',
     '+1 (916) 268-7731',
     'Flights, stays, visas, transfers',
   ],
@@ -22,9 +22,9 @@ export const siteInfo: SiteInfo = {
   email: 'aventures.globalresources@gmail.com',
   phone: '+19162687731',
   phoneDisplay: '+1 (916) 268-7731',
-  address: '3419 Arden Wy, Sacramento, CA, United States',
+  address: '3419 Arden Way, Sacramento, CA, United States',
   addressLines: [
-    '3419 Arden Wy',
+    '3419 Arden Way',
     'Sacramento, CA',
     'United States',
   ],
