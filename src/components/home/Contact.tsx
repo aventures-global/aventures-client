@@ -9,6 +9,37 @@ type ContactProps = {
   site: SiteInfo
 }
 
+type SubmitStatus = 'idle' | 'sending' | 'sent' | 'error'
+
+const formspreeId = import.meta.env.VITE_FORMSPREE_ID as string | undefined
+
+function buildSubject(firstName: string, lastName: string, destination: string) {
+  return `Travel inquiry${destination ? ` — ${destination}` : ''} from ${firstName} ${lastName}`.trim()
+}
+
+function buildMailtoHref(
+  to: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  destination: string,
+  message: string,
+) {
+  const subject = encodeURIComponent(buildSubject(firstName, lastName, destination))
+  const body = encodeURIComponent(
+    [
+      `Name: ${firstName} ${lastName}`,
+      `Email: ${email}`,
+      destination ? `Destination: ${destination}` : null,
+      '',
+      message,
+    ]
+      .filter(Boolean)
+      .join('\n'),
+  )
+  return `mailto:${to}?subject=${subject}&body=${body}`
+}
+
 export default function Contact({ site }: ContactProps) {
   const [searchParams] = useSearchParams()
   const [firstName, setFirstName] = useState('')
@@ -16,6 +47,7 @@ export default function Contact({ site }: ContactProps) {
   const [email, setEmail] = useState('')
   const [destination, setDestination] = useState('')
   const [message, setMessage] = useState('')
+  const [status, setStatus] = useState<SubmitStatus>('idle')
 
   useEffect(() => {
     const tour = searchParams.get('tour')
@@ -25,27 +57,77 @@ export default function Contact({ site }: ContactProps) {
     }
   }, [searchParams])
 
-  function handleSubmit(event: FormEvent) {
+  function openMailto() {
+    window.location.href = buildMailtoHref(
+      site.email,
+      firstName,
+      lastName,
+      email,
+      destination,
+      message,
+    )
+  }
+
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    const subject = encodeURIComponent(
-      `Travel inquiry${destination ? ` — ${destination}` : ''} from ${firstName} ${lastName}`.trim(),
-    )
-    const body = encodeURIComponent(
-      [
-        `Name: ${firstName} ${lastName}`,
-        `Email: ${email}`,
-        destination ? `Destination: ${destination}` : null,
-        '',
-        message,
-      ]
-        .filter(Boolean)
-        .join('\n'),
-    )
-    window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`
+
+    if (!formspreeId) {
+      openMailto()
+      return
+    }
+
+    setStatus('sending')
+
+    try {
+      const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          destination,
+          message,
+          _subject: buildSubject(firstName, lastName, destination),
+        }),
+      })
+
+      if (!response.ok) {
+        setStatus('error')
+        return
+      }
+
+      const data = (await response.json()) as { ok?: boolean }
+      if (!data.ok) {
+        setStatus('error')
+        return
+      }
+
+      setFirstName('')
+      setLastName('')
+      setEmail('')
+      setDestination('')
+      setMessage('')
+      setStatus('sent')
+    } catch {
+      setStatus('error')
+    }
   }
 
   const fieldClass =
     'w-full rounded-lg border border-white/15 bg-ink-soft px-4 py-3 text-sm text-white outline-none transition placeholder:text-muted focus:border-gold/60'
+
+  const mailtoHref = buildMailtoHref(
+    site.email,
+    firstName,
+    lastName,
+    email,
+    destination,
+    message,
+  )
 
   return (
     <section id="contact" className="page-section">
@@ -67,6 +149,15 @@ export default function Contact({ site }: ContactProps) {
             onSubmit={handleSubmit}
             className="space-y-4"
           >
+            {/* Formspree honeypot — leave empty; bots that fill it are discarded */}
+            <input
+              type="text"
+              name="_gotcha"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute -left-[9999px] h-0 w-0 opacity-0"
+            />
             <div className="grid gap-4 sm:grid-cols-2">
               <input
                 required
@@ -75,6 +166,7 @@ export default function Contact({ site }: ContactProps) {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 className={fieldClass}
+                disabled={status === 'sending'}
               />
               <input
                 required
@@ -83,6 +175,7 @@ export default function Contact({ site }: ContactProps) {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 className={fieldClass}
+                disabled={status === 'sending'}
               />
             </div>
             <input
@@ -93,6 +186,7 @@ export default function Contact({ site }: ContactProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={fieldClass}
+              disabled={status === 'sending'}
             />
             <input
               name="destination"
@@ -100,6 +194,7 @@ export default function Contact({ site }: ContactProps) {
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
               className={fieldClass}
+              disabled={status === 'sending'}
             />
             <textarea
               required
@@ -109,14 +204,32 @@ export default function Contact({ site }: ContactProps) {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               className={`${fieldClass} resize-y`}
+              disabled={status === 'sending'}
             />
-            <div className="flex justify-end">
+            <div className="flex flex-col items-end gap-3">
               <button
                 type="submit"
-                className="btn-gold rounded-xl px-7 py-3.5 text-base"
+                disabled={status === 'sending'}
+                className="btn-gold rounded-xl px-7 py-3.5 text-base disabled:cursor-not-allowed disabled:opacity-70"
               >
-                Send Message
+                {status === 'sending' ? 'Sending...' : 'Send Message'}
               </button>
+              <div role="status" aria-live="polite" className="w-full text-right text-sm">
+                {status === 'sent' && (
+                  <p className="text-gold">
+                    Thank you — your message was sent. We will be in touch shortly.
+                  </p>
+                )}
+                {status === 'error' && (
+                  <p className="text-silver/90">
+                    Something went wrong.{' '}
+                    <a href={mailtoHref} className="text-gold underline hover:text-gold-mid">
+                      Email us directly
+                    </a>{' '}
+                    instead.
+                  </p>
+                )}
+              </div>
             </div>
           </motion.form>
 
