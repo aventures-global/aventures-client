@@ -92,7 +92,7 @@ export default function Destinations() {
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-white/20 px-4 py-2.5 font-serif text-sm text-white transition-colors hover:border-gold/50 hover:text-gold md:mt-9"
             >
               <Compass size={15} strokeWidth={1.4} aria-hidden />
-              Book a custom tour
+              Inquire a custom tour
               <ArrowUpRight size={14} strokeWidth={1.4} aria-hidden />
             </Link>
           </div>
@@ -180,6 +180,13 @@ export default function Destinations() {
               </AnimatePresence>
             </div>
           )}
+          <Link
+            to="/custom-tour"
+            className="inline-flex shrink-0 items-center w-full justify-center gap-2 font-serif text-md text-gold py-2.5 transition-colors hover:underline hover:border-gold/50 hover:text-gold md:mt-9"
+          >
+            Inquire a custom tour
+            <ArrowUpRight size={14} strokeWidth={1.4} aria-hidden />
+          </Link>
         </div>
       </main>
 
