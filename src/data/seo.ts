@@ -23,6 +23,23 @@ const routeCopy: Record<string, SeoRouteCopy> = {
     description:
       'Browse signature journeys across the Philippines, Asia, the USA, and beyond — curated private trips from AVENtures.',
   },
+  '/shop': {
+    title: 'Shop — AVENtures',
+    description:
+      'Browse AVENtures merchandise — apparel, totes, and destination photography prints. Add to cart requires an account.',
+  },
+  '/login': {
+    title: 'Log in — AVENtures',
+    description: 'Log in to your AVENtures account to shop merchandise.',
+  },
+  '/signup': {
+    title: 'Sign up — AVENtures',
+    description: 'Create an AVENtures account to shop merchandise.',
+  },
+  '/cart': {
+    title: 'Cart — AVENtures',
+    description: 'Your AVENtures merchandise cart.',
+  },
   '/custom-tour': {
     title: 'Custom Tour — AVENtures',
     description:

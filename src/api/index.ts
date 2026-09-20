@@ -1,9 +1,17 @@
+import { merch } from '../data/merch'
 import { offers } from '../data/offers'
 import { partners } from '../data/partners'
 import { siteInfo } from '../data/site'
 import { testimonials } from '../data/testimonials'
 import { tours } from '../data/tours'
-import type { Partner, ServiceOffer, SiteInfo, Testimonial, Tour } from '../types/content'
+import type {
+  MerchProduct,
+  Partner,
+  ServiceOffer,
+  SiteInfo,
+  Testimonial,
+  Tour,
+} from '../types/content'
 
 /** Simulated network delay so skeletons are visible during development. */
 const delay = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -41,4 +49,14 @@ export async function getFeaturedTours(): Promise<Tour[]> {
 export async function getTourBySlug(slug: string): Promise<Tour | null> {
   await delay()
   return tours.find((tour) => tour.slug === slug) ?? null
+}
+
+export async function getMerch(): Promise<MerchProduct[]> {
+  await delay()
+  return merch
+}
+
+export async function getMerchBySlug(slug: string): Promise<MerchProduct | null> {
+  await delay()
+  return merch.find((item) => item.slug === slug) ?? null
 }

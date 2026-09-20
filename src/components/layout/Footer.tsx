@@ -93,6 +93,11 @@ export default function Footer({ site }: FooterProps) {
                 </Link>
               </li>
               <li>
+                <Link to="/shop" className={navClass}>
+                  Shop
+                </Link>
+              </li>
+              <li>
                 <a href={hashHref('#why')} className={navClass}>
                   Why travel with us?
                 </a>

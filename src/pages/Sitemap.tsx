@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getTours } from '../api'
+import { getMerch, getTours } from '../api'
 import PageShell from '../components/layout/PageShell'
-import type { Tour } from '../types/content'
+import type { MerchProduct, Tour } from '../types/content'
 
 const siteLinks = [
   { label: 'Home', to: '/' },
@@ -10,6 +10,7 @@ const siteLinks = [
   { label: 'About us (full story)', to: '/about' },
   { label: 'Services', to: '/#services' },
   { label: 'Destinations', to: '/destinations' },
+  { label: 'Shop', to: '/shop' },
   { label: 'Custom tour', to: '/custom-tour' },
   { label: 'Why travel with us?', to: '/#why' },
   { label: 'Contact', to: '/#contact' },
@@ -25,9 +26,13 @@ const serviceLinks = [
 
 export default function Sitemap() {
   const [tours, setTours] = useState<Tour[]>([])
+  const [products, setProducts] = useState<MerchProduct[]>([])
 
   useEffect(() => {
-    void getTours().then(setTours)
+    void Promise.all([getTours(), getMerch()]).then(([tourData, merchData]) => {
+      setTours(tourData)
+      setProducts(merchData)
+    })
   }, [])
 
   return (
@@ -62,6 +67,16 @@ export default function Sitemap() {
               <li key={tour.id}>
                 <Link to={`/destinations/${tour.slug}`} className="hover:text-white">
                   {tour.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <h2 className="mt-10 text-sm font-semibold text-white">Shop</h2>
+          <ul className="mt-4 space-y-2 text-sm text-silver/80">
+            {products.map((product) => (
+              <li key={product.id}>
+                <Link to={`/shop/${product.slug}`} className="hover:text-white">
+                  {product.name}
                 </Link>
               </li>
             ))}

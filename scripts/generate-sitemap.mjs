@@ -16,6 +16,7 @@ const staticPaths = [
   '/',
   '/about',
   '/destinations',
+  '/shop',
   '/custom-tour',
   '/flights',
   '/hotels',
@@ -30,9 +31,15 @@ const tourSlugs = [...toursSource.matchAll(/slug:\s*'([^']+)'/g)].map(
   (match) => match[1],
 )
 
+const merchSource = readFileSync(join(root, 'src/data/merch.ts'), 'utf8')
+const merchSlugs = [...merchSource.matchAll(/slug:\s*'([^']+)'/g)].map(
+  (match) => match[1],
+)
+
 const paths = [
   ...staticPaths,
   ...tourSlugs.map((slug) => `/destinations/${slug}`),
+  ...merchSlugs.map((slug) => `/shop/${slug}`),
 ]
 
 const today = new Date().toISOString().slice(0, 10)

@@ -50,6 +50,20 @@ export type Tour = {
   featured: boolean
 }
 
+export type MerchProduct = {
+  id: string
+  slug: string
+  name: string
+  tagline: string
+  description: string
+  price: string
+  category: string
+  coverImage: string
+  gallery: string[]
+  sizes?: string[]
+  inStock: boolean
+}
+
 export type SiteInfo = {
   brandName: string
   fullName: string
