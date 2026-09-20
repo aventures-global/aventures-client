@@ -22,9 +22,22 @@ const landingLinks = [
   { label: 'Contact', hash: 'contact' },
 ] as const
 
+const HASH_SECTIONS = ['about', 'services', 'contact'] as const
+type HashSection = (typeof HASH_SECTIONS)[number]
+
+function isHashSection(value: string): value is HashSection {
+  return (HASH_SECTIONS as readonly string[]).includes(value)
+}
+
 function linkClass(active: boolean) {
   return `font-serif text-base tracking-wide transition-colors ${
     active ? 'text-gold' : 'text-silver/75 hover:text-gold'
+  }`
+}
+
+function mobileLinkClass(active: boolean) {
+  return `flex min-h-11 items-center font-serif text-base ${
+    active ? 'text-gold' : 'text-silver/80'
   }`
 }
 
@@ -167,6 +180,7 @@ function AccountMenu({
 export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [activeSection, setActiveSection] = useState<HashSection | null>(null)
   const location = useLocation()
   const onHome = location.pathname === '/'
   const { user, isLoggedIn, logout } = useAuth()
@@ -181,16 +195,91 @@ export default function Header() {
 
   useEffect(() => setDrawerOpen(false), [location.pathname])
 
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      setActiveSection(null)
+      return
+    }
+
+    const hashId = location.hash.replace(/^#/, '')
+    if (isHashSection(hashId)) {
+      setActiveSection(hashId)
+    }
+
+    let cancelled = false
+    let observer: IntersectionObserver | null = null
+    let retryId = 0
+    const ratios = new Map<string, number>()
+
+    const applyBest = () => {
+      let bestId: HashSection | null = null
+      let bestRatio = 0
+      for (const id of HASH_SECTIONS) {
+        const ratio = ratios.get(id) ?? 0
+        if (ratio > bestRatio) {
+          bestRatio = ratio
+          bestId = id
+        }
+      }
+      if (bestRatio > 0.08) {
+        setActiveSection(bestId)
+      } else if (window.scrollY < 140) {
+        setActiveSection(null)
+      }
+    }
+
+    const setup = () => {
+      if (cancelled) return
+      const elements = HASH_SECTIONS.map((id) =>
+        document.getElementById(id),
+      ).filter((el): el is HTMLElement => Boolean(el))
+
+      if (elements.length < HASH_SECTIONS.length) {
+        retryId = window.setTimeout(setup, 120)
+        return
+      }
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            ratios.set(
+              entry.target.id,
+              entry.isIntersecting ? entry.intersectionRatio : 0,
+            )
+          }
+          applyBest()
+        },
+        {
+          root: null,
+          rootMargin: '-22% 0px -48% 0px',
+          threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
+        },
+      )
+
+      for (const el of elements) observer.observe(el)
+    }
+
+    setup()
+
+    return () => {
+      cancelled = true
+      window.clearTimeout(retryId)
+      observer?.disconnect()
+    }
+  }, [location.pathname, location.hash])
+
   const scrollHomeToTop = () => {
     if (location.pathname !== '/') return
     if (location.hash) {
       window.history.replaceState(null, '', '/')
     }
+    setActiveSection(null)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const onHashClick = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
     setDrawerOpen(false)
+    if (isHashSection(id)) setActiveSection(id)
     if (!onHome) return
     event.preventDefault()
     window.history.replaceState(null, '', `/#${id}`)
@@ -199,11 +288,22 @@ export default function Header() {
     }, 50)
   }
 
-  const isNavActive = (to: string, isActive: boolean) =>
-    isActive ||
-    (to === '/shop' && location.pathname.startsWith('/shop')) ||
-    (to === '/destinations' && location.pathname.startsWith('/destinations'))
+  const isNavActive = (to: string, isActive: boolean) => {
+    if (to === '/') {
+      return location.pathname === '/' && activeSection === null
+    }
+    return (
+      isActive ||
+      (to === '/shop' && location.pathname.startsWith('/shop')) ||
+      (to === '/destinations' && location.pathname.startsWith('/destinations'))
+    )
+  }
 
+  const isHashActive = (hash: HashSection) => {
+    if (hash === 'about' && location.pathname === '/about') return true
+    if (location.pathname !== '/') return false
+    return activeSection === hash
+  }
   const accountAction = isLoggedIn ? (
     <AccountMenu
       name={user?.name}
@@ -237,7 +337,7 @@ export default function Header() {
           <BrandLogo />
         </Link>
 
-        <div className="flex items-center gap-2 sm:gap-3 lg:gap-8">
+        <div className="flex items-center gap-2 sm:gap-3 lg:gap-5">
           <nav className="hidden items-center gap-6 xl:gap-8 lg:flex">
             {landingLinks.map((link) => {
               if ('hash' in link) {
@@ -245,7 +345,8 @@ export default function Header() {
                   <Link
                     key={link.label}
                     to={`/#${link.hash}`}
-                    className={linkClass(false)}
+                    className={linkClass(isHashActive(link.hash))}
+                    aria-current={isHashActive(link.hash) ? 'page' : undefined}
                     onClick={(event) => onHashClick(event, link.hash)}
                   >
                     {link.label}
@@ -267,6 +368,11 @@ export default function Header() {
               )
             })}
           </nav>
+
+          <span
+            aria-hidden
+            className="hidden h-4 w-px shrink-0 bg-white/25 lg:block"
+          />
 
           {accountAction}
           <button
@@ -301,7 +407,8 @@ export default function Header() {
                     <Link
                       key={link.label}
                       to={`/#${link.hash}`}
-                      className="flex min-h-11 items-center font-serif text-base text-silver/80"
+                      className={mobileLinkClass(isHashActive(link.hash))}
+                      aria-current={isHashActive(link.hash) ? 'page' : undefined}
                       onClick={(event) => onHashClick(event, link.hash)}
                     >
                       {link.label}
@@ -314,11 +421,7 @@ export default function Header() {
                     to={link.to}
                     end={link.to === '/'}
                     className={({ isActive }) =>
-                      `flex min-h-11 items-center font-serif text-base ${
-                        isNavActive(link.to, isActive)
-                          ? 'text-gold'
-                          : 'text-silver/80'
-                      }`
+                      mobileLinkClass(isNavActive(link.to, isActive))
                     }
                     onClick={() => {
                       scrollHomeToTop()
