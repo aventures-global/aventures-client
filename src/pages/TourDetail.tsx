@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom'
 import { getSite, getTourBySlug } from '../api'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
+import Seo from '../components/seo/Seo'
 import SafeImage from '../components/ui/SafeImage'
 import SectionTabs from '../components/tours/SectionTabs'
 import type { SiteInfo, Tour } from '../types/content'
@@ -73,6 +74,12 @@ export default function TourDetail() {
 
   return (
     <div className="min-h-svh max-w-full overflow-x-clip bg-ink">
+      <Seo
+        title={`${tour.title} — AVENtures`}
+        description={tour.shortDescription || tour.tagline}
+        path={`/destinations/${tour.slug}`}
+        image={tour.coverImage}
+      />
       <Header />
       <div className="relative h-[70svh] overflow-hidden lg:h-[62svh]">
         <div className="absolute inset-0">

@@ -15,6 +15,9 @@ import Testimonials from '../components/home/Testimonials'
 import WhyUs from '../components/home/WhyUs'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
+import Seo from '../components/seo/Seo'
+import TravelAgencyJsonLd from '../components/seo/TravelAgencyJsonLd'
+import { getSeoForPath } from '../data/seo'
 import type { ServiceOffer, SiteInfo, Testimonial, Tour } from '../types/content'
 
 export default function Home() {
@@ -60,8 +63,12 @@ export default function Home() {
     )
   }
 
+  const homeSeo = getSeoForPath('/')
+
   return (
     <div className="min-h-svh bg-ink">
+      <Seo title={homeSeo.title} description={homeSeo.description} path="/" />
+      <TravelAgencyJsonLd site={site} />
       <Header />
       <main>
         <Hero site={site} />

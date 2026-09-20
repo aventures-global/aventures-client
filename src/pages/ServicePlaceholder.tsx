@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { getSite } from '../api'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
+import Seo from '../components/seo/Seo'
+import { getSeoForPath } from '../data/seo'
 import type { SiteInfo } from '../types/content'
 
 type ServicePlaceholderProps = {
@@ -12,7 +14,9 @@ type ServicePlaceholderProps = {
 }
 
 export default function ServicePlaceholder({ title, description }: ServicePlaceholderProps) {
+  const location = useLocation()
   const [site, setSite] = useState<SiteInfo | null>(null)
+  const routeSeo = getSeoForPath(location.pathname)
 
   useEffect(() => {
     void getSite().then(setSite)
@@ -20,6 +24,11 @@ export default function ServicePlaceholder({ title, description }: ServicePlaceh
 
   return (
     <div className="min-h-svh bg-ink">
+      <Seo
+        title={routeSeo.title}
+        description={description || routeSeo.description}
+        path={location.pathname}
+      />
       <div className="relative overflow-hidden border-b border-white/5 bg-ink-soft">
         <div className="pointer-events-none absolute right-10 top-20 h-64 w-24 hero-beam opacity-40" />
         <Header />

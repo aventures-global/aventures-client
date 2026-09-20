@@ -1,9 +1,18 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import Header from '../components/layout/Header'
+import Seo from '../components/seo/Seo'
 
 export default function NotFound() {
+  const location = useLocation()
+
   return (
     <div className="min-h-svh bg-ink">
+      <Seo
+        title="Page not found — AVENtures"
+        description="That page does not exist. Return home or explore AVENtures destinations."
+        path={location.pathname}
+        noIndex
+      />
       <Header />
       <main className="site-container flex flex-col items-start pb-24 pt-36">
         <p className="text-sm uppercase tracking-[0.2em] text-gold">404</p>

@@ -5,7 +5,9 @@ import { Link } from 'react-router-dom'
 import { getSite, getTours } from '../api'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
+import Seo from '../components/seo/Seo'
 import SafeImage from '../components/ui/SafeImage'
+import { getSeoForPath } from '../data/seo'
 import type { SiteInfo, Tour } from '../types/content'
 
 const coverFocus: Record<string, string> = {
@@ -25,8 +27,15 @@ export default function Destinations() {
     })
   }, [])
 
+  const destinationsSeo = getSeoForPath('/destinations')
+
   return (
     <div className="flex min-h-svh flex-col bg-ink">
+      <Seo
+        title={destinationsSeo.title}
+        description={destinationsSeo.description}
+        path="/destinations"
+      />
       <Header />
 
       <main className="flex-1">
