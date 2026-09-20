@@ -19,7 +19,7 @@ const staticPaths = [
   '/hotels',
   '/cars',
   '/faq',
-  '/blog',
+  '/privacy',
   '/sitemap',
 ]
 

@@ -3,21 +3,24 @@ import { motion } from 'motion/react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import type { SiteInfo } from '../../types/content'
+import {
+  buildMailtoHref,
+  formFieldClass,
+  FormspreeHoneypot,
+  submitFormspree,
+  type SubmitStatus,
+} from '../../lib/formspree'
 import { FacebookIcon, InstagramIcon } from '../ui/SocialIcons'
 
 type ContactProps = {
   site: SiteInfo
 }
 
-type SubmitStatus = 'idle' | 'sending' | 'sent' | 'error'
-
-const formspreeId = import.meta.env.VITE_FORMSPREE_ID as string | undefined
-
 function buildSubject(firstName: string, lastName: string, destination: string) {
   return `Travel inquiry${destination ? ` — ${destination}` : ''} from ${firstName} ${lastName}`.trim()
 }
 
-function buildMailtoHref(
+function contactMailto(
   to: string,
   firstName: string,
   lastName: string,
@@ -25,19 +28,13 @@ function buildMailtoHref(
   destination: string,
   message: string,
 ) {
-  const subject = encodeURIComponent(buildSubject(firstName, lastName, destination))
-  const body = encodeURIComponent(
-    [
-      `Name: ${firstName} ${lastName}`,
-      `Email: ${email}`,
-      destination ? `Destination: ${destination}` : null,
-      '',
-      message,
-    ]
-      .filter(Boolean)
-      .join('\n'),
-  )
-  return `mailto:${to}?subject=${subject}&body=${body}`
+  return buildMailtoHref(to, buildSubject(firstName, lastName, destination), [
+    `Name: ${firstName} ${lastName}`,
+    `Email: ${email}`,
+    destination ? `Destination: ${destination}` : '',
+    '',
+    message,
+  ])
 }
 
 export default function Contact({ site }: ContactProps) {
@@ -57,8 +54,11 @@ export default function Contact({ site }: ContactProps) {
     }
   }, [searchParams])
 
-  function openMailto() {
-    window.location.href = buildMailtoHref(
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault()
+
+    const subject = buildSubject(firstName, lastName, destination)
+    const mailtoHref = contactMailto(
       site.email,
       firstName,
       lastName,
@@ -66,61 +66,37 @@ export default function Contact({ site }: ContactProps) {
       destination,
       message,
     )
-  }
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault()
+    setStatus('sending')
+    const result = await submitFormspree({
+      firstName,
+      lastName,
+      email,
+      destination,
+      message,
+      _subject: subject,
+    })
 
-    if (!formspreeId) {
-      openMailto()
+    if (result === 'mailto') {
+      setStatus('idle')
+      window.location.href = mailtoHref
       return
     }
 
-    setStatus('sending')
-
-    try {
-      const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          destination,
-          message,
-          _subject: buildSubject(firstName, lastName, destination),
-        }),
-      })
-
-      if (!response.ok) {
-        setStatus('error')
-        return
-      }
-
-      const data = (await response.json()) as { ok?: boolean }
-      if (!data.ok) {
-        setStatus('error')
-        return
-      }
-
-      setFirstName('')
-      setLastName('')
-      setEmail('')
-      setDestination('')
-      setMessage('')
-      setStatus('sent')
-    } catch {
+    if (result === 'error') {
       setStatus('error')
+      return
     }
+
+    setFirstName('')
+    setLastName('')
+    setEmail('')
+    setDestination('')
+    setMessage('')
+    setStatus('sent')
   }
 
-  const fieldClass =
-    'w-full rounded-lg border border-white/15 bg-ink-soft px-4 py-3 text-sm text-white outline-none transition placeholder:text-muted focus:border-gold/60'
-
-  const mailtoHref = buildMailtoHref(
+  const mailtoHref = contactMailto(
     site.email,
     firstName,
     lastName,
@@ -149,15 +125,7 @@ export default function Contact({ site }: ContactProps) {
             onSubmit={handleSubmit}
             className="space-y-4"
           >
-            {/* Formspree honeypot — leave empty; bots that fill it are discarded */}
-            <input
-              type="text"
-              name="_gotcha"
-              tabIndex={-1}
-              autoComplete="off"
-              aria-hidden="true"
-              className="absolute -left-[9999px] h-0 w-0 opacity-0"
-            />
+            <FormspreeHoneypot />
             <div className="grid gap-4 sm:grid-cols-2">
               <input
                 required
@@ -165,7 +133,7 @@ export default function Contact({ site }: ContactProps) {
                 placeholder="First Name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className={fieldClass}
+                className={formFieldClass}
                 disabled={status === 'sending'}
               />
               <input
@@ -174,7 +142,7 @@ export default function Contact({ site }: ContactProps) {
                 placeholder="Last Name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className={fieldClass}
+                className={formFieldClass}
                 disabled={status === 'sending'}
               />
             </div>
@@ -185,7 +153,7 @@ export default function Contact({ site }: ContactProps) {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={fieldClass}
+              className={formFieldClass}
               disabled={status === 'sending'}
             />
             <input
@@ -193,7 +161,7 @@ export default function Contact({ site }: ContactProps) {
               placeholder="Destination of interest"
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
-              className={fieldClass}
+              className={formFieldClass}
               disabled={status === 'sending'}
             />
             <textarea
@@ -203,7 +171,7 @@ export default function Contact({ site }: ContactProps) {
               rows={5}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className={`${fieldClass} resize-y`}
+              className={`${formFieldClass} resize-y`}
               disabled={status === 'sending'}
             />
             <div className="flex flex-col items-end gap-3">

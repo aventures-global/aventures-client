@@ -21,22 +21,27 @@ const routeCopy: Record<string, SeoRouteCopy> = {
   '/flights': {
     title: 'Flights — AVENtures',
     description:
-      'Competitive airfare search and booking support coordinated with your hotels and itinerary.',
+      'Request airfare coordinated with your hotels and itinerary. We source competitive fares by inquiry.',
   },
   '/hotels': {
     title: 'Hotels — AVENtures',
     description:
-      'Curated stays worldwide — hotel arrangements that fit the pace of your private journey.',
+      'Request curated stays worldwide — hotel arrangements that fit the pace of your private journey.',
   },
   '/cars': {
     title: 'Cars & Transfers — AVENtures',
     description:
-      'Private transfers and car arrangements, from airport meet-and-greet to local guides.',
+      'Request private transfers and car arrangements, from airport meet-and-greet to local guides.',
   },
   '/faq': {
     title: 'FAQs — AVENtures',
     description:
       'Answers about planning trips, visas, flights, hotels, and traveling with AVENtures Global.',
+  },
+  '/privacy': {
+    title: 'Privacy Policy — AVENtures',
+    description:
+      'How AVENtures Global collects and uses information from contact and travel request forms.',
   },
   '/blog': {
     title: 'Blogs — AVENtures',

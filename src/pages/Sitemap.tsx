@@ -12,7 +12,7 @@ const siteLinks = [
   { label: 'Why travel with us?', to: '/#why' },
   { label: 'Contact', to: '/#contact' },
   { label: 'FAQs', to: '/faq' },
-  { label: 'Blogs', to: '/blog' },
+  { label: 'Privacy Policy', to: '/privacy' },
 ]
 
 const serviceLinks = [

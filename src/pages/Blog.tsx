@@ -3,7 +3,7 @@ import PageShell from '../components/layout/PageShell'
 
 export default function Blog() {
   return (
-    <PageShell title="Blogs" eyebrow="Journal">
+    <PageShell title="Blogs" eyebrow="Journal" noIndex>
       <div className="max-w-xl">
         <p className="text-base leading-relaxed text-silver/85">
           Travel notes from the road will live here. Until the first stories are up, explore a

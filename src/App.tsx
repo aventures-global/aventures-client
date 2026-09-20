@@ -5,7 +5,8 @@ import Destinations from './pages/Destinations'
 import Faq from './pages/Faq'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
-import ServicePlaceholder from './pages/ServicePlaceholder'
+import Privacy from './pages/Privacy'
+import ServiceRequest from './pages/ServiceRequest'
 import Sitemap from './pages/Sitemap'
 import TourDetail from './pages/TourDetail'
 
@@ -29,31 +30,35 @@ function AnimatedRoutes() {
           <Route
             path="/flights"
             element={
-              <ServicePlaceholder
+              <ServiceRequest
+                kind="flights"
                 title="Flights"
-                description="Competitive airfare search and booking support — full booking tools arrive with the dynamic site."
+                description="Tell us where you are flying and when. We source competitive airfare that fits your itinerary — arranged by request, not a live search."
               />
             }
           />
           <Route
             path="/hotels"
             element={
-              <ServicePlaceholder
+              <ServiceRequest
+                kind="hotels"
                 title="Hotels"
-                description="Curated stays worldwide. Hotel inventory and live rates will connect here soon."
+                description="Share your destination and dates. We shortlist stays for setting, quiet, and ease of movement — curated by request, not a public inventory list."
               />
             }
           />
           <Route
             path="/cars"
             element={
-              <ServicePlaceholder
+              <ServiceRequest
+                kind="cars"
                 title="Cars & Transfers"
-                description="Private transfers and car arrangements. Request assistance via our contact form today."
+                description="Airport greetings, private cars, and island transfers. Tell us pickup details and we will arrange the vehicle alongside your journey."
               />
             }
           />
           <Route path="/faq" element={<Faq />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/sitemap" element={<Sitemap />} />
           <Route path="*" element={<NotFound />} />

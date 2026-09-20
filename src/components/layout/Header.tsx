@@ -9,7 +9,7 @@ const landingLinks = [
   { label: 'Home', to: '/' },
   { label: 'About', hash: 'about' },
   { label: 'Services', hash: 'services' },
-  { label: 'Destinations', hash: 'destinations' },
+  { label: 'Destinations', to: '/destinations' },
   { label: 'Contact', hash: 'contact' },
 ] as const
 

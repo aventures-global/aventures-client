@@ -11,6 +11,7 @@ type PageShellProps = {
   title: string
   eyebrow?: string
   description?: string
+  noIndex?: boolean
   children: ReactNode
 }
 
@@ -18,6 +19,7 @@ export default function PageShell({
   title,
   eyebrow,
   description,
+  noIndex = false,
   children,
 }: PageShellProps) {
   const location = useLocation()
@@ -34,6 +36,7 @@ export default function PageShell({
         title={routeSeo.title}
         description={description ?? routeSeo.description}
         path={location.pathname}
+        noIndex={noIndex}
       />
       <Header />
       <main className="site-container flex-1 pb-24 pt-36">

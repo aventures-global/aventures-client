@@ -175,28 +175,31 @@ export default function TourDetail() {
                   {tab === 'overview' && <OverviewPanel tour={tour} onSeeTrips={() => setTab('trips')} />}
                   {tab === 'trips' && <TripsPanel tour={tour} inquireHref={inquireHref} />}
                   {tab === 'flights' && (
-                    <ComingSoonPanel
+                    <ServiceRequestPanel
                       title="Flights"
                       body={`Airfare into ${tour.location} is arranged privately for each departure. Share your dates and preferred cabin, and we will source the most comfortable routing.`}
-                      inquireHref={inquireHref}
+                      href={`/flights?tour=${encodeURIComponent(tour.title)}`}
+                      ctaLabel="Request flights"
                       extraHref="/flights"
                       extraLabel="Flights desk"
                     />
                   )}
                   {tab === 'hotels' && (
-                    <ComingSoonPanel
+                    <ServiceRequestPanel
                       title="Hotels"
                       body="Stays are selected for setting, quiet, and ease of movement — not a public inventory list. Tell us how you like to sleep and we will shortlist the right rooms."
-                      inquireHref={inquireHref}
+                      href={`/hotels?tour=${encodeURIComponent(tour.title)}`}
+                      ctaLabel="Request hotels"
                       extraHref="/hotels"
                       extraLabel="Hotels desk"
                     />
                   )}
                   {tab === 'cars' && (
-                    <ComingSoonPanel
+                    <ServiceRequestPanel
                       title="Cars"
-                      body="Airport greetings, private cars, and island transfers sit behind this tab. Until live booking opens, we arrange vehicles by inquiry alongside the journey."
-                      inquireHref={inquireHref}
+                      body="Airport greetings, private cars, and island transfers are arranged by inquiry alongside the journey. Share pickup details and we will match the right vehicle."
+                      href={`/cars?tour=${encodeURIComponent(tour.title)}`}
+                      ctaLabel="Request transfers"
                       extraHref="/cars"
                       extraLabel="Cars desk"
                     />
@@ -340,29 +343,31 @@ function TripsPanel({ tour, inquireHref }: { tour: Tour; inquireHref: string }) 
   )
 }
 
-function ComingSoonPanel({
+function ServiceRequestPanel({
   title,
   body,
-  inquireHref,
+  href,
+  ctaLabel,
   extraHref,
   extraLabel,
 }: {
   title: string
   body: string
-  inquireHref: string
+  href: string
+  ctaLabel: string
   extraHref: string
   extraLabel: string
 }) {
   return (
     <div className="max-w-xl py-6">
-      <p className="text-[10px] uppercase tracking-[0.28em] text-gold/80">Coming soon</p>
+      <p className="text-[10px] uppercase tracking-[0.28em] text-gold/80">By request</p>
       <h2 className="mt-3 font-serif text-3xl text-gold-gradient">{title}</h2>
       <span className="mt-5 block h-px w-16 bg-gold/40" />
       <p className="mt-5 text-sm leading-relaxed text-silver/80">{body}</p>
       <div className="mt-8 flex flex-wrap gap-3">
-        <a href={inquireHref} className="btn-gold inline-flex rounded-xl px-6 py-3 text-sm">
-          Inquire
-        </a>
+        <Link to={href} className="btn-gold inline-flex rounded-xl px-6 py-3 text-sm">
+          {ctaLabel}
+        </Link>
         <Link
           to={extraHref}
           className="inline-flex rounded-xl border border-white/15 px-6 py-3 text-sm text-silver/80 transition hover:border-gold/40 hover:text-white"

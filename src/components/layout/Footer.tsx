@@ -88,9 +88,9 @@ export default function Footer({ site }: FooterProps) {
                 </a>
               </li>
               <li>
-                <a href={hashHref('#destinations')} className={navClass}>
+                <Link to="/destinations" className={navClass}>
                   Destinations
-                </a>
+                </Link>
               </li>
               <li>
                 <a href={hashHref('#why')} className={navClass}>
@@ -119,8 +119,8 @@ export default function Footer({ site }: FooterProps) {
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className={navClass}>
-                  Blogs
+                <Link to="/privacy" className={navClass}>
+                  Privacy Policy
                 </Link>
               </li>
               <li>
