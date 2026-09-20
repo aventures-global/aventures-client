@@ -5,7 +5,7 @@ export const siteInfo: SiteInfo = {
   fullName: 'AVENtures Global Resources and Travel Agency',
   tagline: 'Global Resources and Travel Agency',
   heroEyebrow: 'Signature journeys',
-  heroTitle: 'Private journeys across Asia, America, and beyond',
+  heroTitle: 'Private journeys across Asia, America, and beyond.',
   heroSubtitle:
     'Airfare, hotels, visas, and a host who stays with you from the first inquiry to your return home.',
   heroPrimaryCta: 'Plan a trip',
