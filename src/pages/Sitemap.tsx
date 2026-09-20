@@ -7,8 +7,10 @@ import type { Tour } from '../types/content'
 const siteLinks = [
   { label: 'Home', to: '/' },
   { label: 'About us', to: '/#about' },
+  { label: 'About us (full story)', to: '/about' },
   { label: 'Services', to: '/#services' },
   { label: 'Destinations', to: '/destinations' },
+  { label: 'Custom tour', to: '/custom-tour' },
   { label: 'Why travel with us?', to: '/#why' },
   { label: 'Contact', to: '/#contact' },
   { label: 'FAQs', to: '/faq' },

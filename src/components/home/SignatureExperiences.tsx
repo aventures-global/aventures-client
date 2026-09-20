@@ -8,9 +8,15 @@ type SignatureExperiencesProps = {
 }
 
 const bannerImageClass: Record<string, string> = {
-  'philippine-discovery': 'object-cover object-[center_12%] transition duration-700 group-hover:scale-105',
-  'cebu-tour': 'object-cover object-[center_40%] transition duration-700 group-hover:scale-105',
-  'boracay-serenity': 'object-cover object-[82%_58%] transition duration-700 group-hover:scale-105',
+  'philippine-discovery': 'object-cover object-[center_28%] transition duration-700 group-hover:scale-105',
+  'cebu-tour': 'object-cover object-[center_45%] transition duration-700 group-hover:scale-105',
+  'boracay-serenity': 'object-cover object-[center_62%] transition duration-700 group-hover:scale-105',
+  'south-korea-kwave': 'object-cover object-[center_40%] transition duration-700 group-hover:scale-105',
+  'japan-tradition': 'object-cover object-[center_38%] transition duration-700 group-hover:scale-105',
+  'usa-dream-big': 'object-cover object-[center_42%] transition duration-700 group-hover:scale-105',
+  'thailand-calling': 'object-cover object-[center_45%] transition duration-700 group-hover:scale-105',
+  'indonesia-escape': 'object-cover object-[center_48%] transition duration-700 group-hover:scale-105',
+  'europe-journeys': 'object-cover object-[center_45%] transition duration-700 group-hover:scale-105',
 }
 
 export default function SignatureExperiences({ tours }: SignatureExperiencesProps) {
@@ -48,7 +54,7 @@ export default function SignatureExperiences({ tours }: SignatureExperiencesProp
                     'object-cover object-center transition duration-700 group-hover:scale-105'
                   }
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
                 <div className="absolute inset-x-0 bottom-0 p-5 sm:px-7 sm:pb-6">
                   <h3 className="text-lg font-bold text-white sm:text-xl">
                     {tour.title}

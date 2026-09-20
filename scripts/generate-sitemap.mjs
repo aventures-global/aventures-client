@@ -14,7 +14,9 @@ const siteUrl = (
 
 const staticPaths = [
   '/',
+  '/about',
   '/destinations',
+  '/custom-tour',
   '/flights',
   '/hotels',
   '/cars',

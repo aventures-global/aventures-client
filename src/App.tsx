@@ -1,6 +1,8 @@
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
+import About from './pages/About'
 import Blog from './pages/Blog'
+import CustomTour from './pages/CustomTour'
 import Destinations from './pages/Destinations'
 import Faq from './pages/Faq'
 import Home from './pages/Home'
@@ -25,8 +27,10 @@ function AnimatedRoutes() {
       >
         <Routes location={location}>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/destinations" element={<Destinations />} />
           <Route path="/destinations/:slug" element={<TourDetail />} />
+          <Route path="/custom-tour" element={<CustomTour />} />
           <Route
             path="/flights"
             element={

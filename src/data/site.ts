@@ -16,7 +16,7 @@ export const siteInfo: SiteInfo = {
     'Flights, stays, visas, transfers',
   ],
   about:
-    'We craft private journeys across the Philippines, Asia, the Middle East, Europe, and beyond — planned personally from our Sacramento base.',
+    'AVENtures Global Resources and Travel Agency is a full-service travel agency offering curated local and international experiences. We specialize in tours across the Philippines — including Cebu, Siargao, and Boracay — as well as California tours and destinations worldwide, planned from our Sacramento base.',
   aboutBody:
     'One team stays with you from the first conversation to your return home, so the trip feels considered rather than assembled from separate bookings.',
   email: 'aventures.globalresources@gmail.com',

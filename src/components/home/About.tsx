@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { Link } from 'react-router-dom'
 import type { SiteInfo } from '../../types/content'
 
 type AboutProps = {
@@ -21,6 +22,12 @@ export default function About({ site }: AboutProps) {
           <p className="mt-4 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
             {site.aboutBody}
           </p>
+          <Link
+            to="/about"
+            className="mt-6 inline-flex text-sm font-medium text-gold transition hover:text-ivory"
+          >
+            Read more →
+          </Link>
         </motion.div>
 
         <motion.div

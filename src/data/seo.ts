@@ -13,10 +13,20 @@ const routeCopy: Record<string, SeoRouteCopy> = {
     title: 'AVENtures Global — Travel Agency',
     description: DEFAULT_DESCRIPTION,
   },
+  '/about': {
+    title: 'About Us — AVENtures',
+    description:
+      'AVENtures Global is a full-service travel agency specializing in Philippines tours (Cebu, Siargao, Boracay), California travel, visas, and destinations worldwide.',
+  },
   '/destinations': {
     title: 'Destinations — AVENtures',
     description:
-      'Browse signature journeys across the Philippines, Asia, and beyond — curated private trips from AVENtures.',
+      'Browse signature journeys across the Philippines, Asia, the USA, and beyond — curated private trips from AVENtures.',
+  },
+  '/custom-tour': {
+    title: 'Custom Tour — AVENtures',
+    description:
+      'Request a private custom itinerary with AVENtures — paced around your dates, interests, and comfort.',
   },
   '/flights': {
     title: 'Flights — AVENtures',

@@ -10,11 +10,18 @@ import SafeImage from '../components/ui/SafeImage'
 import SectionTabs from '../components/tours/SectionTabs'
 import type { SiteInfo, Tour } from '../types/content'
 import NotFound from './NotFound'
+import TourGallery from '../components/tours/TourGallery'
 
 const coverFocus: Record<string, string> = {
-  'philippine-discovery': 'object-[center_18%]',
-  'cebu-tour': 'object-[center_38%]',
-  'boracay-serenity': 'object-[82%_58%]',
+  'philippine-discovery': 'object-[center_48%]',
+  'cebu-tour': 'object-[35%_55%]',
+  'boracay-serenity': 'object-[center_58%]',
+  'south-korea-kwave': 'object-[center_48%]',
+  'japan-tradition': 'object-[center_50%]',
+  'usa-dream-big': 'object-[center_50%]',
+  'thailand-calling': 'object-[center_48%]',
+  'indonesia-escape': 'object-[center_50%]',
+  'europe-journeys': 'object-[center_48%]',
 }
 
 const TABS = [
@@ -70,7 +77,7 @@ export default function TourDetail() {
     return <NotFound />
   }
 
-  const inquireHref = `/?tour=${encodeURIComponent(tour.title)}#contact`
+  const inquireHref = `/custom-tour?tour=${encodeURIComponent(tour.title)}`
 
   return (
     <div className="min-h-svh max-w-full overflow-x-clip bg-ink">
@@ -90,7 +97,7 @@ export default function TourDetail() {
             imgClassName={`object-cover ${coverFocus[tour.id] ?? 'object-center'}`}
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/30 to-black/60" />
 
         <div className="site-container relative z-10 flex h-full flex-col justify-end">
           <div className="grid items-end gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
@@ -145,12 +152,12 @@ export default function TourDetail() {
                 </div>
               </dl>
 
-              <a
-                href={inquireHref}
+              <Link
+                to={inquireHref}
                 className="btn-gold inline-flex w-fit rounded-xl px-6 py-3 text-sm"
               >
                 Inquire
-              </a>
+              </Link>
             </aside>
           </div>
 
@@ -223,8 +230,6 @@ function OverviewPanel({
   tour: Tour
   onSeeTrips: () => void
 }) {
-  const gallery = tour.gallery.slice(0, 3)
-
   return (
     <div className="space-y-10">
       <div>
@@ -251,18 +256,7 @@ function OverviewPanel({
         </ul>
       </div>
 
-      {gallery.length > 0 && (
-        <div className="grid grid-cols-3 gap-2.5">
-          {gallery.map((src, index) => (
-            <SafeImage
-              key={`${src}-${index}`}
-              src={src}
-              alt=""
-              className="aspect-[4/3] rounded-xl border border-white/8"
-            />
-          ))}
-        </div>
-      )}
+      <TourGallery tour={tour} />
 
       <button
         type="button"
@@ -335,9 +329,9 @@ function TripsPanel({ tour, inquireHref }: { tour: Tour; inquireHref: string }) 
           Dates, room categories, and side trips can be reshaped around your group. This
           itinerary is the starting sketch — not a fixed departure.
         </p>
-        <a href={inquireHref} className="btn-gold mt-5 inline-flex rounded-xl px-7 py-3 text-sm">
+        <Link to={inquireHref} className="btn-gold mt-5 inline-flex rounded-xl px-7 py-3 text-sm">
           Inquire about this tour
-        </a>
+        </Link>
       </div>
     </div>
   )
