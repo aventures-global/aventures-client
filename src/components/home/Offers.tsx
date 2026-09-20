@@ -1,4 +1,4 @@
-import { ArrowUpRight, Car, Compass, Plane, ShieldCheck } from 'lucide-react'
+import { ArrowUpRight, Car, Compass, Plane, ShieldCheck, ShoppingBag } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import type { ServiceOffer } from '../../types/content'
@@ -8,6 +8,7 @@ const icons = {
   map: Compass,
   car: Car,
   shield: ShieldCheck,
+  bag: ShoppingBag,
 } as const
 
 type OffersProps = {
@@ -16,8 +17,7 @@ type OffersProps = {
 
 export default function Offers({ offers }: OffersProps) {
   const wide = offers.find((o) => o.span === 'wide')
-  const tall = offers.find((o) => o.span === 'tall')
-  const squares = offers.filter((o) => o.span === 'square')
+  const rest = offers.filter((o) => o.span !== 'wide')
 
   return (
     <section id="services" className="page-section">
@@ -31,10 +31,9 @@ export default function Offers({ offers }: OffersProps) {
           What we offer
         </motion.h2>
 
-        <div className="grid flex-1 gap-4 md:auto-rows-fr md:grid-cols-3 md:grid-rows-2">
+        <div className="grid flex-1 gap-4 md:auto-rows-fr md:grid-cols-3">
           {wide && <OfferCard offer={wide} className="md:col-span-2" />}
-          {tall && <OfferCard offer={tall} className="md:col-start-3 md:row-span-2" />}
-          {squares.map((offer) => (
+          {rest.map((offer) => (
             <OfferCard key={offer.id} offer={offer} />
           ))}
         </div>

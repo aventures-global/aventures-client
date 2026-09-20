@@ -17,7 +17,7 @@ export const offers: ServiceOffer[] = [
       'Document guidance and application support so borders never slow your plans.',
     icon: 'shield',
     href: '/destinations',
-    span: 'tall',
+    span: 'square',
   },
   {
     id: 'itineraries',
@@ -35,6 +35,15 @@ export const offers: ServiceOffer[] = [
       'Airport meet-and-greet, private cars, and local guides who know every turn.',
     icon: 'car',
     href: '/cars',
+    span: 'square',
+  },
+  {
+    id: 'merchandise',
+    title: 'Merchandise Marketplace',
+    description:
+      'Branded apparel and destination photography prints — browse freely, shop with an account.',
+    icon: 'bag',
+    href: '/shop',
     span: 'square',
   },
 ]

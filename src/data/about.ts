@@ -75,6 +75,12 @@ export const aboutPage = {
       description:
         'Support for J1, K1/K2, P1/P2, E2, and R1 visas in partnership with an immigration lawyer — so borders never slow your plans.',
     },
+    {
+      id: 'merchandise',
+      title: 'Merchandise marketplace',
+      description:
+        'Branded apparel and destination photography prints from the journeys we plan.',
+    },
   ] satisfies AboutService[],
   ctaTitle: 'Ready to plan your trip?',
   ctaBody:

@@ -8,7 +8,7 @@ export type ServiceOffer = {
   id: string
   title: string
   description: string
-  icon: 'plane' | 'map' | 'car' | 'shield'
+  icon: 'plane' | 'map' | 'car' | 'shield' | 'bag'
   href: string
   span: 'wide' | 'tall' | 'square'
 }
