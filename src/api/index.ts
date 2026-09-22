@@ -1,9 +1,5 @@
-import { merch } from '../data/merch'
 import { offers } from '../data/offers'
-import { partners } from '../data/partners'
 import { siteInfo } from '../data/site'
-import { testimonials } from '../data/testimonials'
-import { tours } from '../data/tours'
 import type {
   MerchProduct,
   Partner,
@@ -12,51 +8,104 @@ import type {
   Testimonial,
   Tour,
 } from '../types/content'
-
-/** Simulated network delay so skeletons are visible during development. */
-const delay = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms))
+import { apiFetch } from '../lib/apiClient'
 
 export async function getSite(): Promise<SiteInfo> {
-  await delay()
   return siteInfo
 }
 
 export async function getPartners(): Promise<Partner[]> {
-  await delay()
-  return partners
+  return apiFetch<Partner[]>('/api/partners')
 }
 
 export async function getOffers(): Promise<ServiceOffer[]> {
-  await delay()
   return offers
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-  await delay()
-  return testimonials
+  return apiFetch<Testimonial[]>('/api/testimonials')
 }
 
 export async function getTours(): Promise<Tour[]> {
-  await delay()
-  return tours
+  return apiFetch<Tour[]>('/api/tours')
 }
 
 export async function getFeaturedTours(): Promise<Tour[]> {
-  await delay()
-  return tours.filter((tour) => tour.featured)
+  return apiFetch<Tour[]>('/api/tours/featured')
 }
 
 export async function getTourBySlug(slug: string): Promise<Tour | null> {
-  await delay()
-  return tours.find((tour) => tour.slug === slug) ?? null
+  try {
+    return await apiFetch<Tour>(`/api/tours/${encodeURIComponent(slug)}`)
+  } catch {
+    return null
+  }
 }
 
 export async function getMerch(): Promise<MerchProduct[]> {
-  await delay()
-  return merch
+  return apiFetch<MerchProduct[]>('/api/merch')
 }
 
 export async function getMerchBySlug(slug: string): Promise<MerchProduct | null> {
-  await delay()
-  return merch.find((item) => item.slug === slug) ?? null
+  try {
+    return await apiFetch<MerchProduct>(`/api/merch/${encodeURIComponent(slug)}`)
+  } catch {
+    return null
+  }
+}
+
+export type CartApiItem = {
+  id: string
+  productId: string
+  qty: number
+  size?: string
+  product: MerchProduct
+}
+
+export async function fetchCart(token: string) {
+  const result = await apiFetch<{ items: CartApiItem[] }>('/api/cart', { token })
+  return result.items
+}
+
+export async function addCartItem(
+  token: string,
+  input: { productId: string; qty?: number; size?: string },
+) {
+  const result = await apiFetch<{ item: CartApiItem }>('/api/cart/items', {
+    method: 'POST',
+    token,
+    body: JSON.stringify({
+      productId: input.productId,
+      qty: input.qty ?? 1,
+      size: input.size,
+    }),
+  })
+  return result.item
+}
+
+export async function updateCartItem(token: string, itemId: string, qty: number) {
+  if (qty <= 0) {
+    await apiFetch<void>(`/api/cart/items/${encodeURIComponent(itemId)}`, {
+      method: 'DELETE',
+      token,
+    })
+    return null
+  }
+
+  const result = await apiFetch<{ item: CartApiItem }>(
+    `/api/cart/items/${encodeURIComponent(itemId)}`,
+    {
+      method: 'PATCH',
+      token,
+      body: JSON.stringify({ qty }),
+    },
+  )
+  return result.item
+}
+
+export async function removeCartItem(token: string, itemId: string) {
+  await apiFetch<void>(`/api/cart/items/${encodeURIComponent(itemId)}`, {
+    method: 'DELETE',
+    token,
+  })
 }

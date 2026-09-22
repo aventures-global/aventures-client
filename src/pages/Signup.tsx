@@ -2,8 +2,6 @@ import { useState, type FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import PageShell from '../components/layout/PageShell'
 import { useAuth } from '../lib/auth'
-import { consumePendingCartAction } from '../lib/cart'
-import { useCart } from '../lib/cartContext'
 import { formFieldClass } from '../lib/formspree'
 
 function safeNext(raw: string | null): string {
@@ -12,8 +10,7 @@ function safeNext(raw: string | null): string {
 }
 
 export default function Signup() {
-  const { signup } = useAuth()
-  const { addItem } = useCart()
+  const { signup, loginWithGoogle, error } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const next = safeNext(searchParams.get('next'))
@@ -21,27 +18,31 @@ export default function Signup() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    signup({ name, email })
-
-    const pending = consumePendingCartAction()
-    if (pending) {
-      addItem(pending.productId, pending.qty, pending.size)
-      navigate('/cart', { replace: true })
-      return
+    setFormError(null)
+    setSubmitting(true)
+    try {
+      await signup({ name, email, password })
+      navigate(`/verify-email?email=${encodeURIComponent(email)}&next=${encodeURIComponent(next)}`, {
+        replace: true,
+      })
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : 'Sign up failed')
+    } finally {
+      setSubmitting(false)
     }
-
-    navigate(next, { replace: true })
   }
 
   return (
     <PageShell title="Sign up" eyebrow="Account" noIndex>
       <div className="mx-auto max-w-md">
         <p className="text-sm leading-relaxed text-silver/70">
-          Demo only — any details work. Submit to preview the signed-in shop
-          experience. No password is checked.
+          Create an account with email or Google. We will ask you to verify your
+          email before shopping.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
@@ -52,8 +53,8 @@ export default function Signup() {
             <input
               id="signup-name"
               type="text"
+              required
               autoComplete="name"
-              placeholder="Guest Traveler"
               value={name}
               onChange={(event) => setName(event.target.value)}
               className={formFieldClass}
@@ -69,8 +70,8 @@ export default function Signup() {
             <input
               id="signup-email"
               type="email"
+              required
               autoComplete="email"
-              placeholder="guest@aventures.demo"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               className={formFieldClass}
@@ -86,18 +87,37 @@ export default function Signup() {
             <input
               id="signup-password"
               type="password"
+              required
+              minLength={8}
               autoComplete="new-password"
-              placeholder="Anything (not checked)"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               className={formFieldClass}
             />
           </div>
 
-          <button type="submit" className="btn-gold mt-2 w-full rounded-xl px-6 py-3 text-sm">
-            Create account
+          {(formError || error) && (
+            <p className="text-sm text-red-300">{formError || error}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="btn-gold mt-2 w-full rounded-xl px-6 py-3 text-sm disabled:opacity-60"
+          >
+            {submitting ? 'Creating…' : 'Create account'}
           </button>
         </form>
+
+        <button
+          type="button"
+          onClick={() => {
+            void loginWithGoogle()
+          }}
+          className="mt-3 w-full rounded-xl border border-white/15 px-6 py-3 text-sm text-silver transition hover:border-gold/40 hover:text-gold"
+        >
+          Continue with Google
+        </button>
 
         <p className="mt-6 text-center text-sm text-silver/70">
           Already have an account?{' '}

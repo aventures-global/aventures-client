@@ -7,16 +7,20 @@ import Cart from './pages/Cart'
 import CustomTour from './pages/CustomTour'
 import Destinations from './pages/Destinations'
 import Faq from './pages/Faq'
+import ForgotPassword from './pages/ForgotPassword'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import MerchDetail from './pages/MerchDetail'
 import NotFound from './pages/NotFound'
 import Privacy from './pages/Privacy'
+import ResetPassword from './pages/ResetPassword'
 import ServiceRequest from './pages/ServiceRequest'
 import Shop from './pages/Shop'
 import Signup from './pages/Signup'
 import Sitemap from './pages/Sitemap'
 import TourDetail from './pages/TourDetail'
+import VerifyEmail from './pages/VerifyEmail'
+import VerifyReset from './pages/VerifyReset'
 
 function AnimatedRoutes() {
   const location = useLocation()
@@ -43,6 +47,10 @@ function AnimatedRoutes() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/verify-reset" element={<VerifyReset />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/custom-tour" element={<CustomTour />} />
             <Route
               path="/flights"

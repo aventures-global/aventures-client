@@ -80,12 +80,13 @@ export default function MerchDetail() {
       return
     }
 
-    addItem(action.productId, action.qty, action.size)
-    if (goCheckoutHint) {
-      navigate('/cart')
-      return
-    }
-    setAdded(true)
+    addItem(action.productId, action.qty, action.size).then(() => {
+      if (goCheckoutHint) {
+        navigate('/cart')
+        return
+      }
+      setAdded(true)
+    })
   }
 
   return (

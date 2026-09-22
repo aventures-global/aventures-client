@@ -1,13 +1,10 @@
-/** Cart storage helpers + pending-add helpers. Prefer `useCart()` for UI updates. */
+/** Pending-add helpers and money utils. Prefer `useCart()` for cart mutations. */
 export {
-  addToCart,
   consumePendingCartAction,
   formatMoney,
-  getCart,
   parsePrice,
-  removeFromCart,
   setPendingCartAction,
-  updateCartQty,
-  type CartLine,
   type PendingCartAction,
 } from './cartStorage'
+
+export type { CartLine } from './cartContext'

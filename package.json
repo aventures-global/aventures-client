@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@neondatabase/neon-js": "^0.7.0-beta",
     "@tailwindcss/vite": "^4.3.3",
     "lucide-react": "^1.47.0",
     "motion": "^13.4.0",

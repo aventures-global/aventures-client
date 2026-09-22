@@ -1,44 +1,27 @@
 import { Minus, Plus, Trash2 } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Link, Navigate } from 'react-router-dom'
-import { getMerch } from '../api'
 import PageShell from '../components/layout/PageShell'
 import SafeImage from '../components/ui/SafeImage'
 import { useAuth } from '../lib/auth'
-import { formatMoney, parsePrice, type CartLine } from '../lib/cart'
+import { formatMoney, parsePrice } from '../lib/cart'
 import { useCart } from '../lib/cartContext'
-import type { MerchProduct } from '../types/content'
-
-type CartRow = CartLine & {
-  product: MerchProduct
-}
 
 export default function Cart() {
   const { isLoggedIn } = useAuth()
-  const { lines, updateQty, removeItem } = useCart()
-  const [products, setProducts] = useState<MerchProduct[] | null>(null)
+  const { lines, updateQty, removeItem, isLoading } = useCart()
 
-  useEffect(() => {
-    void getMerch().then(setProducts)
-  }, [])
-
-  const rows = useMemo(() => {
-    if (!products) return [] as CartRow[]
-    return lines
-      .map((line) => {
-        const product = products.find((item) => item.id === line.productId)
-        if (!product) return null
-        return { ...line, product }
-      })
-      .filter((row): row is CartRow => row !== null)
-  }, [lines, products])
+  const rows = useMemo(
+    () => lines.filter((line) => Boolean(line.product)),
+    [lines],
+  )
 
   const subtotal = useMemo(
     () =>
-      rows.reduce(
-        (sum, row) => sum + parsePrice(row.product.price) * row.qty,
-        0,
-      ),
+      rows.reduce((sum, row) => {
+        if (!row.product) return sum
+        return sum + parsePrice(row.product.price) * row.qty
+      }, 0),
     [rows],
   )
 
@@ -49,7 +32,7 @@ export default function Cart() {
   return (
     <PageShell title="Cart" eyebrow="Shop" noIndex>
       <div className="mx-auto max-w-3xl">
-        {!products ? (
+        {isLoading ? (
           <div className="space-y-4">
             {[0, 1].map((i) => (
               <div key={i} className="h-28 skeleton-shimmer rounded-xl" />
@@ -72,11 +55,11 @@ export default function Cart() {
           <>
             <ul className="space-y-4">
               {rows.map((row) => {
-                const lineKey = `${row.productId}-${row.size ?? ''}`
+                if (!row.product) return null
                 const lineTotal = parsePrice(row.product.price) * row.qty
                 return (
                   <li
-                    key={lineKey}
+                    key={row.id}
                     className="flex gap-4 rounded-xl border border-white/10 bg-ink-card/40 p-4 sm:gap-5 sm:p-5"
                   >
                     <Link
@@ -107,7 +90,9 @@ export default function Cart() {
                         <button
                           type="button"
                           aria-label={`Remove ${row.product.name}`}
-                          onClick={() => removeItem(row.productId, row.size)}
+                          onClick={() => {
+                            void removeItem(row.id)
+                          }}
                           className="rounded-md p-1.5 text-silver/50 transition hover:text-gold"
                         >
                           <Trash2 size={16} strokeWidth={1.5} />
@@ -120,9 +105,9 @@ export default function Cart() {
                             type="button"
                             aria-label="Decrease quantity"
                             className="px-2.5 py-1.5 text-silver/70 transition hover:text-gold"
-                            onClick={() =>
-                              updateQty(row.productId, row.qty - 1, row.size)
-                            }
+                            onClick={() => {
+                              void updateQty(row.id, row.qty - 1)
+                            }}
                           >
                             <Minus size={14} strokeWidth={1.5} />
                           </button>
@@ -133,13 +118,9 @@ export default function Cart() {
                             type="button"
                             aria-label="Increase quantity"
                             className="px-2.5 py-1.5 text-silver/70 transition hover:text-gold"
-                            onClick={() =>
-                              updateQty(
-                                row.productId,
-                                Math.min(10, row.qty + 1),
-                                row.size,
-                              )
-                            }
+                            onClick={() => {
+                              void updateQty(row.id, Math.min(10, row.qty + 1))
+                            }}
                           >
                             <Plus size={14} strokeWidth={1.5} />
                           </button>

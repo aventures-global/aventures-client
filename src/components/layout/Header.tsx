@@ -76,7 +76,7 @@ function AccountMenu({
   name?: string
   email?: string
   itemCount: number
-  onLogout: () => void
+  onLogout: () => void | Promise<void>
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -164,7 +164,7 @@ function AccountMenu({
               className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-sm text-silver/85 transition hover:bg-white/5 hover:text-gold"
               onClick={() => {
                 setMenuOpen(false)
-                onLogout()
+                void onLogout()
               }}
             >
               <LogOut size={15} strokeWidth={1.5} aria-hidden />
