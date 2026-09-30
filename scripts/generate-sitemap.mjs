@@ -7,52 +7,52 @@ const root = join(__dirname, '..')
 const publicDir = join(root, 'public')
 
 const siteUrl = (
-  process.env.VITE_SITE_URL ||
-  process.env.SITE_URL ||
-  'https://aventures-client.vercel.app'
+    process.env.VITE_SITE_URL ||
+    process.env.SITE_URL ||
+    'https://aventures-client.vercel.app'
 ).replace(/\/$/, '')
 
 const staticPaths = [
-  '/',
-  '/about',
-  '/destinations',
-  '/shop',
-  '/custom-tour',
-  '/flights',
-  '/hotels',
-  '/cars',
-  '/faq',
-  '/privacy',
-  '/sitemap',
+    '/',
+    '/about',
+    '/destinations',
+    '/shop',
+    '/custom-tour',
+    '/flights',
+    '/hotels',
+    '/cars',
+    '/faq',
+    '/privacy',
+    '/sitemap',
 ]
 
 const toursSource = readFileSync(join(root, 'src/data/tours.ts'), 'utf8')
 const tourSlugs = [...toursSource.matchAll(/slug:\s*'([^']+)'/g)].map(
-  (match) => match[1],
+    (match) => match[1],
 )
 
 const merchSource = readFileSync(join(root, 'src/data/merch.ts'), 'utf8')
 const merchSlugs = [...merchSource.matchAll(/slug:\s*'([^']+)'/g)].map(
-  (match) => match[1],
+    (match) => match[1],
 )
 
 const paths = [
-  ...staticPaths,
-  ...tourSlugs.map((slug) => `/destinations/${slug}`),
-  ...merchSlugs.map((slug) => `/shop/${slug}`),
+    ...staticPaths,
+    ...tourSlugs.map((slug) => `/destinations/${slug}`),
+    ...merchSlugs.map((slug) => `/shop/${slug}`),
 ]
 
 const today = new Date().toISOString().slice(0, 10)
 
 const urlEntries = paths
-  .map((path) => {
-    const loc = path === '/' ? siteUrl : `${siteUrl}${path}`
-    return `  <url>
-    <loc>${loc}</loc>
-    <lastmod>${today}</lastmod>
-  </url>`
-  })
-  .join('\n')
+    .map((path) => {
+        const loc = path === '/' ? siteUrl : `${siteUrl}${path}`
+        return `  <url>
+        <loc>${loc}</loc>
+        <lastmod>${today}</lastmod>
+    </url>`
+    })
+    .join('\n')
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -70,5 +70,5 @@ writeFileSync(join(publicDir, 'sitemap.xml'), sitemap)
 writeFileSync(join(publicDir, 'robots.txt'), robots)
 
 console.log(
-  `Wrote sitemap.xml (${paths.length} URLs) and robots.txt for ${siteUrl}`,
+    `Wrote sitemap.xml (${paths.length} URLs) and robots.txt for ${siteUrl}`,
 )

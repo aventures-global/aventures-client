@@ -8,43 +8,43 @@ import Header from './Header'
 import type { SiteInfo } from '../../types/content'
 
 type PageShellProps = {
-  title: string
-  eyebrow?: string
-  description?: string
-  noIndex?: boolean
-  children: ReactNode
+    title: string
+    eyebrow?: string
+    description?: string
+    noIndex?: boolean
+    children: ReactNode
 }
 
 export default function PageShell({
-  title,
-  eyebrow,
-  description,
-  noIndex = false,
-  children,
+    title,
+    eyebrow,
+    description,
+    noIndex = false,
+    children,
 }: PageShellProps) {
-  const location = useLocation()
-  const [site, setSite] = useState<SiteInfo | null>(null)
-  const routeSeo = getSeoForPath(location.pathname)
+    const location = useLocation()
+    const [site, setSite] = useState<SiteInfo | null>(null)
+    const routeSeo = getSeoForPath(location.pathname)
 
-  useEffect(() => {
-    void getSite().then(setSite)
-  }, [])
+    useEffect(() => {
+        void getSite().then(setSite)
+    }, [])
 
-  return (
-    <div className="flex min-h-svh flex-col bg-ink">
-      <Seo
-        title={routeSeo.title}
-        description={description ?? routeSeo.description}
-        path={location.pathname}
-        noIndex={noIndex}
-      />
-      <Header />
-      <main className="site-container flex-1 pb-24 pt-36">
-        {eyebrow ? <p className="text-sm text-gold">{eyebrow}</p> : null}
-        <h1 className="mt-2 font-serif text-4xl text-gold-gradient sm:text-5xl">{title}</h1>
-        <div className="mt-10">{children}</div>
-      </main>
-      {site && <Footer site={site} />}
-    </div>
-  )
+    return (
+        <div className="flex min-h-svh flex-col bg-ink">
+            <Seo
+                title={routeSeo.title}
+                description={description ?? routeSeo.description}
+                path={location.pathname}
+                noIndex={noIndex}
+            />
+            <Header />
+            <main className="site-container flex-1 pb-24 pt-36">
+                {eyebrow ? <p className="text-sm text-gold">{eyebrow}</p> : null}
+                <h1 className="mt-2 font-serif text-4xl text-gold-gradient sm:text-5xl">{title}</h1>
+                <div className="mt-10">{children}</div>
+            </main>
+            {site && <Footer site={site} />}
+        </div>
+    )
 }

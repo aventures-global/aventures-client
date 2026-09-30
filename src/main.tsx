@@ -8,14 +8,14 @@ import './index.css'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <CartProvider>
-          <Analytics />
-          <App />
-        </CartProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  </StrictMode>,
+    <StrictMode>
+        <BrowserRouter>
+            <AuthProvider>
+                <CartProvider>
+                    <Analytics />
+                    <App />
+                </CartProvider>
+            </AuthProvider>
+        </BrowserRouter>
+    </StrictMode>,
 )
