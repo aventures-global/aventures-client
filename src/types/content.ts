@@ -48,6 +48,8 @@ export type Tour = {
     inclusions: string[]
     exclusions: string[]
     featured: boolean
+    /** Set in the admin CMS; always present on API responses. */
+    region?: string
 }
 
 export type MerchProduct = {

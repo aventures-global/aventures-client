@@ -65,21 +65,9 @@ export function parseTourPrice(startingPrice: string): number {
 }
 
 export function getTourRegion(tour: Tour): TourRegion | null {
-    const location = tour.location.toLowerCase()
-    if (location.includes('philippines')) return 'philippines'
-    if (location.includes('korea') || location.includes('japan')) return 'east-asia'
-    if (location.includes('thailand') || location.includes('indonesia')) {
-        return 'southeast-asia'
-    }
-    if (
-        location.includes('united states') ||
-        location.includes('california') ||
-        location.includes('usa')
-    ) {
-        return 'americas'
-    }
-    if (location.includes('europe')) return 'europe'
-    return null
+    return REGION_OPTIONS.some((option) => option.id !== 'all' && option.id === tour.region)
+        ? (tour.region as TourRegion)
+        : null
 }
 
 function matchesQuery(tour: Tour, query: string): boolean {
@@ -141,7 +129,7 @@ export function filterAndSortTours(
             break
         case 'featured':
         default:
-            sorted.sort((a, b) => Number(b.featured) - Number(a.featured) || a.title.localeCompare(b.title))
+            // Keep the API order: it is the curated order set in the admin CMS.
             break
     }
 
