@@ -3,10 +3,10 @@ import { useSearchParams } from 'react-router-dom'
 import {
     buildMailtoHref,
     formFieldClass,
-    FormspreeHoneypot,
-    submitFormspree,
+    FormHoneypot,
+    submitInquiry,
     type SubmitStatus,
-} from '../../lib/formspree'
+} from '../../lib/forms'
 
 export type ServiceKind = 'flights' | 'hotels' | 'cars'
 
@@ -120,13 +120,12 @@ export default function ServiceRequestForm({ kind, fallbackEmail }: ServiceReque
 
     function buildPayload() {
         const base = {
+            kind,
             firstName,
             lastName,
             email,
             phone: phone || undefined,
-            notes,
-            service: kind,
-            _subject: buildSubject(),
+            notes: notes || undefined,
         }
 
         if (kind === 'flights') {
@@ -184,20 +183,11 @@ export default function ServiceRequestForm({ kind, fallbackEmail }: ServiceReque
         setCarPassengers('1')
     }
 
-    async function handleSubmit(event: FormEvent) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
 
-        const subject = buildSubject()
-        const mailtoHref = buildMailtoHref(fallbackEmail, subject, buildMailtoBody())
-
         setStatus('sending')
-        const result = await submitFormspree(buildPayload())
-
-        if (result === 'mailto') {
-            setStatus('idle')
-            window.location.href = mailtoHref
-            return
-        }
+        const result = await submitInquiry(event.currentTarget, buildPayload())
 
         if (result === 'error') {
             setStatus('error')
@@ -213,7 +203,7 @@ export default function ServiceRequestForm({ kind, fallbackEmail }: ServiceReque
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <FormspreeHoneypot />
+            <FormHoneypot />
 
             <div className="grid gap-4 sm:grid-cols-2">
                 <input

@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import PageShell from '../components/layout/PageShell'
 import { resendVerificationEmail, verifyEmailOtp } from '../lib/authApi'
 import { useAuth } from '../lib/auth'
-import { formFieldClass } from '../lib/formspree'
+import { formFieldClass } from '../lib/forms'
 
 function safeNext(raw: string | null): string {
     if (!raw || !raw.startsWith('/') || raw.startsWith('//')) return '/shop'
