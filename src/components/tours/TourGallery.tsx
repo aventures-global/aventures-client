@@ -57,8 +57,8 @@ export default function TourGallery({ tour }: TourGalleryProps) {
         <>
             <div className="space-y-3">
                 <div className="flex items-end justify-between gap-3">
-                    <h2 className="font-serif text-2xl text-gold-gradient">Gallery</h2>
-                    <p className="text-[10px] uppercase tracking-[0.18em] text-silver/50">
+                    <h2 className="font-noto-serif text-2xl text-royal">Gallery</h2>
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-ink/45">
                         Scroll · tap to enlarge
                     </p>
                 </div>
@@ -70,7 +70,7 @@ export default function TourGallery({ tour }: TourGalleryProps) {
                                 key={`${src}-${index}`}
                                 type="button"
                                 onClick={() => setViewerIndex(index)}
-                                className="group relative aspect-[4/3] w-[min(78vw,18rem)] shrink-0 overflow-hidden rounded-xl border border-white/8 text-left transition hover:border-gold/40 sm:w-72"
+                                className="group relative aspect-[4/3] w-[min(78vw,18rem)] shrink-0 overflow-hidden rounded-xl border border-royal/10 text-left transition hover:border-[#9b7512]/45 sm:w-72"
                                 aria-label={`Open ${tour.title} photo ${index + 1}`}
                             >
                                 <SafeImage

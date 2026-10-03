@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
+import { memo } from 'react'
 import type { SiteInfo } from '../../types/content'
 import BrandLogo from '../ui/BrandLogo'
 import { FacebookIcon, InstagramIcon } from '../ui/SocialIcons'
@@ -12,7 +13,7 @@ function displayHandle(handle: string) {
     return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
-export default function Footer({ site }: FooterProps) {
+function Footer({ site }: FooterProps) {
     const year = new Date().getFullYear()
     const location = useLocation()
     const onHome = location.pathname === '/'
@@ -140,3 +141,5 @@ export default function Footer({ site }: FooterProps) {
         </footer>
     )
 }
+
+export default memo(Footer)
