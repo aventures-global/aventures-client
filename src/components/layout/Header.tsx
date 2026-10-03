@@ -195,8 +195,7 @@ export default function Header() {
         const onScroll = () => {
             setScrolled(window.scrollY > 24)
             const heroThreshold = onHome ? 0.9 : 0.7
-            setPastHero(hasEditorialHero && window.scrollY >= window.innerHeight * heroThreshold)
-            setPastHero(lightPage || (onHome && window.scrollY >= window.innerHeight * 0.9))
+            setPastHero(lightPage || (hasEditorialHero && window.scrollY >= window.innerHeight * heroThreshold))
         }
         onScroll()
         window.addEventListener('scroll', onScroll, { passive: true })
@@ -205,8 +204,7 @@ export default function Header() {
             window.removeEventListener('scroll', onScroll)
             window.removeEventListener('resize', onScroll)
         }
-    }, [hasEditorialHero, onHome])
-    }, [onHome, lightPage])
+    }, [hasEditorialHero, lightPage, onHome])
 
     useEffect(() => setDrawerOpen(false), [location.pathname])
 

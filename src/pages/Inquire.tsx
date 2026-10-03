@@ -1,12 +1,12 @@
 import { ArrowRight, X } from 'lucide-react'
-import { motion } from 'motion/react'
+import { motion, useDragControls } from 'motion/react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { getSite } from '../api'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
-import { buildMailtoHref, FormspreeHoneypot, submitFormspree, type SubmitStatus } from '../lib/formspree'
+import { FormHoneypot, submitInquiry, type SubmitStatus } from '../lib/forms'
 import type { SiteInfo } from '../types/content'
 
 const fieldClass = 'w-full border-0 border-b border-royal/25 bg-transparent px-0 py-3 text-sm text-ink outline-none transition placeholder:text-ink/35 focus:border-[#9b7512]'
@@ -14,8 +14,17 @@ const fieldClass = 'w-full border-0 border-b border-royal/25 bg-transparent px-0
 export default function Inquire({ modal = false }: { modal?: boolean }) {
     const navigate = useNavigate()
     const [site, setSite] = useState<SiteInfo | null>(null)
+    const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)').matches)
+    const dragControls = useDragControls()
 
     useEffect(() => { void getSite().then(setSite) }, [])
+    useEffect(() => {
+        const media = window.matchMedia('(max-width: 639px)')
+        const update = () => setIsMobile(media.matches)
+        update()
+        media.addEventListener('change', update)
+        return () => media.removeEventListener('change', update)
+    }, [])
     useEffect(() => {
         if (!modal) return
         const previous = document.body.style.overflow
@@ -25,11 +34,58 @@ export default function Inquire({ modal = false }: { modal?: boolean }) {
         return () => { document.body.style.overflow = previous; window.removeEventListener('keydown', close) }
     }, [modal, navigate])
 
-    const card = site ? <ConsultationForm site={site} onClose={modal ? () => navigate(-1) : undefined} /> : <div className="h-[34rem] animate-pulse rounded-xl bg-white/70" />
+    const close = () => navigate(-1)
+    const card = site ? <ConsultationForm onClose={modal ? close : undefined} embedded={modal && isMobile} /> : <div className="h-[34rem] animate-pulse rounded-xl bg-white/70" />
 
     if (modal) {
+        if (isMobile) {
+            return (
+                <motion.div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Book a consultation"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    className="fixed inset-0 z-[100] flex items-end bg-[#071831]/72 backdrop-blur-sm"
+                    onPointerDown={(event) => { if (event.target === event.currentTarget) close() }}
+                >
+                    <motion.div
+                        initial={{ y: '100%' }}
+                        animate={{ y: 0 }}
+                        exit={{ y: '100%' }}
+                        transition={{ type: 'spring', damping: 30, stiffness: 330 }}
+                        drag="y"
+                        dragControls={dragControls}
+                        dragListener={false}
+                        dragConstraints={{ top: 0, bottom: 0 }}
+                        dragElastic={{ top: 0, bottom: 0.65 }}
+                        onDragEnd={(_, info) => {
+                            if (info.offset.y > 110 || info.velocity.y > 700) close()
+                        }}
+                        className="max-h-[92dvh] w-full overflow-hidden rounded-t-[1.5rem] bg-[#faf7f0] shadow-[0_-20px_60px_rgba(7,24,49,0.28)]"
+                    >
+                        <div
+                            className="flex h-9 touch-none cursor-grab items-center justify-center active:cursor-grabbing"
+                            onPointerDown={(event) => dragControls.start(event)}
+                            aria-hidden="true"
+                        >
+                            <span className="h-1.5 w-11 rounded-full bg-royal/20" />
+                        </div>
+                        <div className="max-h-[calc(92dvh-2.25rem)] overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom,0px)]">
+                            {card}
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )
+        }
+
         return (
             <motion.div
+                role="dialog"
+                aria-modal="true"
+                aria-label="Book a consultation"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -62,7 +118,7 @@ export default function Inquire({ modal = false }: { modal?: boolean }) {
     )
 }
 
-function ConsultationForm({ site, onClose }: { site: SiteInfo; onClose?: () => void }) {
+function ConsultationForm({ onClose, embedded = false }: { onClose?: () => void; embedded?: boolean }) {
     const [searchParams] = useSearchParams()
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -71,25 +127,22 @@ function ConsultationForm({ site, onClose }: { site: SiteInfo; onClose?: () => v
     const [message, setMessage] = useState('')
     const [status, setStatus] = useState<SubmitStatus>('idle')
 
-    async function submit(event: FormEvent) {
+    async function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setStatus('sending')
         const subject = `Consultation request${service ? ` — ${service}` : ''} from ${name}`
-        const result = await submitFormspree({ name, email, phone, service, message, _subject: subject })
-        if (result === 'mailto') {
-            window.location.href = buildMailtoHref(site.email, subject, [`Name: ${name}`, `Email: ${email}`, phone ? `Phone: ${phone}` : '', service ? `Service: ${service}` : '', '', message])
-            setStatus('idle')
-        } else setStatus(result)
+        const result = await submitInquiry(event.currentTarget, { kind: 'question', name, email, phone, service, message, subject })
+        setStatus(result)
     }
 
     return (
-        <section className="relative rounded-xl border border-royal/10 bg-[#faf7f0] p-6 shadow-2xl sm:p-10">
+        <section className={`relative bg-[#faf7f0] p-6 sm:p-10 ${embedded ? '' : 'rounded-xl border border-royal/10 shadow-2xl'}`}>
             {onClose && <button type="button" onClick={onClose} aria-label="Close consultation" className="absolute right-4 top-4 rounded-full p-2 text-royal/55 transition hover:bg-royal/5 hover:text-royal"><X size={20} /></button>}
             <p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">Book a consultation</p>
             <h1 className="mt-3 max-w-2xl font-noto-serif text-3xl leading-tight text-royal sm:text-4xl">Have a specific service in mind and ready to get started?</h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-ink/55">Best for clients who have questions, are unsure which service they need, or want to discuss their plans first.</p>
             <form onSubmit={submit} className="mt-8 space-y-5">
-                <FormspreeHoneypot />
+                <FormHoneypot />
                 <div className="grid gap-5 sm:grid-cols-2"><input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className={fieldClass} /><input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" className={fieldClass} /></div>
                 <div className="grid gap-5 sm:grid-cols-2"><input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Contact number" className={fieldClass} /><input value={service} onChange={(e) => setService(e.target.value)} placeholder="Service in mind (optional)" className={fieldClass} /></div>
                 <textarea required rows={4} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Tell us what you would like to discuss" className={`${fieldClass} resize-y`} />

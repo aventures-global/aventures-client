@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, CalendarClock, Car, ChevronLeft, ChevronRight, Compass, Files, Hotel, Luggage, MapPin, Plane, Quote, ShieldCheck } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CalendarClock, ChevronLeft, ChevronRight, Compass, Files, Luggage, MapPin, Quote } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -6,6 +6,7 @@ import { getSite, getTestimonials, getTourBySlug, getTours } from '../api'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
+import JourneyCta from '../components/ui/JourneyCta'
 import SafeImage from '../components/ui/SafeImage'
 import type { SiteInfo, Testimonial, Tour } from '../types/content'
 import NotFound from './NotFound'
@@ -132,8 +133,6 @@ export default function TourDetail() {
 
                 <ClientExperiences testimonials={testimonials} tour={tour} />
 
-                <RelatedServices tour={tour} />
-
                 {suggestedTours.length > 0 && (
                     <section className="bg-oat py-20 sm:py-28">
                         <div className="site-container"><p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">Continue exploring</p><h2 className="mt-3 font-noto-serif text-4xl text-royal sm:text-5xl">Suggested destinations</h2>
@@ -141,6 +140,8 @@ export default function TourDetail() {
                         </div>
                     </section>
                 )}
+
+                <JourneyCta />
             </main>
             {site && <Footer site={site} />}
         </div>
@@ -262,13 +263,6 @@ function ClientExperiences({ testimonials, tour }: { testimonials: Testimonial[]
             </div>
         </section>
     )
-}
-
-function RelatedServices({ tour }: { tour: Tour }) {
-    const services = [
-        ['/flights', Plane, 'Flights'], ['/hotels', Hotel, 'Hotels'], ['/cars', Car, 'Cars & Transfers'], ['/visa-assistance', ShieldCheck, 'Visa Assistance'],
-    ] as const
-    return <section className="border-y border-royal/10 bg-white/40 py-14"><div className="site-container"><p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">Related services</p><div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{services.map(([href, Icon, label]) => <Link key={label} to={`${href}?tour=${encodeURIComponent(tour.title)}`} className="group flex items-center justify-between border border-royal/10 bg-white/50 p-5 text-royal transition hover:border-[#9b7512]/40"><span className="flex items-center gap-3"><Icon size={18} className="text-[#9b7512]" />{label}</span><ArrowRight size={15} className="transition group-hover:translate-x-1" /></Link>)}</div></div></section>
 }
 
 function SuggestedDestination({ tour }: { tour: Tour }) {

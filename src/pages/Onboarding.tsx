@@ -4,7 +4,7 @@ import { getSite } from '../api'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
-import { FormspreeHoneypot, submitFormspree, type SubmitStatus } from '../lib/formspree'
+import { FormHoneypot, submitInquiry, type SubmitStatus } from '../lib/forms'
 import type { SiteInfo } from '../types/content'
 
 const services = ['Visa assistance', 'Vacation package', 'Flights', 'Hotel / accommodation', 'Transportation', 'Tour / itinerary', 'Complete travel assistance', 'I’m not sure yet']
@@ -32,11 +32,11 @@ export default function Onboarding() {
     const choices = [service, destination, departure || returnDate, group, budget]
     const canContinue = step >= 5 || Boolean(choices[step])
 
-    async function submit(event: FormEvent) {
+    async function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setStatus('sending')
-        const result = await submitFormspree({ service, destination, departure, returnDate, group, adults, children, budget, name, email, phone, _subject: `New AVENture onboarding — ${name}` })
-        setStatus(result === 'mailto' ? 'error' : result)
+        const result = await submitInquiry(event.currentTarget, { kind: 'custom-tour', service, destination, departure, returnDate, group, adults, children, budget, name, email, phone })
+        setStatus(result)
     }
 
     return (
@@ -50,7 +50,7 @@ export default function Onboarding() {
                     <div className="mt-8 h-1 overflow-hidden rounded-full bg-royal/10"><div className="h-full bg-[#9b7512] transition-all duration-500" style={{ width: `${((step + 1) / 6) * 100}%` }} /></div>
 
                     <form onSubmit={submit} className="mt-12 min-h-[28rem] rounded-xl border border-royal/10 bg-white/55 p-6 shadow-[0_20px_60px_rgba(22,55,101,0.08)] sm:p-10">
-                        <FormspreeHoneypot />
+                        <FormHoneypot />
                         {step === 0 && <ChoiceStep title="What do you need help with?" options={services} value={service} onChange={setService} />}
                         {step === 1 && <ChoiceStep title="Where would you like to go?" options={destinations} value={destination} onChange={setDestination} />}
                         {step === 2 && <div><StepTitle>When would you like to travel?</StepTitle><div className="mt-8 grid gap-5 sm:grid-cols-2"><label className="text-sm text-ink/55">Departure<input type="date" value={departure} onChange={(e) => setDeparture(e.target.value)} className="mt-2 w-full border border-royal/15 bg-white/70 p-3 text-ink" /></label><label className="text-sm text-ink/55">Return<input type="date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} className="mt-2 w-full border border-royal/15 bg-white/70 p-3 text-ink" /></label></div></div>}
