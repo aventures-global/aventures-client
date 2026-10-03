@@ -1,6 +1,30 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
+@font-face {
+  font-family: "LeJourScript";
+  src: url("/assets/fonts/LeJourSerif.otf") format("opentype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Noto Serif";
+  src: url("/assets/fonts/Noto_Serif_Display/NotoSerifDisplay-VariableFont_wdth,wght.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 100 900;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/assets/fonts/Poppins/Poppins-Medium.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 500;
+}
+
 @theme {
   --color-ink: #0b0b0b;
   --color-ink-soft: #141414;
@@ -11,6 +35,9 @@
   --color-gold-mid: #ffc300;
   --color-gold-deep: #ffb000;
   --color-ivory: #fff1b8;
+  --color-cream: #faf7f0;
+  --color-oat: #f5f0e7;
+  --color-royal: #163765;
 
   --color-silver: #e5e7eb;
   --color-muted: #a3a3a3;
@@ -89,6 +116,93 @@
     min-height: 100svh;
     flex-direction: column;
     padding-block: 5rem 4rem;
+  }
+
+  /*
+   * Warm, lightly aged stationery for the home page. The broad gradients
+   * create the natural variation of handmade paper while the embedded SVG
+   * adds a very fine, non-directional fibre grain without a bitmap asset.
+   */
+  .luxury-paper {
+    background-color: var(--color-oat);
+    background-image: linear-gradient(rgba(248, 245, 238, 0.94), rgba(248, 245, 238, 0.94)), url('/assets/images/bg.jpg');
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    color: var(--color-ink);
+  }
+
+  .font-lejour {
+    font-family: "LeJourScript", Georgia, serif;
+  }
+
+  .font-noto-serif {
+    font-family: "Noto Serif", Georgia, serif;
+  }
+
+  .font-poppins {
+    font-family: "Poppins", system-ui, sans-serif;
+  }
+
+  .hero-title-gradient {
+    background-image: linear-gradient(45deg, #ffd85a 0%, #e6b41c 42%, #b88d0b 100%);
+    background-clip: text;
+    color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-stroke: 0.35px rgba(255, 225, 119, 0.7);
+    filter:
+      drop-shadow(0 1px 2px rgba(28, 18, 0, 0.38))
+      drop-shadow(0 0 13px rgba(255, 196, 31, 0.34));
+  }
+
+  .btn-secondary {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 4px solid;
+    border-image: linear-gradient(45deg, #ddab12 0%, #a98000 100%) 1;
+    background: transparent;
+    padding: 0.8rem 1.9rem;
+    color: #e1b21d;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.25;
+    text-decoration: none;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+    transition: color 320ms ease, filter 320ms ease;
+  }
+
+  .btn-secondary::before {
+    position: absolute;
+    z-index: -1;
+    inset: -2px;
+    background: linear-gradient(45deg, #ddab12 0%, #a98000 100%);
+    clip-path: circle(0% at 50% 50%);
+    content: "";
+    transition: clip-path 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .btn-secondary > span {
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-secondary:hover {
+    color: #fff;
+    filter: brightness(1.08);
+  }
+
+  .btn-secondary:hover::before {
+    clip-path: circle(150% at 50% 50%);
+  }
+
+  .btn-secondary:focus-visible {
+    outline: 2px solid #fffaf0;
+    outline-offset: 4px;
   }
 
   @media (min-width: 640px) {
