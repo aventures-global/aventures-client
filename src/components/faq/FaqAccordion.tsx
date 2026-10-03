@@ -49,7 +49,7 @@ export default function FaqAccordion({
                                 }`}
                             >
                                 <span
-                                    className={`font-noto-serif text-ink transition-colors group-hover:text-royal ${
+                                    className={`font-poppins text-ink transition-colors group-hover:text-royal ${
                                         compact ? 'text-base leading-snug' : 'text-lg leading-snug'
                                     } ${isOpen ? 'text-royal' : ''}`}
                                 >

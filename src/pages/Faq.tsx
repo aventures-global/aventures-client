@@ -55,7 +55,7 @@ export default function Faq() {
             <main className="site-container flex-1 pb-24 pt-32 sm:pt-36">
                 <p className="text-xs font-medium uppercase tracking-[0.3em] text-royal">Support</p>
                 <h1 className="mt-4 font-noto-serif text-4xl text-ink sm:text-5xl">Frequently Asked Questions</h1>
-                <p className="mt-5 font-noto-serif text-xl text-royal sm:text-2xl">Have a question about your AVENture?</p>
+                <p className="mt-5 font-poppins text-xl text-royal sm:text-2xl">Have a question about your AVENture?</p>
                 <p className="mt-3 max-w-2xl text-base leading-8 text-ink/60">
                     We&rsquo;ve gathered some of the questions applicants and travelers commonly ask about U.S. visa
                     applications, documents, fees, interviews, processing, and travel planning. Choose a category below
