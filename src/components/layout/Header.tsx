@@ -32,7 +32,7 @@ function linkClass(active: boolean, dark: boolean) {
 
 function mobileLinkClass(active: boolean) {
     return `flex min-h-11 items-center font-noto-serif text-base ${
-        active ? 'text-[#f4e4ae]' : 'text-silver/80 hover:text-[#f4e4ae]'
+        active ? 'text-[#9b7512]' : 'text-ink/75 hover:text-[#9b7512]'
     }`
 }
 
@@ -302,7 +302,7 @@ export default function Header() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 0.2 }}
-                        className="border-t border-white/10 bg-ink xl:hidden"
+                        className="border-t border-royal/10 bg-oat/95 shadow-[0_18px_40px_rgba(22,55,101,0.14)] backdrop-blur-md xl:hidden"
                     >
                         <div className="site-container flex flex-col gap-1 py-4">
                             {landingLinks.map((link) => {
@@ -323,12 +323,12 @@ export default function Header() {
                                     </NavLink>
                                 )
                             })}
-                            <div className="mt-4 border-t border-white/10 pt-4">
+                            <div className="mt-4 border-t border-royal/15 pt-4">
                                 {!isLoggedIn ? (
                                     <Link
                                         to="/login"
                                         onClick={() => setDrawerOpen(false)}
-                                        className="inline-flex min-h-11 items-center justify-center border-2 border-white px-5 font-sans text-sm tracking-wide text-white transition hover:border-gold-deep hover:bg-gold-deep hover:text-white"
+                                        className="inline-flex min-h-11 items-center justify-center border-2 border-royal px-5 font-sans text-sm tracking-wide text-royal transition hover:border-gold-deep hover:bg-gold-deep hover:text-white"
                                     >
                                         Log In
                                     </Link>
@@ -336,7 +336,7 @@ export default function Header() {
                                     <Link
                                         to="/cart"
                                         onClick={() => setDrawerOpen(false)}
-                                        className="inline-flex min-h-11 items-center text-sm font-medium text-white transition hover:text-[#f4e4ae]"
+                                        className="inline-flex min-h-11 items-center text-sm font-medium text-royal transition hover:text-[#9b7512]"
                                     >
                                         View Cart
                                     </Link>

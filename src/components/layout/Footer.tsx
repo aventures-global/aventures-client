@@ -32,7 +32,7 @@ export default function Footer({ site }: FooterProps) {
     const headingClass = 'mb-4 text-sm font-semibold text-white'
 
     return (
-        <footer className="bg-[#242424]">
+        <footer className="bg-[#0e274b]">
             <div className="site-container flex flex-col gap-12 py-14 lg:flex-row lg:items-start lg:justify-between lg:gap-20 lg:py-16">
                 <div className="max-w-md">
                     <Link to="/" aria-label="AVENtures home" onClick={goHome}>
