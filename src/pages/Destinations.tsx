@@ -1,4 +1,4 @@
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowDown, ArrowUp, ArrowUpRight } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -22,7 +22,7 @@ export default function Destinations() {
     const [searchParams, setSearchParams] = useSearchParams()
     const [tours, setTours] = useState<Tour[] | null>(null)
     const [site, setSite] = useState<SiteInfo | null>(null)
-    const [alphabetical, setAlphabetical] = useState(false)
+    const [ascending, setAscending] = useState(true)
     const [selectedRegions, setSelectedRegions] = useState<TourRegion[]>([])
     const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
     const deferredQuery = useDeferredValue(query)
@@ -52,8 +52,8 @@ export default function Destinations() {
         if (!tours) return []
         const filtered = filterAndSortTours(tours, { ...DEFAULT_FILTERS, query: deferredQuery })
             .filter((tour) => selectedRegions.length === 0 || selectedRegions.includes(getTourRegion(tour) as TourRegion))
-        return alphabetical ? filtered.sort((a, b) => a.title.localeCompare(b.title)) : filtered
-    }, [tours, deferredQuery, alphabetical, selectedRegions])
+        return filtered.sort((a, b) => ascending ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title))
+    }, [tours, deferredQuery, ascending, selectedRegions])
     const clearFilters = () => {
         setQuery('')
         setSelectedRegions([])
@@ -65,7 +65,7 @@ export default function Destinations() {
             <Seo title={destinationsSeo.title} description={destinationsSeo.description} path="/destinations" />
             <Header />
             <main className="flex-1 pb-24">
-                <section className="relative flex h-[490px] items-center overflow-hidden bg-oat pt-20" aria-labelledby="destination-finder-title">
+                <section className="relative flex h-[490px] items-center bg-oat pt-20" aria-labelledby="destination-finder-title">
                     <img
                         src="/assets/images/europe-journeys.jpg?v=1"
                         alt=""
@@ -81,7 +81,7 @@ export default function Destinations() {
                             className="mx-auto flex h-[260px] max-w-4xl flex-col justify-center rounded-xl border border-royal/10 bg-white/55 px-5 shadow-[0_20px_60px_rgba(22,55,101,0.08)] backdrop-blur-sm sm:px-8"
                         >
                             <p className="text-xs font-medium uppercase tracking-[0.3em] text-[#9b7512]">Find your next AVENtures</p>
-                            <h1 id="destination-finder-title" className="mt-2 font-noto-serif text-3xl leading-tight text-royal sm:text-4xl">Where would you like to go?</h1>
+                            <h1 id="destination-finder-title" className="mt-2 whitespace-nowrap font-noto-serif text-[clamp(1.15rem,5.7vw,1.875rem)] leading-tight text-royal sm:text-4xl">Where would you like to go?</h1>
                             <div className="mt-5">
                                 <DestinationsSearch query={query} onQueryChange={setQuery} selectedRegions={selectedRegions} onRegionsChange={setSelectedRegions} />
                             </div>
@@ -97,12 +97,12 @@ export default function Destinations() {
                         </div>
                         <button
                             type="button"
-                            onClick={() => setAlphabetical((value) => !value)}
-                            aria-pressed={alphabetical}
-                            className={`inline-flex items-center cursor-pointer px-1 py-2.5 text-xs font-semibold tracking-[0.12em] transition-colors ${alphabetical ? 'text-[#9b7512]' : 'text-royal/30 hover:text-royal/60'}`}
-                            aria-label={alphabetical ? 'Use curated destination order' : 'Sort destinations A to Z'}
+                            onClick={() => setAscending((value) => !value)}
+                            className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-[#9b7512] transition-colors hover:bg-royal/5 hover:text-royal"
+                            aria-label={ascending ? 'Currently sorted A to Z. Sort Z to A' : 'Currently sorted Z to A. Sort A to Z'}
+                            title={ascending ? 'A–Z' : 'Z–A'}
                         >
-                            A–Z
+                            {ascending ? <ArrowDown size={19} strokeWidth={1.7} /> : <ArrowUp size={19} strokeWidth={1.7} />}
                         </button>
                     </div>
 
