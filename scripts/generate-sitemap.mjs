@@ -21,6 +21,7 @@ const staticPaths = [
     '/flights',
     '/hotels',
     '/cars',
+    '/visa-assistance',
     '/faq',
     '/privacy',
     '/sitemap',
