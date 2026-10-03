@@ -22,8 +22,16 @@ const staticPaths = [
     '/hotels',
     '/cars',
     '/visa-assistance',
+    '/services/visa/tourist',
+    '/services/visa/k1-k2',
+    '/services/visa/j1',
+    '/services/visa/r1-r2',
+    '/services/visa/p1-p2',
+    '/services/visa/e2',
     '/faq',
+    '/ask',
     '/privacy',
+    '/terms',
     '/sitemap',
 ]
 

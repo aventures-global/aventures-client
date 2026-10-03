@@ -12,10 +12,18 @@ function normalize(text: string) {
     return text.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
 }
 
+function splitWords(text: string) {
+    return normalize(text).split(/[^\p{L}\p{N}]+/u).filter(Boolean)
+}
+
+/** Words in `text` that carry meaning for search, without stop words or single letters. */
+export function meaningfulWords(text: string) {
+    return splitWords(text).filter((word) => word.length > 1 && !STOP_WORDS.has(word))
+}
+
 function tokenize(query: string) {
-    const words = normalize(query).split(/[^\p{L}\p{N}]+/u).filter(Boolean)
-    const meaningful = words.filter((word) => word.length > 1 && !STOP_WORDS.has(word))
-    return meaningful.length > 0 ? meaningful : words
+    const meaningful = meaningfulWords(query)
+    return meaningful.length > 0 ? meaningful : splitWords(query)
 }
 
 function editDistance(left: string, right: string) {
@@ -55,8 +63,9 @@ function tokenCloseness(token: string, text: string) {
  * Ranks FAQs by closeness to `query`. Each word is matched fuzzily (typos and partial
  * words count), questions weigh more than answers, and FAQs matching more of the words
  * rank higher. FAQs matching none of the words, or far weaker than the best match, are dropped.
+ * `minScore` also drops matches below an absolute closeness, where about 1 means every word matched.
  */
-export function searchFaqs<T extends SearchableFaq>(faqs: T[], query: string): T[] {
+export function searchFaqs<T extends SearchableFaq>(faqs: T[], query: string, minScore = 0): T[] {
     const trimmed = query.trim()
     if (!trimmed) return []
 
@@ -74,6 +83,6 @@ export function searchFaqs<T extends SearchableFaq>(faqs: T[], query: string): T
     })
 
     ranked.sort((a, b) => b.score - a.score)
-    const cutoff = (ranked[0]?.score ?? 0) * RELATIVE_CUTOFF
+    const cutoff = Math.max((ranked[0]?.score ?? 0) * RELATIVE_CUTOFF, minScore)
     return ranked.filter((entry) => entry.score >= cutoff).map((entry) => entry.faq)
 }

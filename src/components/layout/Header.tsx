@@ -21,7 +21,8 @@ const landingLinks = [
 ] as const
 
 /** Routes already on the cream palette; they use the light header from the top. */
-const LIGHT_PAGES = new Set(['/faq'])
+const LIGHT_PAGES = new Set(['/faq', '/ask', '/visa-assistance', '/privacy', '/terms', '/sitemap'])
+const VISA_SERVICE_PREFIX = '/services/visa/'
 
 function linkClass(active: boolean, dark: boolean) {
     return `font-noto-serif text-base tracking-wide transition-colors ${
@@ -182,10 +183,11 @@ export default function Header() {
     const reduceMotion = useReducedMotion()
     const location = useLocation()
     const onHome = location.pathname === '/'
+    const onVisaServicePage = location.pathname.startsWith(VISA_SERVICE_PREFIX)
     const onDestinationsIndex = location.pathname === '/destinations'
     const onDestinationDetail = location.pathname.startsWith('/destinations/')
     const hasEditorialHero = onHome || onDestinationDetail
-    const lightPage = LIGHT_PAGES.has(location.pathname)
+    const lightPage = LIGHT_PAGES.has(location.pathname) || onVisaServicePage
     const { user, isLoggedIn, logout } = useAuth()
     const { itemCount } = useCart()
     const overHomeHero = hasEditorialHero && !pastHero
@@ -221,7 +223,7 @@ export default function Header() {
             isActive ||
             (to === '/shop' && location.pathname.startsWith('/shop')) ||
             (to === '/destinations' && location.pathname.startsWith('/destinations')) ||
-            (to === '/visa-assistance' && location.pathname === '/visa-assistance') ||
+            (to === '/visa-assistance' && (location.pathname === '/visa-assistance' || onVisaServicePage)) ||
             (to === '/about' && location.pathname === '/about')
         )
     }

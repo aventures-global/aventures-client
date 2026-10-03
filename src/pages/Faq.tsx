@@ -1,12 +1,13 @@
+import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import { getFaqs, getSite } from '../api'
-import AskAventures from '../components/faq/AskAventures'
 import FaqBrowser from '../components/faq/FaqBrowser'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
+import { ASK_AVENTURES_HREF } from '../data/visaFinder'
 import { getSeoForPath } from '../data/seo'
-import { useAskForm } from '../hooks/useAskForm'
 import type { FaqCategoryGroup, SiteInfo } from '../types/content'
 
 type LoadState =
@@ -14,32 +15,40 @@ type LoadState =
     | { status: 'error' }
     | { status: 'ready'; categories: FaqCategoryGroup[] }
 
-const ASK_ID = 'ask-aventures'
+const askLink = (
+    <Link
+        to={ASK_AVENTURES_HREF}
+        className="font-medium text-royal underline-offset-4 hover:text-gold-deep hover:underline"
+    >
+        Ask AVENtures directly
+    </Link>
+)
 
-function scrollToAsk() {
-    const section = document.getElementById(ASK_ID)
-    if (!section) return
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    section.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
-    section.querySelector<HTMLInputElement>('input:not([tabindex="-1"])')?.focus({ preventScroll: true })
-}
+const askPrompt = (
+    <div className="mt-16 border-t border-royal/15 pt-10">
+        <p className="font-noto-serif text-2xl text-ink sm:text-3xl">
+            Can&rsquo;t find the answer you&rsquo;re looking for?
+        </p>
+        <Link
+            to={ASK_AVENTURES_HREF}
+            className="group mt-5 inline-flex items-center gap-2 rounded-[3px] border-2 border-royal bg-royal px-8 py-3.5 text-sm font-medium uppercase tracking-[0.14em] text-cream transition-colors duration-300 hover:border-gold-deep hover:bg-gold-deep hover:text-white"
+        >
+            Ask AVENtures
+            <ArrowRight
+                size={16}
+                strokeWidth={1.75}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+                aria-hidden
+            />
+        </Link>
+    </div>
+)
 
 export default function Faq() {
     const seo = getSeoForPath('/faq')
     const [site, setSite] = useState<SiteInfo | null>(null)
     const [state, setState] = useState<LoadState>({ status: 'loading' })
-    const askForm = useAskForm()
-
-    const askLink = (
-        <button
-            type="button"
-            onClick={scrollToAsk}
-            className="font-medium text-royal underline-offset-4 hover:text-gold-deep hover:underline"
-        >
-            Ask AVENtures directly
-        </button>
-    )
-    const ask = <AskAventures id={ASK_ID} form={askForm} email={site?.email} />
+    const location = useLocation()
 
     useEffect(() => {
         void getSite().then(setSite)
@@ -47,6 +56,8 @@ export default function Faq() {
             .then((data) => setState({ status: 'ready', categories: data.categories }))
             .catch(() => setState({ status: 'error' }))
     }, [])
+
+    if (location.hash === '#ask-aventures') return <Navigate to={ASK_AVENTURES_HREF} replace />
 
     return (
         <div className="luxury-paper font-poppins flex min-h-svh flex-col">
@@ -75,13 +86,11 @@ export default function Faq() {
                     ) : state.status === 'error' ? (
                         <div className="max-w-3xl">
                             <p className="border-t border-royal/15 pt-6 text-sm leading-7 text-ink/60">
-                                We could not load the questions right now. Please refresh the page, or ask your
-                                question below.
+                                We could not load the questions right now. Please refresh the page, or {askLink}.
                             </p>
-                            {ask}
                         </div>
                     ) : (
-                        <FaqBrowser categories={state.categories} emptyAction={askLink} footer={ask} />
+                        <FaqBrowser categories={state.categories} emptyAction={askLink} footer={askPrompt} />
                     )}
                 </div>
             </main>
