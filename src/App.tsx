@@ -2,6 +2,7 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import ScrollToTop from './components/ScrollToTop'
 import About from './pages/About'
+import Ask from './pages/Ask'
 import Blog from './pages/Blog'
 import Cart from './pages/Cart'
 import CustomTour from './pages/CustomTour'
@@ -18,10 +19,12 @@ import ServiceRequest from './pages/ServiceRequest'
 import Shop from './pages/Shop'
 import Signup from './pages/Signup'
 import Sitemap from './pages/Sitemap'
+import Terms from './pages/Terms'
 import TourDetail from './pages/TourDetail'
 import VerifyEmail from './pages/VerifyEmail'
 import VerifyReset from './pages/VerifyReset'
 import VisaAssistance from './pages/VisaAssistance'
+import VisaService from './pages/VisaService'
 
 function AnimatedRoutes() {
     const location = useLocation()
@@ -84,8 +87,11 @@ function AnimatedRoutes() {
                             }
                         />
                         <Route path="/visa-assistance" element={<VisaAssistance />} />
+                        <Route path="/services/visa/:slug" element={<VisaService />} />
                         <Route path="/faq" element={<Faq />} />
+                        <Route path="/ask" element={<Ask />} />
                         <Route path="/privacy" element={<Privacy />} />
+                        <Route path="/terms" element={<Terms />} />
                         <Route path="/blog" element={<Blog />} />
                         <Route path="/sitemap" element={<Sitemap />} />
                         <Route path="*" element={<NotFound />} />

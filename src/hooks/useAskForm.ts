@@ -16,6 +16,8 @@ export const ASK_VISA_TYPES = [
     'Other',
 ] as const
 
+export type AskVisaType = (typeof ASK_VISA_TYPES)[number]
+
 export type AskFields = {
     firstName: string
     lastName: string
@@ -30,8 +32,16 @@ const emptyFields: AskFields = { firstName: '', lastName: '', email: '', visaTyp
  * State for the Ask AVENtures form. Owned by the page so a draft or the confirmation
  * survives the form being remounted elsewhere in the layout.
  */
-export function useAskForm() {
-    const [fields, setFields] = useState<AskFields>(emptyFields)
+export function isAskVisaType(value: string | null | undefined): value is AskVisaType {
+    return ASK_VISA_TYPES.some((type) => type === value)
+}
+
+/** `initialVisaType` is ignored unless it is one of `ASK_VISA_TYPES`. */
+export function useAskForm(initialVisaType?: string | null) {
+    const [fields, setFields] = useState<AskFields>(() => ({
+        ...emptyFields,
+        visaType: isAskVisaType(initialVisaType) ? initialVisaType : '',
+    }))
     const [status, setStatus] = useState<SubmitStatus>('idle')
 
     const setField = (name: keyof AskFields, value: string) => setFields((current) => ({ ...current, [name]: value }))

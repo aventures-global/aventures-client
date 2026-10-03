@@ -1,13 +1,15 @@
 import { ArrowRight, ChevronDown } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ASK_VISA_TYPES, type AskForm } from '../../hooks/useAskForm'
 import { buildMailtoHref, FormHoneypot, lineFieldClass } from '../../lib/forms'
 
 type AskAventuresProps = {
-    id: string
     form: AskForm
     /** Offered as a fallback when sending fails. */
     email?: string
+    /** Rendered under the question field. */
+    suggestions?: ReactNode
 }
 
 const primaryButtonClass =
@@ -22,7 +24,7 @@ const nextSteps = [
     { to: '/destinations', label: 'Explore destinations' },
 ]
 
-export default function AskAventures({ id, form, email }: AskAventuresProps) {
+export default function AskAventures({ form, email, suggestions }: AskAventuresProps) {
     const { fields, setField, status, submit, reset } = form
     const sending = status === 'sending'
 
@@ -37,24 +39,11 @@ export default function AskAventures({ id, form, email }: AskAventuresProps) {
         : undefined
 
     return (
-        <section
-            id={id}
-            aria-labelledby={`${id}-title`}
-            className="mt-16 scroll-mt-28 border-t border-royal/15 pt-10"
-        >
-            <p className="text-xs font-medium uppercase tracking-[0.3em] text-royal">Ask AVENtures</p>
-            <h2 id={`${id}-title`} className="mt-3 font-noto-serif text-2xl text-ink sm:text-3xl">
-                Can&rsquo;t find the answer you&rsquo;re looking for? Ask AVENtures!
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-ink/60">
-                Have a question about your visa or travel plans? Send your question to AVENtures and our team will be
-                happy to assist.
-            </p>
-
+        <div className="max-w-2xl">
             <div aria-live="polite">
                 {status === 'sent' ? (
-                    <div className="mt-8 border-l-2 border-gold-deep bg-white/60 px-6 py-7">
-                        <h3 className="font-noto-serif text-2xl text-royal">Question received!</h3>
+                    <div className="border-l-2 border-gold-deep bg-white/60 px-6 py-7">
+                        <h2 className="font-noto-serif text-2xl text-royal">Question received!</h2>
                         <p className="mt-2 max-w-xl text-sm leading-7 text-ink/70">
                             Thank you for reaching out to AVENtures. We&rsquo;ve received your question and our team will
                             review it.
@@ -75,7 +64,7 @@ export default function AskAventures({ id, form, email }: AskAventuresProps) {
                         </button>
                     </div>
                 ) : (
-                    <form onSubmit={submit} className="mt-6 max-w-2xl space-y-6">
+                    <form onSubmit={submit} className="space-y-6">
                         <FormHoneypot />
                         <div className="grid gap-4 sm:grid-cols-2">
                             <input
@@ -151,6 +140,7 @@ export default function AskAventures({ id, form, email }: AskAventuresProps) {
                             className={`${lineFieldClass} min-h-36 resize-y`}
                             disabled={sending}
                         />
+                        {suggestions}
                         <div className="flex flex-col items-start gap-3 pt-2">
                             <button type="submit" disabled={sending} className={primaryButtonClass}>
                                 {sending ? 'Sending...' : 'Ask AVENtures'}
@@ -186,6 +176,6 @@ export default function AskAventures({ id, form, email }: AskAventuresProps) {
             <p className="mt-10 font-noto-serif text-lg italic text-gold-deep">
                 Your question could be the first step toward your next AVENture.
             </p>
-        </section>
+        </div>
     )
 }

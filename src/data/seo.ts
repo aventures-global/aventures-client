@@ -61,19 +61,29 @@ const routeCopy: Record<string, SeoRouteCopy> = {
             'Request private transfers and car arrangements, from airport meet-and-greet to local guides.',
     },
     '/visa-assistance': {
-        title: 'Visa Assistance — AVENtures',
+        title: 'Visa Services — AVENtures',
         description:
-            'Get clear visa document guidance and application preparation support from AVENtures Global.',
+            'Find the AVENTURES U.S. visa service that fits your travel purpose, from tourist and fiancé(e) visas to J-1, R-1, P-1, and E-2.',
     },
     '/faq': {
         title: 'FAQs — AVENtures',
         description:
             'Answers about planning trips, visas, flights, hotels, and traveling with AVENtures Global.',
     },
+    '/ask': {
+        title: 'Ask AVENtures — AVENtures',
+        description:
+            'Send AVENtures your question about U.S. visas, applications, documents, or travel plans, and our team will review it.',
+    },
     '/privacy': {
         title: 'Privacy Policy — AVENtures',
         description:
-            'How AVENtures Global collects and uses information from contact and travel request forms.',
+            'How AVENtures Global collects, uses, and shares information from inquiry forms, accounts, and the services you choose.',
+    },
+    '/terms': {
+        title: 'Terms & Conditions — AVENtures',
+        description:
+            'How AVENtures services, fees, refunds, cancellations, and limitations work, and what is disclosed before you pay.',
     },
     '/blog': {
         title: 'Blogs — AVENtures',
