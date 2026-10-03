@@ -1,11 +1,10 @@
 import { LogOut, Menu, ShoppingBag, X } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import {
     useEffect,
     useId,
     useRef,
     useState,
-    type MouseEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router-dom'
@@ -15,29 +14,25 @@ import BrandLogo from '../ui/BrandLogo'
 
 const landingLinks = [
     { label: 'Home', to: '/' },
-    { label: 'About', hash: 'about' },
-    { label: 'Services', hash: 'services' },
-    { label: 'Destinations', to: '/destinations' },
+    { label: 'Destination', to: '/destinations' },
+    { label: 'Visa Services', to: '/visa-assistance' },
+    { label: 'About Us', to: '/about' },
     { label: 'Shop', to: '/shop' },
-    { label: 'Contact', hash: 'contact' },
 ] as const
 
-const HASH_SECTIONS = ['about', 'services', 'contact'] as const
-type HashSection = (typeof HASH_SECTIONS)[number]
-
-function isHashSection(value: string): value is HashSection {
-    return (HASH_SECTIONS as readonly string[]).includes(value)
-}
-
-function linkClass(active: boolean) {
-    return `font-serif text-base tracking-wide transition-colors ${
-        active ? 'text-gold' : 'text-silver/75 hover:text-gold'
+function linkClass(active: boolean, dark: boolean) {
+    return `font-noto-serif text-base tracking-wide transition-colors ${
+        active
+            ? 'text-gold-deep'
+            : dark
+              ? 'text-black/75 hover:text-[#9b7512]'
+              : 'text-silver/75 hover:text-[#ffbf2f]'
     }`
 }
 
 function mobileLinkClass(active: boolean) {
-    return `flex min-h-11 items-center font-serif text-base ${
-        active ? 'text-gold' : 'text-silver/80'
+    return `flex min-h-11 items-center font-noto-serif text-base ${
+        active ? 'text-[#f4e4ae]' : 'text-silver/80 hover:text-[#f4e4ae]'
     }`
 }
 
@@ -180,129 +175,46 @@ function AccountMenu({
 export default function Header() {
     const [drawerOpen, setDrawerOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
-    const [activeSection, setActiveSection] = useState<HashSection | null>(null)
+    const [pastHero, setPastHero] = useState(false)
+    const reduceMotion = useReducedMotion()
     const location = useLocation()
     const onHome = location.pathname === '/'
     const { user, isLoggedIn, logout } = useAuth()
     const { itemCount } = useCart()
+    const overHomeHero = onHome && !pastHero
 
     useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 24)
+        const onScroll = () => {
+            setScrolled(window.scrollY > 24)
+            setPastHero(onHome && window.scrollY >= window.innerHeight * 0.9)
+        }
         onScroll()
         window.addEventListener('scroll', onScroll, { passive: true })
-        return () => window.removeEventListener('scroll', onScroll)
-    }, [])
+        window.addEventListener('resize', onScroll)
+        return () => {
+            window.removeEventListener('scroll', onScroll)
+            window.removeEventListener('resize', onScroll)
+        }
+    }, [onHome])
 
     useEffect(() => setDrawerOpen(false), [location.pathname])
 
-    useEffect(() => {
-        if (location.pathname !== '/') {
-            setActiveSection(null)
-            return
-        }
-
-        const hashId = location.hash.replace(/^#/, '')
-        if (isHashSection(hashId)) {
-            setActiveSection(hashId)
-        }
-
-        let cancelled = false
-        let observer: IntersectionObserver | null = null
-        let retryId = 0
-        const ratios = new Map<string, number>()
-
-        const applyBest = () => {
-            let bestId: HashSection | null = null
-            let bestRatio = 0
-            for (const id of HASH_SECTIONS) {
-                const ratio = ratios.get(id) ?? 0
-                if (ratio > bestRatio) {
-                    bestRatio = ratio
-                    bestId = id
-                }
-            }
-            if (bestRatio > 0.08) {
-                setActiveSection(bestId)
-            } else if (window.scrollY < 140) {
-                setActiveSection(null)
-            }
-        }
-
-        const setup = () => {
-            if (cancelled) return
-            const elements = HASH_SECTIONS.map((id) =>
-                document.getElementById(id),
-            ).filter((el): el is HTMLElement => Boolean(el))
-
-            if (elements.length < HASH_SECTIONS.length) {
-                retryId = window.setTimeout(setup, 120)
-                return
-            }
-
-            observer = new IntersectionObserver(
-                (entries) => {
-                    for (const entry of entries) {
-                        ratios.set(
-                            entry.target.id,
-                            entry.isIntersecting ? entry.intersectionRatio : 0,
-                        )
-                    }
-                    applyBest()
-                },
-                {
-                    root: null,
-                    rootMargin: '-22% 0px -48% 0px',
-                    threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
-                },
-            )
-
-            for (const el of elements) observer.observe(el)
-        }
-
-        setup()
-
-        return () => {
-            cancelled = true
-            window.clearTimeout(retryId)
-            observer?.disconnect()
-        }
-    }, [location.pathname, location.hash])
-
     const scrollHomeToTop = () => {
         if (location.pathname !== '/') return
-        if (location.hash) {
-            window.history.replaceState(null, '', '/')
-        }
-        setActiveSection(null)
         window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-
-    const onHashClick = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
-        setDrawerOpen(false)
-        if (isHashSection(id)) setActiveSection(id)
-        if (!onHome) return
-        event.preventDefault()
-        window.history.replaceState(null, '', `/#${id}`)
-        window.setTimeout(() => {
-            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-        }, 50)
     }
 
     const isNavActive = (to: string, isActive: boolean) => {
         if (to === '/') {
-            return location.pathname === '/' && activeSection === null
+            return location.pathname === '/'
         }
         return (
             isActive ||
             (to === '/shop' && location.pathname.startsWith('/shop')) ||
-            (to === '/destinations' && location.pathname.startsWith('/destinations'))
+            (to === '/destinations' && location.pathname.startsWith('/destinations')) ||
+            (to === '/visa-assistance' && location.pathname === '/visa-assistance') ||
+            (to === '/about' && location.pathname === '/about')
         )
-    }
-
-    const isHashActive = (hash: HashSection) => {
-        if (hash === 'about' && location.pathname === '/about') return true
-        if (location.pathname !== '/') return false
-        return activeSection === hash
     }
     const accountAction = isLoggedIn ? (
         <AccountMenu
@@ -314,70 +226,62 @@ export default function Header() {
     ) : (
         <Link
             to="/login"
-            className="text-sm text-silver/75 transition-colors hover:text-gold"
+            className={`inline-flex min-h-10 items-center justify-center border-2 px-4 font-sans text-sm tracking-wide transition-colors ${
+                overHomeHero
+                    ? 'border-[#ddab12] text-[#e1b21d] hover:bg-[#ddab12] hover:text-white'
+                    : pastHero
+                    ? 'border-royal text-royal hover:bg-royal hover:text-cream'
+                    : 'border-white text-white hover:border-gold-deep hover:bg-gold-deep hover:text-white'
+            }`}
         >
-            Log in
+            Log In
         </Link>
     )
 
     const header = (
-        <header
-            className={`fixed inset-x-0 top-0 z-[80] pt-[env(safe-area-inset-top,0px)] transition-colors duration-300 ${
-                scrolled || drawerOpen
-                    ? 'border-b border-white/10 bg-ink/95 backdrop-blur-xl'
-                    : 'border-b border-transparent bg-gradient-to-b from-black/55 to-transparent'
+        <motion.header
+            initial={reduceMotion ? false : { opacity: 0, y: -18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+            className={`fixed inset-x-0 top-0 z-[80] border-b pt-[env(safe-area-inset-top,0px)] transition-colors duration-500 ${
+                overHomeHero
+                    ? 'border-transparent bg-transparent'
+                    : pastHero
+                      ? 'border-royal/10 bg-oat/90 shadow-[0_8px_30px_rgba(22,55,101,0.06)] backdrop-blur-md'
+                      : 'border-white/10 bg-ink/95 shadow-[0_8px_30px_rgba(0,0,0,0.18)] backdrop-blur-md'
             }`}
         >
             <div
-                className={`site-container flex items-center justify-between gap-4 transition-all duration-300 ${
+                className={`flex w-full items-center gap-8 px-6 transition-all duration-300 sm:px-8 lg:px-10 xl:px-14 2xl:px-20 ${
                     scrolled ? 'py-3' : 'py-5'
                 }`}
             >
-                <Link to="/" aria-label="AVENtures home" onClick={scrollHomeToTop}>
-                    <BrandLogo />
+                <Link className="justify-self-start" to="/" aria-label="AVENtures home" onClick={scrollHomeToTop}>
+                    <BrandLogo dark={pastHero} />
                 </Link>
 
-                <div className="flex items-center gap-2 sm:gap-3 lg:gap-5">
-                    <nav className="hidden items-center gap-6 xl:gap-8 lg:flex">
-                        {landingLinks.map((link) => {
-                            if ('hash' in link) {
-                                return (
-                                    <Link
-                                        key={link.label}
-                                        to={`/#${link.hash}`}
-                                        className={linkClass(isHashActive(link.hash))}
-                                        aria-current={isHashActive(link.hash) ? 'page' : undefined}
-                                        onClick={(event) => onHashClick(event, link.hash)}
-                                    >
-                                        {link.label}
-                                    </Link>
-                                )
-                            }
-                            return (
-                                <NavLink
-                                    key={link.label}
-                                    to={link.to}
-                                    end={link.to === '/'}
-                                    className={({ isActive }) =>
-                                        linkClass(isNavActive(link.to, isActive))
-                                    }
-                                    onClick={scrollHomeToTop}
-                                >
-                                    {link.label}
-                                </NavLink>
-                            )
-                        })}
+                <div className="ml-auto flex items-center gap-4 sm:gap-5">
+                    <nav className="hidden items-center gap-5 xl:flex 2xl:gap-7">
+                        {landingLinks.map((link) => (
+                            <NavLink
+                                key={link.label}
+                                to={link.to}
+                                end={link.to === '/'}
+                                className={({ isActive }) =>
+                                    linkClass(isNavActive(link.to, isActive), pastHero)
+                                }
+                                onClick={scrollHomeToTop}
+                            >
+                                {link.label}
+                            </NavLink>
+                        ))}
                     </nav>
-
-                    <span
-                        aria-hidden
-                        className="hidden h-4 w-px shrink-0 bg-white/25 lg:block"
-                    />
-
-                    {accountAction}
+                    {isLoggedIn ? accountAction : <div className="hidden xl:block">{accountAction}</div>}
                     <button
                         type="button"
-                        className="relative z-[81] -mr-1 flex min-h-11 min-w-11 items-center justify-center rounded-md text-white transition-colors hover:text-gold lg:hidden"
+                        className={`relative z-[81] -mr-1 flex min-h-11 min-w-11 items-center justify-center rounded-md transition-colors hover:text-gold xl:hidden ${
+                            pastHero ? 'text-black' : 'text-white'
+                        }`}
                         aria-label={drawerOpen ? 'Close menu' : 'Open menu'}
                         aria-expanded={drawerOpen}
                         onClick={() => setDrawerOpen((value) => !value)}
@@ -398,23 +302,10 @@ export default function Header() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 0.2 }}
-                        className="border-t border-white/10 bg-ink lg:hidden"
+                        className="border-t border-white/10 bg-ink xl:hidden"
                     >
                         <div className="site-container flex flex-col gap-1 py-4">
                             {landingLinks.map((link) => {
-                                if ('hash' in link) {
-                                    return (
-                                        <Link
-                                            key={link.label}
-                                            to={`/#${link.hash}`}
-                                            className={mobileLinkClass(isHashActive(link.hash))}
-                                            aria-current={isHashActive(link.hash) ? 'page' : undefined}
-                                            onClick={(event) => onHashClick(event, link.hash)}
-                                        >
-                                            {link.label}
-                                        </Link>
-                                    )
-                                }
                                 return (
                                     <NavLink
                                         key={link.label}
@@ -432,11 +323,30 @@ export default function Header() {
                                     </NavLink>
                                 )
                             })}
+                            <div className="mt-4 border-t border-white/10 pt-4">
+                                {!isLoggedIn ? (
+                                    <Link
+                                        to="/login"
+                                        onClick={() => setDrawerOpen(false)}
+                                        className="inline-flex min-h-11 items-center justify-center border-2 border-white px-5 font-sans text-sm tracking-wide text-white transition hover:border-gold-deep hover:bg-gold-deep hover:text-white"
+                                    >
+                                        Log In
+                                    </Link>
+                                ) : (
+                                    <Link
+                                        to="/cart"
+                                        onClick={() => setDrawerOpen(false)}
+                                        className="inline-flex min-h-11 items-center text-sm font-medium text-white transition hover:text-[#f4e4ae]"
+                                    >
+                                        View Cart
+                                    </Link>
+                                )}
+                            </div>
                         </div>
                     </motion.nav>
                 )}
             </AnimatePresence>
-        </header>
+        </motion.header>
     )
 
     return createPortal(header, document.body)

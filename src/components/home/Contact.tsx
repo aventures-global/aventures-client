@@ -5,7 +5,6 @@ import { useSearchParams } from 'react-router-dom'
 import type { SiteInfo } from '../../types/content'
 import {
     buildMailtoHref,
-    formFieldClass,
     FormspreeHoneypot,
     submitFormspree,
     type SubmitStatus,
@@ -15,6 +14,9 @@ import { FacebookIcon, InstagramIcon } from '../ui/SocialIcons'
 type ContactProps = {
     site: SiteInfo
 }
+
+const contactFieldClass =
+    'w-full border-0 border-b-2 border-royal/55 bg-transparent px-0 py-3.5 text-sm text-ink outline-none transition-[border-color] duration-300 placeholder:text-ink/40 focus:border-gold-deep focus:ring-0'
 
 function buildSubject(firstName: string, lastName: string, destination: string) {
     return `Travel inquiry${destination ? ` — ${destination}` : ''} from ${firstName} ${lastName}`.trim()
@@ -112,28 +114,29 @@ export default function Contact({ site }: ContactProps) {
                     initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="mb-10 font-serif text-3xl text-gold-gradient sm:text-4xl"
+                    className="mb-10 text-center"
                 >
-                    Begin Your Journey
+                    <span className="block text-xs font-medium uppercase tracking-[0.3em] text-royal">Begin your journey</span>
+                    <span className="mt-4 block font-noto-serif text-4xl text-ink sm:text-5xl">Your AVENture Starts With One Conversation</span>
                 </motion.h2>
 
-                <div className="grid flex-1 gap-12 lg:grid-cols-2">
+                <div className="grid flex-1 gap-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-20">
                     <motion.form
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         onSubmit={handleSubmit}
-                        className="space-y-4"
+                        className="space-y-7"
                     >
                         <FormspreeHoneypot />
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid gap-7 sm:grid-cols-2">
                             <input
                                 required
                                 name="firstName"
                                 placeholder="First Name"
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)}
-                                className={formFieldClass}
+                                className={contactFieldClass}
                                 disabled={status === 'sending'}
                             />
                             <input
@@ -142,7 +145,7 @@ export default function Contact({ site }: ContactProps) {
                                 placeholder="Last Name"
                                 value={lastName}
                                 onChange={(e) => setLastName(e.target.value)}
-                                className={formFieldClass}
+                                className={contactFieldClass}
                                 disabled={status === 'sending'}
                             />
                         </div>
@@ -153,7 +156,7 @@ export default function Contact({ site }: ContactProps) {
                             placeholder="Email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className={formFieldClass}
+                            className={contactFieldClass}
                             disabled={status === 'sending'}
                         />
                         <input
@@ -161,7 +164,7 @@ export default function Contact({ site }: ContactProps) {
                             placeholder="Destination of interest"
                             value={destination}
                             onChange={(e) => setDestination(e.target.value)}
-                            className={formFieldClass}
+                            className={contactFieldClass}
                             disabled={status === 'sending'}
                         />
                         <textarea
@@ -171,25 +174,25 @@ export default function Contact({ site }: ContactProps) {
                             rows={5}
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            className={`${formFieldClass} resize-y`}
+                            className={`${contactFieldClass} min-h-36 resize-y`}
                             disabled={status === 'sending'}
                         />
-                        <div className="flex flex-col items-end gap-3">
+                        <div className="flex flex-col items-start gap-3 pt-2 sm:items-end">
                             <button
                                 type="submit"
                                 disabled={status === 'sending'}
-                                className="btn-gold rounded-xl px-7 py-3.5 text-base disabled:cursor-not-allowed disabled:opacity-70"
+                                className="rounded-[3px] border-2 border-royal bg-royal px-8 py-3.5 text-sm font-medium uppercase tracking-[0.14em] text-cream transition-colors duration-300 hover:border-gold-deep hover:bg-gold-deep hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
                             >
                                 {status === 'sending' ? 'Sending...' : 'Send Message'}
                             </button>
                             <div role="status" aria-live="polite" className="w-full text-right text-sm">
                                 {status === 'sent' && (
-                                    <p className="text-gold">
+                                    <p className="text-royal">
                                         Thank you — your message was sent. We will be in touch shortly.
                                     </p>
                                 )}
                                 {status === 'error' && (
-                                    <p className="text-silver/90">
+                                    <p className="text-ink/70">
                                         Something went wrong.{' '}
                                         <a href={mailtoHref} className="text-gold underline hover:text-gold-mid">
                                             Email us directly
@@ -205,20 +208,20 @@ export default function Contact({ site }: ContactProps) {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="space-y-6 text-sm text-silver/90"
+                                className="space-y-8 border-t border-royal/15 pt-9 text-sm text-ink/70 lg:border-l lg:border-t-0 lg:pl-16 lg:pt-0"
                     >
-                        <p className="leading-relaxed text-muted">{site.contactIntro}</p>
+                        <p className="text-base leading-8 text-ink/60">{site.contactIntro}</p>
                         <div className="space-y-4">
                             <a
                                 href={`mailto:${site.email}`}
-                                className="flex items-start gap-3 hover:text-gold"
+                                className="flex items-start gap-3 hover:text-royal"
                             >
                                 <Mail size={18} className="mt-0.5 shrink-0 text-gold" strokeWidth={1.5} />
                                 <span>{site.email}</span>
                             </a>
                             <a
                                 href={`tel:${site.phone}`}
-                                className="flex items-start gap-3 hover:text-gold"
+                                className="flex items-start gap-3 hover:text-royal"
                             >
                                 <Phone size={18} className="mt-0.5 shrink-0 text-gold" strokeWidth={1.5} />
                                 <span>{site.phoneDisplay}</span>
@@ -239,7 +242,7 @@ export default function Contact({ site }: ContactProps) {
                                 href={site.facebookUrl}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="rounded-full border border-white/15 p-2.5 text-silver hover:border-gold hover:text-gold"
+                                className="rounded-full border border-royal/20 p-2.5 text-royal hover:border-gold-deep hover:text-gold-deep"
                                 aria-label="Facebook"
                             >
                                 <FacebookIcon size={18} />
@@ -248,7 +251,7 @@ export default function Contact({ site }: ContactProps) {
                                 href={site.instagramUrl}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="rounded-full border border-white/15 p-2.5 text-silver hover:border-gold hover:text-gold"
+                                className="rounded-full border border-royal/20 p-2.5 text-royal hover:border-gold-deep hover:text-gold-deep"
                                 aria-label="Instagram"
                             >
                                 <InstagramIcon size={18} />

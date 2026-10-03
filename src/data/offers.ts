@@ -2,48 +2,57 @@ import type { ServiceOffer } from '../types/content'
 
 export const offers: ServiceOffer[] = [
     {
-        id: 'flights-hotels',
-        title: 'Flights & Hotels',
+        id: 'flights',
+        title: 'Flights',
         description:
-            'Competitive fares and carefully chosen stays, coordinated as one seamless booking.',
+            'Competitive fares and thoughtful routing, coordinated around your complete journey.',
         icon: 'plane',
         href: '/flights',
-        span: 'wide',
+        span: 'square',
     },
     {
-        id: 'visa',
-        title: 'Visa Assistance',
+        id: 'hotels',
+        title: 'Hotels',
         description:
-            'Document guidance and application support so borders never slow your plans.',
-        icon: 'shield',
-        href: '/destinations',
+            'Carefully selected stays balancing location, comfort, character, and value.',
+        icon: 'bag',
+        href: '/hotels',
         span: 'square',
     },
     {
         id: 'itineraries',
-        title: 'Custom Itineraries',
+        title: 'Travel Itineraries',
         description:
-            'Private, paced experiences shaped around your dates, interests, and comfort.',
+            'Thoughtfully paced journeys shaped around your dates, interests, and preferred way to travel.',
         icon: 'map',
         href: '/destinations',
         span: 'square',
     },
     {
-        id: 'transfers',
-        title: 'Guides & Transfers',
+        id: 'guides-drivers',
+        title: 'Professional Guides & Drivers',
         description:
-            'Airport meet-and-greet, private cars, and local guides who know every turn.',
+            'Trusted local professionals providing comfortable transport and meaningful destination insight.',
         icon: 'car',
         href: '/cars',
         span: 'square',
     },
     {
-        id: 'merchandise',
-        title: 'Merchandise Marketplace',
+        id: 'packages',
+        title: 'Holiday Packages',
         description:
-            'Branded apparel and destination photography prints — browse freely, shop with an account.',
+            'Curated escapes bringing flights, stays, experiences, and dedicated support together.',
         icon: 'bag',
-        href: '/shop',
+        href: '/destinations',
+        span: 'square',
+    },
+    {
+        id: 'visa',
+        title: 'Visa Assistance',
+        description:
+            'Clear document guidance and application support for a more confident journey.',
+        icon: 'shield',
+        href: '/visa-assistance',
         span: 'square',
     },
 ]

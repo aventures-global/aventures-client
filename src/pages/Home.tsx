@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
-    getFeaturedTours,
     getOffers,
     getSite,
     getTestimonials,
 } from '../api'
 import About from '../components/home/About'
 import Contact from '../components/home/Contact'
+import Destinations from '../components/home/Destinations'
 import Hero from '../components/home/Hero'
 import Offers from '../components/home/Offers'
-import SignatureExperiences from '../components/home/SignatureExperiences'
 import Testimonials from '../components/home/Testimonials'
 import WhyUs from '../components/home/WhyUs'
 import Footer from '../components/layout/Footer'
@@ -18,25 +17,22 @@ import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
 import TravelAgencyJsonLd from '../components/seo/TravelAgencyJsonLd'
 import { getSeoForPath } from '../data/seo'
-import type { ServiceOffer, SiteInfo, Testimonial, Tour } from '../types/content'
+import type { ServiceOffer, SiteInfo, Testimonial } from '../types/content'
 
 export default function Home() {
     const location = useLocation()
     const [site, setSite] = useState<SiteInfo | null>(null)
     const [offers, setOffers] = useState<ServiceOffer[]>([])
-    const [featured, setFeatured] = useState<Tour[]>([])
     const [testimonials, setTestimonials] = useState<Testimonial[]>([])
 
     useEffect(() => {
         void Promise.all([
             getSite(),
             getOffers(),
-            getFeaturedTours(),
             getTestimonials(),
-        ]).then(([siteData, offerData, featuredData, testimonialData]) => {
+        ]).then(([siteData, offerData, testimonialData]) => {
             setSite(siteData)
             setOffers(offerData)
-            setFeatured(featuredData)
             setTestimonials(testimonialData)
         })
     }, [])
@@ -52,13 +48,29 @@ export default function Home() {
 
     if (!site) {
         return (
-            <div className="min-h-svh bg-ink">
-                <Header />
-                <div className="site-container space-y-6 py-28">
-                    <div className="h-14 w-2/3 max-w-md skeleton-shimmer rounded-lg" />
-                    <div className="h-6 w-1/2 max-w-sm skeleton-shimmer rounded-lg" />
-                    <div className="h-11 w-36 skeleton-shimmer rounded-lg" />
+            <div className="relative min-h-svh overflow-hidden bg-[#e9e9e6]" aria-busy="true" aria-label="Loading homepage">
+                <div className="absolute inset-x-0 top-0 z-10">
+                    <div className="site-container flex items-center justify-between py-5">
+                        <div className="h-8 w-36 animate-pulse rounded bg-black/10" />
+                        <div className="hidden gap-6 lg:flex">
+                            {Array.from({ length: 6 }, (_, index) => (
+                                <div key={index} className="h-4 w-16 animate-pulse rounded bg-black/10" />
+                            ))}
+                        </div>
+                        <div className="h-9 w-9 animate-pulse rounded-full bg-black/10 lg:hidden" />
+                    </div>
                 </div>
+
+                <section className="flex min-h-svh items-center justify-center">
+                    <div className="site-container flex justify-center py-32">
+                        <div className="flex w-full max-w-4xl flex-col items-center" role="status">
+                            <span className="sr-only">Preparing your journey</span>
+                            <div className="h-[clamp(2rem,7vw,5.5rem)] w-[min(90%,48rem)] animate-pulse rounded-[3px] bg-black/10" />
+                            <div className="mt-4 h-6 w-[min(65%,25rem)] animate-pulse rounded-[3px] bg-black/[0.08]" />
+                            <div className="mt-7 h-12 w-52 animate-pulse rounded-[3px] bg-black/10" />
+                        </div>
+                    </div>
+                </section>
             </div>
         )
     }
@@ -66,15 +78,15 @@ export default function Home() {
     const homeSeo = getSeoForPath('/')
 
     return (
-        <div className="min-h-svh bg-ink">
+        <div className="luxury-paper min-h-svh">
             <Seo title={homeSeo.title} description={homeSeo.description} path="/" />
             <TravelAgencyJsonLd site={site} />
             <Header />
             <main>
-                <Hero site={site} />
-                <About site={site} />
+                <Hero />
+                <Destinations />
+                <About />
                 <Offers offers={offers} />
-                <SignatureExperiences tours={featured} />
                 <WhyUs site={site} />
                 <Testimonials testimonials={testimonials} />
                 <Contact site={site} />
