@@ -21,6 +21,7 @@ import Sitemap from './pages/Sitemap'
 import TourDetail from './pages/TourDetail'
 import VerifyEmail from './pages/VerifyEmail'
 import VerifyReset from './pages/VerifyReset'
+import VisaAssistance from './pages/VisaAssistance'
 
 function AnimatedRoutes() {
     const location = useLocation()
@@ -82,6 +83,7 @@ function AnimatedRoutes() {
                                 />
                             }
                         />
+                        <Route path="/visa-assistance" element={<VisaAssistance />} />
                         <Route path="/faq" element={<Faq />} />
                         <Route path="/privacy" element={<Privacy />} />
                         <Route path="/blog" element={<Blog />} />

@@ -1,12 +1,14 @@
 import SafeImage from './SafeImage'
 
 type BrandLogoProps = {
+    dark?: boolean
     markClassName?: string
     textClassName?: string
     tagline?: string
 }
 
 export default function BrandLogo({
+    dark = false,
     markClassName = 'h-9 w-9',
     textClassName = 'text-xl sm:text-2xl',
     tagline,
@@ -20,9 +22,12 @@ export default function BrandLogo({
                 imgClassName="object-contain"
             />
             <span className="flex flex-col">
-                <span className={`font-serif tracking-wide leading-none ${textClassName}`}>
-                    <span className="text-gold-gradient">AVEN</span>
-                    <span className="text-white">tures</span>
+                <span
+                    className={`font-lejour inline-block leading-none tracking-[0.16em] transition-colors duration-500 ${
+                        dark ? 'text-ink' : 'text-gold'
+                    } ${textClassName}`}
+                >
+                    AVENtures
                 </span>
                 {tagline ? (
                     <span className="mt-1.5 text-[11px] font-medium leading-tight tracking-wide text-gold">
