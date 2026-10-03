@@ -105,7 +105,7 @@ function DestinationCard({ destination }: { destination: Destination }) {
                 className="absolute inset-0 h-full w-full object-cover transition-[transform,filter] duration-[1400ms] ease-in will-change-transform lg:group-hover:scale-[1.005] lg:group-hover:brightness-[0.9] lg:group-hover:blur-[0.6px]"
             />
 
-            <div className="pointer-events-none absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-1000 ease-out lg:group-hover:opacity-100" />
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(14,39,75,0.24)_0%,rgba(8,20,38,0.48)_52%,rgba(0,0,0,0.82)_100%)] opacity-100 transition-opacity duration-1000 ease-out lg:opacity-0 lg:group-hover:opacity-100" />
 
             <div className="pointer-events-none absolute inset-0 hidden items-center justify-center transition duration-500 lg:flex lg:group-hover:-translate-y-4 lg:group-hover:opacity-0">
                 <h3 className="font-lejour text-3xl text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)] sm:text-3xl lg:text-4xl">
@@ -113,7 +113,7 @@ function DestinationCard({ destination }: { destination: Destination }) {
                 </h3>
             </div>
 
-            <div className="absolute inset-0 flex translate-y-0 flex-col justify-end bg-[linear-gradient(to_top,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.58)_18%,transparent_45%)] p-6 opacity-100 transition duration-500 lg:translate-y-6 lg:bg-[linear-gradient(to_top,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.55)_12%,transparent_32%)] lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 sm:p-8">
+            <div className="absolute inset-0 flex translate-y-0 flex-col justify-end bg-[linear-gradient(to_top,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.58)_18%,transparent_45%)] p-6 opacity-100 transition duration-500 lg:translate-y-6 lg:bg-transparent lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 sm:p-8">
                 <span className="absolute right-5 top-4 font-noto-serif text-4xl text-white/30">
                     {destination.rank}
                 </span>
