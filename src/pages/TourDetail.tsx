@@ -1,374 +1,270 @@
-import { ArrowLeft, Clock3, MapPin, Sparkles } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { ArrowLeft, ArrowRight, CalendarClock, ChevronLeft, ChevronRight, Compass, Files, Luggage, MapPin, Quote } from 'lucide-react'
+import { motion } from 'motion/react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getSite, getTourBySlug } from '../api'
+import { getSite, getTestimonials, getTourBySlug, getTours } from '../api'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
+import JourneyCta from '../components/ui/JourneyCta'
 import SafeImage from '../components/ui/SafeImage'
-import SectionTabs from '../components/tours/SectionTabs'
-import type { SiteInfo, Tour } from '../types/content'
+import type { SiteInfo, Testimonial, Tour } from '../types/content'
 import NotFound from './NotFound'
-import TourGallery from '../components/tours/TourGallery'
 
 const coverFocus: Record<string, string> = {
     'philippine-discovery': 'object-[center_48%]',
     'cebu-tour': 'object-[35%_55%]',
     'boracay-serenity': 'object-[center_58%]',
-    'south-korea-kwave': 'object-[center_48%]',
-    'japan-tradition': 'object-[center_50%]',
-    'usa-dream-big': 'object-[center_50%]',
-    'thailand-calling': 'object-[center_48%]',
-    'indonesia-escape': 'object-[center_50%]',
-    'europe-journeys': 'object-[center_48%]',
 }
 
-const TABS = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'trips', label: 'Organized Trips' },
-    { id: 'flights', label: 'Flights' },
-    { id: 'hotels', label: 'Hotels' },
-    { id: 'cars', label: 'Cars' },
+const visualCategories = [
+    ['See', 'Landmarks, scenery, architecture, and views that define the destination.'],
+    ['Taste', 'Local flavors, markets, cafés, and dining experiences worth seeking out.'],
+    ['Experience', 'Activities and attractions that bring you closer to the place.'],
+    ['Discover', 'Culture, traditions, and everyday moments beyond the familiar routes.'],
+    ['Explore', 'Neighborhoods, streets, and local corners best found at your own pace.'],
 ] as const
-
-type TabId = (typeof TABS)[number]['id']
 
 export default function TourDetail() {
     const { slug } = useParams<{ slug: string }>()
     const [tour, setTour] = useState<Tour | null | undefined>(undefined)
+    const [allTours, setAllTours] = useState<Tour[]>([])
     const [site, setSite] = useState<SiteInfo | null>(null)
-    const [tab, setTab] = useState<TabId>('overview')
+    const [testimonials, setTestimonials] = useState<Testimonial[]>([])
 
     useEffect(() => {
         if (!slug) {
             setTour(null)
             return
         }
-        setTour(undefined)
-        setTab('overview')
-        void Promise.all([getTourBySlug(slug), getSite()]).then(([tourData, siteData]) => {
-            setTour(tourData)
-            setSite(siteData)
-        })
+        void Promise.all([getTourBySlug(slug), getTours().catch(() => []), getSite(), getTestimonials().catch(() => [])]).then(
+            ([tourData, toursData, siteData, testimonialData]) => {
+                setTour(tourData)
+                setAllTours(toursData)
+                setSite(siteData)
+                setTestimonials(testimonialData)
+            },
+        )
     }, [slug])
 
+    const suggestedTours = useMemo(() => {
+        if (!tour) return []
+        const remaining = allTours.filter((item) => item.slug !== tour.slug)
+        const sameRegion = remaining.filter((item) => item.region && item.region === tour.region)
+        const others = remaining.filter((item) => !sameRegion.some((match) => match.id === item.id))
+        return [...sameRegion, ...others].slice(0, 3)
+    }, [allTours, tour])
+
     if (tour === undefined) {
-        return (
-            <div className="min-h-svh bg-ink">
-                <Header />
-                <div className="relative h-[52svh] skeleton-shimmer" />
-                <div className="site-container grid gap-10 py-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
-                    <div className="space-y-3">
-                        <div className="h-4 w-40 skeleton-shimmer rounded" />
-                        <div className="h-4 w-32 skeleton-shimmer rounded" />
-                    </div>
-                    <div className="space-y-4">
-                        <div className="h-5 w-2/3 skeleton-shimmer rounded" />
-                        <div className="h-4 w-full skeleton-shimmer rounded" />
-                        <div className="h-4 w-5/6 skeleton-shimmer rounded" />
-                    </div>
-                </div>
-            </div>
-        )
+        return <div className="luxury-paper min-h-svh"><Header /><div className="h-[70svh] animate-pulse bg-royal/10" /></div>
     }
+    if (tour === null) return <NotFound />
 
-    if (tour === null) {
-        return <NotFound />
-    }
-
-    const inquireHref = `/custom-tour?tour=${encodeURIComponent(tour.title)}`
-
+    const gallery = tour.gallery.length ? tour.gallery : [tour.coverImage]
     return (
-        <div className="min-h-svh max-w-full overflow-x-clip bg-ink">
-            <Seo
-                title={`${tour.title} — AVENtures`}
-                description={tour.shortDescription || tour.tagline}
-                path={`/destinations/${tour.slug}`}
-                image={tour.coverImage}
-            />
+        <div className="luxury-paper font-poppins min-h-svh overflow-x-clip text-ink">
+            <Seo title={`${tour.title} — AVENtures`} description={tour.shortDescription || tour.tagline} path={`/destinations/${tour.slug}`} image={tour.coverImage} />
             <Header />
-            <div className="relative h-[70svh] overflow-hidden lg:h-[62svh]">
-                <div className="absolute inset-0">
-                    <SafeImage
-                        src={tour.coverImage}
-                        alt=""
-                        className="h-full w-full"
-                        imgClassName={`object-cover ${coverFocus[tour.id] ?? 'object-center'}`}
+
+            <section className="relative flex min-h-[38rem] h-[76svh] items-end overflow-hidden">
+                <SafeImage src={tour.coverImage} alt={tour.location} className="absolute inset-0 h-full w-full" imgClassName={`object-cover ${coverFocus[tour.id] ?? 'object-center'}`} />
+                <div className="absolute inset-0 bg-[#071831]/22" />
+                <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-[#071831]/85 via-[#071831]/42 to-transparent" />
+                <div className="site-container relative z-10 pb-12 sm:pb-16">
+                    <Link to="/destinations" className="inline-flex items-center gap-2 text-sm text-white/80 transition hover:text-gold"><ArrowLeft size={16} />Back to destinations</Link>
+                    <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }} className="mt-7 max-w-4xl">
+                        <p className="flex items-center gap-2 text-xs uppercase tracking-[0.24em] text-gold"><MapPin size={14} />{tour.location}</p>
+                        <h1 className="mt-3 font-noto-serif text-5xl leading-[1.04] text-white sm:text-6xl lg:text-7xl">{tour.title}</h1>
+                        <p className="mt-4 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">{tour.tagline}</p>
+                        <Link to={`/custom-tour?tour=${encodeURIComponent(tour.title)}`} className="mt-7 inline-flex items-center gap-2 border border-white/45 bg-white/10 px-6 py-3 text-sm text-white backdrop-blur-sm transition hover:border-gold hover:bg-gold hover:text-royal">Plan this destination <ArrowRight size={15} /></Link>
+                    </motion.div>
+                </div>
+            </section>
+
+            <main>
+                {visualCategories.map(([title, description], index) => (
+                    <ExperienceStory
+                        key={title}
+                        title={title}
+                        description={description}
+                        image={gallery[index % gallery.length]}
+                        highlight={tour.highlights[index % tour.highlights.length] ?? tour.tagline}
+                        location={tour.location}
+                        reverse={index % 2 === 1}
+                        tinted={index % 2 === 1}
                     />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/30 to-black/60" />
+                ))}
 
-                <div className="site-container relative z-10 flex h-full flex-col justify-end">
-                    <div className="grid items-end gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
-                        <div className="hidden h-56 lg:block" aria-hidden />
-                        <div className="pb-8 lg:pb-10">
-                            <Link
-                                to="/destinations"
-                                className="mb-4 inline-flex items-center gap-2 text-sm text-white/90 transition hover:text-gold"
-                            >
-                                <ArrowLeft size={16} strokeWidth={1.5} />
-                                Back to destinations
-                            </Link>
-                            <motion.h1
-                                initial={{ opacity: 0, y: 12 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-3xl font-semibold text-white sm:text-4xl lg:text-5xl"
-                            >
-                                {tour.title}
-                            </motion.h1>
-                            <p className="mt-2 text-base text-white/80 sm:text-lg">{tour.tagline}</p>
+                <EditorialSection eyebrow="Must Try · Traveler Stories" title="Stories worth following" items={tour.highlights.slice(0, 3)} tour={tour} testimonials={testimonials} />
+
+                <section className="relative overflow-hidden bg-royal py-20 text-white sm:py-28">
+                    <div aria-hidden className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:48px_48px]" />
+                    <div aria-hidden className="absolute -right-24 top-10 h-72 w-72 rounded-full border border-dashed border-gold/25" />
+                    <div aria-hidden className="absolute -right-10 top-24 h-44 w-44 rounded-full border border-gold/15" />
+                    <div className="site-container relative grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.28em] text-gold">Travel Tips · Briefing</p>
+                            <h2 className="mt-3 font-noto-serif text-4xl sm:text-5xl">Know before you go</h2>
+                            <div className="mt-7 inline-flex items-center gap-2 border border-white/15 bg-white/5 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-white/55">
+                                <MapPin size={12} className="text-gold" />
+                                Prepared for {tour.location}
+                            </div>
                         </div>
+                        <ol className="grid gap-x-9 sm:grid-cols-2">
+                            {[
+                                [CalendarClock, `Give yourself time to experience ${tour.location} without rushing.`],
+                                [Luggage, 'Pack for the weather, local customs, and the activities you want to try.'],
+                                [Files, 'Keep digital and printed copies of important travel documents.'],
+                                [Compass, 'Leave room for local recommendations and unplanned discoveries.'],
+                            ].map(([Icon, tip], index) => (
+                                <li key={tip as string} className="group flex gap-4 border-t border-gold/25 py-6">
+                                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/35 text-gold transition group-hover:bg-gold group-hover:text-royal">
+                                        <Icon size={16} strokeWidth={1.5} />
+                                    </span>
+                                    <div>
+                                        <span className="text-[10px] uppercase tracking-[0.18em] text-gold/65">Brief 0{index + 1}</span>
+                                        <p className="mt-2 text-sm leading-7 text-white/72">{tip as string}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ol>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            <main className="site-container min-w-0 pb-20">
-                <div className="grid min-w-0 items-stretch gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-14">
-                    <div className="relative z-10 flex min-w-0 flex-col overflow-hidden rounded-3xl lg:-mt-56 lg:h-[calc(100%+14rem)]">
-                        <div aria-hidden className="h-44 shrink-0 bg-gold-band lg:h-56" />
-                        <aside className="flex min-h-[22rem] flex-1 flex-col gap-7 bg-[#242424] px-6 py-8 sm:px-7">
-                            <dl className="space-y-5">
-                                <div>
-                                    <dt className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-gold/70">
-                                        <MapPin size={12} strokeWidth={1.6} />
-                                        Location
-                                    </dt>
-                                    <dd className="mt-1.5 text-sm text-silver/90">{tour.location}</dd>
-                                </div>
-                                <div>
-                                    <dt className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-gold/70">
-                                        <Clock3 size={12} strokeWidth={1.6} />
-                                        Duration
-                                    </dt>
-                                    <dd className="mt-1.5 text-sm text-silver/90">{tour.duration}</dd>
-                                </div>
-                                <div>
-                                    <dt className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-gold/70">
-                                        <Sparkles size={12} strokeWidth={1.6} />
-                                        Price
-                                    </dt>
-                                    <dd className="mt-1.5 text-sm text-silver/90">{tour.startingPrice}</dd>
-                                </div>
-                            </dl>
+                <ClientExperiences testimonials={testimonials} tour={tour} />
 
-                            <Link
-                                to={inquireHref}
-                                className="btn-gold inline-flex w-fit rounded-xl px-6 py-3 text-sm"
-                            >
-                                Inquire
-                            </Link>
-                        </aside>
-                    </div>
-
-                    <div className="min-w-0 max-w-full pt-8 lg:pt-10">
-                        <SectionTabs
-                            label="Destination sections"
-                            tabs={TABS}
-                            value={tab}
-                            onChange={(id) => setTab(id)}
-                        />
-
-                        <div className="pt-8">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={tab}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 6 }}
-                                    transition={{ duration: 0.28 }}
-                                    className="min-w-0 max-w-full"
-                                >
-                                    {tab === 'overview' && <OverviewPanel tour={tour} onSeeTrips={() => setTab('trips')} />}
-                                    {tab === 'trips' && <TripsPanel tour={tour} inquireHref={inquireHref} />}
-                                    {tab === 'flights' && (
-                                        <ServiceRequestPanel
-                                            title="Flights"
-                                            body={`Airfare into ${tour.location} is arranged privately for each departure. Share your dates and preferred cabin, and we will source the most comfortable routing.`}
-                                            href={`/flights?tour=${encodeURIComponent(tour.title)}`}
-                                            ctaLabel="Request flights"
-                                            extraHref="/flights"
-                                            extraLabel="Flights desk"
-                                        />
-                                    )}
-                                    {tab === 'hotels' && (
-                                        <ServiceRequestPanel
-                                            title="Hotels"
-                                            body="Stays are selected for setting, quiet, and ease of movement — not a public inventory list. Tell us how you like to sleep and we will shortlist the right rooms."
-                                            href={`/hotels?tour=${encodeURIComponent(tour.title)}`}
-                                            ctaLabel="Request hotels"
-                                            extraHref="/hotels"
-                                            extraLabel="Hotels desk"
-                                        />
-                                    )}
-                                    {tab === 'cars' && (
-                                        <ServiceRequestPanel
-                                            title="Cars"
-                                            body="Airport greetings, private cars, and island transfers are arranged by inquiry alongside the journey. Share pickup details and we will match the right vehicle."
-                                            href={`/cars?tour=${encodeURIComponent(tour.title)}`}
-                                            ctaLabel="Request transfers"
-                                            extraHref="/cars"
-                                            extraLabel="Cars desk"
-                                        />
-                                    )}
-                                </motion.div>
-                            </AnimatePresence>
+                {suggestedTours.length > 0 && (
+                    <section className="bg-oat py-20 sm:py-28">
+                        <div className="site-container"><p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">Continue exploring</p><h2 className="mt-3 font-noto-serif text-4xl text-royal sm:text-5xl">Suggested destinations</h2>
+                            <div className="mt-9 grid gap-5 md:grid-cols-3">{suggestedTours.map((item) => <SuggestedDestination key={item.id} tour={item} />)}</div>
                         </div>
-                    </div>
-                </div>
+                    </section>
+                )}
+
+                <JourneyCta />
             </main>
-
             {site && <Footer site={site} />}
         </div>
     )
 }
 
-function OverviewPanel({
-    tour,
-    onSeeTrips,
-}: {
-    tour: Tour
-    onSeeTrips: () => void
-}) {
-    return (
-        <div className="space-y-10">
-            <div>
-                <p className="text-sm uppercase tracking-[0.22em] text-gold">{tour.location}</p>
-                <p className="mt-3 max-w-2xl text-base leading-relaxed text-silver/90">
-                    {tour.shortDescription} This {tour.duration.toLowerCase()} itinerary is paced
-                    for discovery rather than haste, with a host who stays with you from arrival
-                    to departure.
-                </p>
-            </div>
-
-            <div>
-                <h2 className="font-serif text-2xl text-gold-gradient">Highlights</h2>
-                <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-                    {tour.highlights.map((item) => (
-                        <li
-                            key={item}
-                            className="flex gap-3 rounded-xl border border-white/8 bg-ink-card/60 px-4 py-3.5 text-sm text-silver/90"
-                        >
-                            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
-                            {item}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-
-            <TourGallery tour={tour} />
-
-            <button
-                type="button"
-                onClick={onSeeTrips}
-                className="text-sm text-gold transition hover:text-ivory"
-            >
-                View organized trips →
-            </button>
-        </div>
-    )
-}
-
-function TripsPanel({ tour, inquireHref }: { tour: Tour; inquireHref: string }) {
-    return (
-        <div className="space-y-8">
-            <div className="rounded-2xl border border-white/8 bg-ink-card/70 p-6 sm:p-8">
-                <p className="text-[10px] uppercase tracking-[0.22em] text-gold">Signature journey</p>
-                <h2 className="mt-2 font-serif text-2xl text-white sm:text-3xl">{tour.title}</h2>
-                <p className="mt-2 text-sm text-silver/75">{tour.tagline}</p>
-                <div className="mt-5 flex flex-wrap gap-3 text-xs">
-                    <span className="rounded-full border border-gold/30 px-3.5 py-1.5 text-gold">
-                        {tour.duration}
-                    </span>
-                    <span className="rounded-full border border-white/15 px-3.5 py-1.5 text-white">
-                        {tour.startingPrice}
-                    </span>
-                </div>
-                <p className="mt-5 text-sm leading-relaxed text-silver/85">{tour.shortDescription}</p>
-            </div>
-
-            <div>
-                <h3 className="font-serif text-xl text-gold-gradient">Itinerary</h3>
-                <ol className="mt-5 space-y-5">
-                    {tour.itinerary.map((day) => (
-                        <li key={day.day} className="border-l border-gold/30 pl-4">
-                            <p className="text-xs uppercase tracking-wider text-gold">Day {day.day}</p>
-                            <p className="mt-1 font-medium text-white">{day.title}</p>
-                            <p className="mt-1 text-sm text-muted">{day.description}</p>
-                        </li>
-                    ))}
-                </ol>
-            </div>
-
-            <div className="grid gap-8 sm:grid-cols-2">
-                <div>
-                    <h3 className="text-sm font-semibold uppercase tracking-wider text-gold">
-                        Inclusions
-                    </h3>
-                    <ul className="mt-3 space-y-2 text-sm text-silver/85">
-                        {tour.inclusions.map((item) => (
-                            <li key={item}>• {item}</li>
-                        ))}
-                    </ul>
-                </div>
-                <div>
-                    <h3 className="text-sm font-semibold uppercase tracking-wider text-gold">
-                        Exclusions
-                    </h3>
-                    <ul className="mt-3 space-y-2 text-sm text-silver/85">
-                        {tour.exclusions.map((item) => (
-                            <li key={item}>• {item}</li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
-
-            <div className="rounded-2xl border border-gold/20 p-6 sm:p-7">
-                <h3 className="font-serif text-xl text-gold-gradient">Prefer a custom pace?</h3>
-                <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
-                    Dates, room categories, and side trips can be reshaped around your group. This
-                    itinerary is the starting sketch — not a fixed departure.
-                </p>
-                <Link to={inquireHref} className="btn-gold mt-5 inline-flex rounded-xl px-7 py-3 text-sm">
-                    Inquire about this tour
-                </Link>
-            </div>
-        </div>
-    )
-}
-
-function ServiceRequestPanel({
+function ExperienceStory({
     title,
-    body,
-    href,
-    ctaLabel,
-    extraHref,
-    extraLabel,
+    description,
+    image,
+    highlight,
+    location,
+    reverse,
+    tinted,
 }: {
     title: string
-    body: string
-    href: string
-    ctaLabel: string
-    extraHref: string
-    extraLabel: string
+    description: string
+    image: string
+    highlight: string
+    location: string
+    reverse: boolean
+    tinted: boolean
 }) {
     return (
-        <div className="max-w-xl py-6">
-            <p className="text-[10px] uppercase tracking-[0.28em] text-gold/80">By request</p>
-            <h2 className="mt-3 font-serif text-3xl text-gold-gradient">{title}</h2>
-            <span className="mt-5 block h-px w-16 bg-gold/40" />
-            <p className="mt-5 text-sm leading-relaxed text-silver/80">{body}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-                <Link to={href} className="btn-gold inline-flex rounded-xl px-6 py-3 text-sm">
-                    {ctaLabel}
-                </Link>
-                <Link
-                    to={extraHref}
-                    className="inline-flex rounded-xl border border-white/15 px-6 py-3 text-sm text-silver/80 transition hover:border-gold/40 hover:text-white"
-                >
-                    {extraLabel}
-                </Link>
-            </div>
-        </div>
+        <section className={`py-16 sm:py-24 ${tinted ? 'bg-white/45' : ''}`}>
+            {title === 'See' && (
+                <div className="site-container mb-6 sm:mb-20">
+                    <p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">Things to see · Digital Experience</p>
+                    <h2 className="mt-3 font-noto-serif text-4xl text-royal sm:text-5xl">Explore before you travel</h2>
+                    <p className="mt-5 text-sm leading-7 text-ink/55 lg:whitespace-nowrap">Begin with what to see, then continue through the flavors, experiences, culture, and everyday life that give this destination its character.</p>
+                </div>
+            )}
+            <motion.article
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="site-container grid items-center gap-9 lg:grid-cols-2 lg:gap-16"
+            >
+                <div className={`overflow-hidden rounded-xl shadow-[0_20px_55px_rgba(22,55,101,0.12)] ${reverse ? 'lg:order-2' : ''}`}>
+                    <SafeImage
+                        src={image}
+                        alt={`${title} in ${location}`}
+                        className="aspect-[4/3] w-full"
+                        imgClassName="object-cover transition duration-1000 hover:scale-[1.025]"
+                    />
+                </div>
+                <div className={reverse ? 'lg:order-1' : ''}>
+                    <p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">{title}</p>
+                    <h3 className="mt-3 font-noto-serif text-2xl leading-tight text-royal sm:text-4xl">{highlight}</h3>
+                    <p className="mt-1 max-w-xl text-base leading-8 text-ink/65">{description}</p>
+                    <p className="mt-4 max-w-xl text-sm leading-7 text-ink/50">This space can hold a signature story about {location}—from a local recommendation and cultural detail to the moments that make this experience distinct from anywhere else.</p>
+                    <span className="mt-7 block h-px w-16 bg-[#9b7512]/55" />
+                </div>
+            </motion.article>
+        </section>
     )
+}
+
+function EditorialSection({ eyebrow, title, items, tour, testimonials }: { eyebrow: string; title: string; items: string[]; tour: Tour; testimonials: Testimonial[] }) {
+    return (
+        <section className="py-20 sm:py-28">
+            <div className="site-container">
+                <p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">{eyebrow}</p>
+                <div className="mt-3 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+                    <h2 className="font-noto-serif text-4xl text-royal sm:text-5xl">{title}</h2>
+                    <Link to="/blog" className="inline-flex items-center gap-2 text-sm text-[#9b7512] hover:text-royal">Read more stories <ArrowRight size={15} /></Link>
+                </div>
+                <div className="mt-9 grid gap-5 md:grid-cols-3">
+                    {items.map((item, index) => {
+                        const story = testimonials.length ? testimonials[index % testimonials.length] : null
+                        const name = story?.name ?? 'AVENtures Traveler'
+                        const initials = name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
+                        return (
+                            <article key={item} className="rounded-xl border border-royal/10 bg-white/50 p-6 shadow-[0_12px_35px_rgba(22,55,101,0.06)]">
+                                <div className="flex items-center gap-3">
+                                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-royal font-noto-serif text-sm text-gold">{initials}</span>
+                                    <div><p className="text-sm font-medium text-royal">{name}</p><p className="mt-0.5 text-xs text-ink/40">{story?.trip ?? tour.location}</p></div>
+                                </div>
+                                <h3 className="mt-6 font-noto-serif text-2xl text-royal">{item}</h3>
+                                <p className="mt-3 text-sm leading-7 text-ink/55">“{story?.quote ?? `A memorable part of our journey through ${tour.location}.`}”</p>
+                            </article>
+                        )
+                    })}
+                </div>
+            </div>
+        </section>
+    )
+}
+
+function ClientExperiences({ testimonials, tour }: { testimonials: Testimonial[]; tour: Tour }) {
+    const [activeIndex, setActiveIndex] = useState(0)
+    const stories = testimonials.length
+        ? testimonials.slice(0, 5)
+        : [{ id: 'fallback', name: 'AVENtures Traveler', trip: tour.location, quote: 'Every detail felt considered, while the journey still left room for us to experience the destination in our own way.', rating: 5 }]
+    const activeStory = stories[activeIndex]
+    const move = (direction: -1 | 1) => setActiveIndex((current) => (current + direction + stories.length) % stories.length)
+
+    return (
+        <section className="py-20 sm:py-28">
+            <div className="site-container">
+                <div className="text-center">
+                    <p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">Client Experiences · Feedback</p>
+                    <h2 className="mt-3 font-noto-serif text-4xl text-royal sm:text-5xl">Journeys shared by travelers</h2>
+                </div>
+                <div className="relative mt-8 px-0 sm:px-16 lg:px-20">
+                    <button type="button" onClick={() => move(-1)} aria-label="Previous client experience" className="absolute left-0 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-royal/20 text-royal transition hover:border-[#9b7512] hover:bg-[#9b7512] hover:text-white sm:flex"><ChevronLeft size={19} /></button>
+                    <motion.div key={activeStory.id} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.25 }} className="text-center">
+                        <Quote className="mx-auto text-[#9b7512]/30" size={42} />
+                        <blockquote className="mx-auto mt-5 max-w-4xl font-poppins text-xl font-normal leading-relaxed text-royal/85 sm:text-2xl lg:text-3xl">“{activeStory.quote}”</blockquote>
+                        <p className="mt-7 text-xs uppercase tracking-[0.2em] text-ink/45">{activeStory.name} · {activeStory.trip}</p>
+                    </motion.div>
+                    <button type="button" onClick={() => move(1)} aria-label="Next client experience" className="absolute right-0 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-royal/20 text-royal transition hover:border-[#9b7512] hover:bg-[#9b7512] hover:text-white sm:flex"><ChevronRight size={19} /></button>
+                    <div className="mt-8 flex justify-center gap-3 sm:hidden">
+                        <button type="button" onClick={() => move(-1)} aria-label="Previous client experience" className="flex h-10 w-10 items-center justify-center rounded-full border border-royal/20 text-royal"><ChevronLeft size={18} /></button>
+                        <button type="button" onClick={() => move(1)} aria-label="Next client experience" className="flex h-10 w-10 items-center justify-center rounded-full border border-royal/20 text-royal"><ChevronRight size={18} /></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    )
+}
+
+function SuggestedDestination({ tour }: { tour: Tour }) {
+    return <Link to={`/destinations/${tour.slug}`} className="group relative block aspect-[4/3] overflow-hidden rounded-xl border border-royal/10"><SafeImage src={tour.coverImage} alt={tour.title} className="absolute inset-0 h-full w-full" imgClassName="object-cover transition duration-700 group-hover:scale-[1.04]" /><div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" /><div className="absolute inset-x-0 bottom-0 p-5"><p className="text-[10px] uppercase tracking-[0.2em] text-gold">{tour.location}</p><h3 className="mt-2 font-noto-serif text-2xl text-white">{tour.title}</h3></div></Link>
 }

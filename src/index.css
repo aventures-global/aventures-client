@@ -79,8 +79,9 @@
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--color-gold) 35%, transparent);
-    color: white;
+    background: color-mix(in oklab, var(--color-gold) 28%, var(--color-cream));
+    color: var(--color-royal);
+    text-shadow: none;
   }
 }
 
