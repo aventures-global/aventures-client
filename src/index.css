@@ -140,6 +140,10 @@
     font-family: "Noto Serif", Georgia, serif;
   }
 
+  .font-poppins {
+    font-family: "Poppins", system-ui, sans-serif;
+  }
+
   .hero-title-gradient {
     background-image: linear-gradient(45deg, #ffd85a 0%, #e6b41c 42%, #b88d0b 100%);
     background-clip: text;

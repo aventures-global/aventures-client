@@ -60,6 +60,11 @@ const routeCopy: Record<string, SeoRouteCopy> = {
         description:
             'Request private transfers and car arrangements, from airport meet-and-greet to local guides.',
     },
+    '/visa-assistance': {
+        title: 'Visa Assistance — AVENtures',
+        description:
+            'Get clear visa document guidance and application preparation support from AVENtures Global.',
+    },
     '/faq': {
         title: 'FAQs — AVENtures',
         description:

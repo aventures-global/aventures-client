@@ -48,7 +48,7 @@ export default function Home() {
 
     if (!site) {
         return (
-            <div className="relative min-h-svh overflow-hidden bg-[#e9e9e6]" aria-busy="true" aria-label="Loading homepage">
+            <div className="font-poppins relative min-h-svh overflow-hidden bg-[#e9e9e6]" aria-busy="true" aria-label="Loading homepage">
                 <div className="absolute inset-x-0 top-0 z-10">
                     <div className="site-container flex items-center justify-between py-5">
                         <div className="h-8 w-36 animate-pulse rounded bg-black/10" />
@@ -78,7 +78,7 @@ export default function Home() {
     const homeSeo = getSeoForPath('/')
 
     return (
-        <div className="luxury-paper min-h-svh">
+        <div className="luxury-paper font-poppins min-h-svh">
             <Seo title={homeSeo.title} description={homeSeo.description} path="/" />
             <TravelAgencyJsonLd site={site} />
             <Header />
