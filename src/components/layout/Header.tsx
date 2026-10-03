@@ -20,6 +20,9 @@ const landingLinks = [
     { label: 'Shop', to: '/shop' },
 ] as const
 
+/** Routes already on the cream palette; they use the light header from the top. */
+const LIGHT_PAGES = new Set(['/faq'])
+
 function linkClass(active: boolean, dark: boolean) {
     return `font-noto-serif text-base tracking-wide transition-colors ${
         active
@@ -179,6 +182,7 @@ export default function Header() {
     const reduceMotion = useReducedMotion()
     const location = useLocation()
     const onHome = location.pathname === '/'
+    const lightPage = LIGHT_PAGES.has(location.pathname)
     const { user, isLoggedIn, logout } = useAuth()
     const { itemCount } = useCart()
     const overHomeHero = onHome && !pastHero
@@ -186,7 +190,7 @@ export default function Header() {
     useEffect(() => {
         const onScroll = () => {
             setScrolled(window.scrollY > 24)
-            setPastHero(onHome && window.scrollY >= window.innerHeight * 0.9)
+            setPastHero(lightPage || (onHome && window.scrollY >= window.innerHeight * 0.9))
         }
         onScroll()
         window.addEventListener('scroll', onScroll, { passive: true })
@@ -195,7 +199,7 @@ export default function Header() {
             window.removeEventListener('scroll', onScroll)
             window.removeEventListener('resize', onScroll)
         }
-    }, [onHome])
+    }, [onHome, lightPage])
 
     useEffect(() => setDrawerOpen(false), [location.pathname])
 

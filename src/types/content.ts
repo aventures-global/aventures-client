@@ -91,5 +91,21 @@ export type SiteInfo = {
     }
     whyUsIntro: string
     whyUsPoints: WhyUsPoint[]
-    contactIntro: string
+}
+
+export type FaqItem = {
+    id: string
+    question: string
+    answer: string
+}
+
+export type FaqCategoryGroup = {
+    id: string
+    name: string
+    faqs: FaqItem[]
+}
+
+export type FaqData = {
+    categories: FaqCategoryGroup[]
+    top: FaqItem[]
 }

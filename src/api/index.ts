@@ -1,6 +1,7 @@
 import { offers } from '../data/offers'
 import { siteInfo } from '../data/site'
 import type {
+    FaqData,
     MerchProduct,
     Partner,
     ServiceOffer,
@@ -24,6 +25,10 @@ export async function getOffers(): Promise<ServiceOffer[]> {
 
 export async function getTestimonials(): Promise<Testimonial[]> {
     return apiFetch<Testimonial[]>('/api/testimonials')
+}
+
+export async function getFaqs(): Promise<FaqData> {
+    return apiFetch<FaqData>('/api/faqs')
 }
 
 export async function getTours(): Promise<Tour[]> {

@@ -1,3 +1,4 @@
+import { Mail, MapPin, Phone } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import type { SiteInfo } from '../../types/content'
 import BrandLogo from '../ui/BrandLogo'
@@ -6,6 +7,20 @@ import { FacebookIcon, InstagramIcon } from '../ui/SocialIcons'
 type FooterProps = {
     site: SiteInfo
 }
+
+const navigation = [
+    { label: 'Home', to: '/' },
+    { label: 'Destination', to: '/destinations' },
+    { label: 'Visa Services', to: '/visa-assistance' },
+    { label: 'About Us', to: '/about' },
+    { label: 'Shop', to: '/shop' },
+] as const
+
+const otherLinks = [
+    { label: 'FAQs', to: '/faq' },
+    { label: 'Privacy Policy', to: '/privacy' },
+    { label: 'Sitemaps', to: '/sitemap' },
+] as const
 
 function displayHandle(handle: string) {
     const value = handle.replace(/^@/, '')
@@ -16,9 +31,6 @@ export default function Footer({ site }: FooterProps) {
     const year = new Date().getFullYear()
     const location = useLocation()
     const onHome = location.pathname === '/'
-    const handle = displayHandle(site.socialHandles.facebook)
-
-    const hashHref = (hash: string) => (onHome ? hash : `/${hash}`)
 
     const goHome = () => {
         if (!onHome) return
@@ -43,99 +55,99 @@ export default function Footer({ site }: FooterProps) {
                         />
                     </Link>
 
-                    <div className="mt-8 space-y-3">
+                    <address className="mt-10 space-y-4 text-sm not-italic text-white/80">
                         <a
-                            href={site.facebookUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="flex items-center gap-3 text-sm text-white/85 hover:text-white"
+                            href={`mailto:${site.email}`}
+                            className="flex items-start gap-3 transition-colors hover:text-white"
                         >
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-ink">
-                                <FacebookIcon size={15} />
-                            </span>
-                            {handle}
+                            <Mail size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-gold-deep" aria-hidden />
+                            <span>{site.email}</span>
                         </a>
                         <a
-                            href={site.instagramUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="flex items-center gap-3 text-sm text-white/85 hover:text-white"
+                            href={`tel:${site.phone}`}
+                            className="flex items-start gap-3 transition-colors hover:text-white"
                         >
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-ink">
-                                <InstagramIcon size={15} />
-                            </span>
-                            {handle}
+                            <Phone size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-gold-deep" aria-hidden />
+                            <span>{site.phoneDisplay}</span>
                         </a>
-                    </div>
-
-                    <p className="mt-8 text-xs text-white/45">
-                        © {year}, {site.fullName}
-                    </p>
+                        <p className="flex items-start gap-3">
+                            <MapPin size={17} strokeWidth={1.5} className="mt-0.5 shrink-0 text-gold-deep" aria-hidden />
+                            <span>
+                                {site.addressLines.map((line) => (
+                                    <span key={line} className="block">
+                                        {line}
+                                    </span>
+                                ))}
+                            </span>
+                        </p>
+                    </address>
                 </div>
 
-                <div className="flex gap-16 sm:gap-24">
+                <div className="flex flex-wrap gap-x-16 gap-y-10 sm:gap-x-20">
                     <nav aria-label="Navigation">
                         <h2 className={headingClass}>Navigation</h2>
                         <ul className="space-y-2.5">
-                            <li>
-                                <Link to="/" className={navClass} onClick={goHome}>
-                                    Home
-                                </Link>
-                            </li>
-                            <li>
-                                <a href={hashHref('#services')} className={navClass}>
-                                    Services
-                                </a>
-                            </li>
-                            <li>
-                                <Link to="/destinations" className={navClass}>
-                                    Destinations
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/shop" className={navClass}>
-                                    Shop
-                                </Link>
-                            </li>
-                            <li>
-                                <a href={hashHref('#why')} className={navClass}>
-                                    Why travel with us?
-                                </a>
-                            </li>
-                            <li>
-                                <a href={hashHref('#about')} className={navClass}>
-                                    About us
-                                </a>
-                            </li>
-                            <li>
-                                <a href={hashHref('#contact')} className={navClass}>
-                                    Contact
-                                </a>
-                            </li>
+                            {navigation.map((link) => (
+                                <li key={link.to}>
+                                    <Link
+                                        to={link.to}
+                                        className={navClass}
+                                        onClick={link.to === '/' ? goHome : undefined}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </nav>
 
                     <nav aria-label="Other links">
                         <h2 className={headingClass}>Other Links</h2>
                         <ul className="space-y-2.5">
+                            {otherLinks.map((link) => (
+                                <li key={link.to}>
+                                    <Link to={link.to} className={navClass}>
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+
+                    <nav aria-label="Social media">
+                        <h2 className={headingClass}>Social</h2>
+                        <ul className="space-y-2.5">
                             <li>
-                                <Link to="/faq" className={navClass}>
-                                    FAQs
-                                </Link>
+                                <a
+                                    href={site.facebookUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className={`${navClass} inline-flex items-center gap-2.5`}
+                                >
+                                    <FacebookIcon size={16} className="shrink-0 text-white/80" />
+                                    {displayHandle(site.socialHandles.facebook)}
+                                </a>
                             </li>
                             <li>
-                                <Link to="/privacy" className={navClass}>
-                                    Privacy Policy
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/sitemap" className={navClass}>
-                                    Sitemaps
-                                </Link>
+                                <a
+                                    href={site.instagramUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className={`${navClass} inline-flex items-center gap-2.5`}
+                                >
+                                    <InstagramIcon size={16} className="shrink-0 text-white/80" />
+                                    {displayHandle(site.socialHandles.instagram)}
+                                </a>
                             </li>
                         </ul>
                     </nav>
                 </div>
+            </div>
+
+            <div className="border-t border-white/15">
+                <p className="site-container py-5 text-xs text-white/45">
+                    © {year}, {site.fullName}
+                </p>
             </div>
         </footer>
     )

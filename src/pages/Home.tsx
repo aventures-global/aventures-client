@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
+    getFaqs,
     getOffers,
     getSite,
     getTestimonials,
@@ -17,13 +18,14 @@ import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
 import TravelAgencyJsonLd from '../components/seo/TravelAgencyJsonLd'
 import { getSeoForPath } from '../data/seo'
-import type { ServiceOffer, SiteInfo, Testimonial } from '../types/content'
+import type { FaqItem, ServiceOffer, SiteInfo, Testimonial } from '../types/content'
 
 export default function Home() {
     const location = useLocation()
     const [site, setSite] = useState<SiteInfo | null>(null)
     const [offers, setOffers] = useState<ServiceOffer[]>([])
     const [testimonials, setTestimonials] = useState<Testimonial[]>([])
+    const [topFaqs, setTopFaqs] = useState<FaqItem[] | null>(null)
 
     useEffect(() => {
         void Promise.all([
@@ -35,6 +37,9 @@ export default function Home() {
             setOffers(offerData)
             setTestimonials(testimonialData)
         })
+        getFaqs()
+            .then((data) => setTopFaqs(data.top))
+            .catch(() => setTopFaqs([]))
     }, [])
 
     useEffect(() => {
@@ -89,7 +94,7 @@ export default function Home() {
                 <Offers offers={offers} />
                 <WhyUs site={site} />
                 <Testimonials testimonials={testimonials} />
-                <Contact site={site} />
+                <Contact site={site} topFaqs={topFaqs} />
             </main>
             <Footer site={site} />
         </div>
