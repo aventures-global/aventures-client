@@ -17,7 +17,7 @@ type OffersProps = {
 
 export default function Offers({ offers }: OffersProps) {
     return (
-        <section id="services" className="page-section">
+        <section id="services" className="page-section bg-oat">
             <div className="site-container flex min-h-0 flex-1 flex-col">
                 <motion.div
                     initial={{ opacity: 0, y: 16 }}

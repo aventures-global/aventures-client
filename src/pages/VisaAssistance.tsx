@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowRight, Check, RotateCcw } from 'lucide-react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion, type Variants } from 'motion/react'
 import { useCallback, useEffect, useId, useRef, useState, type RefCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { getSite } from '../api'
@@ -7,6 +7,7 @@ import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
 import { getSeoForPath } from '../data/seo'
+import { useStickyCover } from '../lib/useStickyCover'
 import {
     ASK_AVENTURES_HREF,
     START_VISA_ASSISTANCE_HREF,
@@ -43,6 +44,18 @@ const secondaryButtonClass =
 const quietButtonClass =
     'inline-flex items-center gap-2 text-sm font-medium text-royal/80 underline-offset-4 transition-colors hover:text-gold-deep hover:underline'
 
+const EASE = [0.22, 1, 0.36, 1] as const
+
+const fadeUp: Variants = {
+    hidden: { opacity: 0, y: 18 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+}
+
+const stagger: Variants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.1 } },
+}
+
 const STARTING_POINT_DISCLAIMER =
     'Your answers are only a starting point. The appropriate visa category depends on your individual circumstances and the specific purpose of your intended travel.'
 
@@ -51,6 +64,8 @@ export default function VisaAssistance() {
     const [site, setSite] = useState<SiteInfo | null>(null)
     const [history, setHistory] = useState<Step[]>([{ kind: 'intro' }])
     const step = history[history.length - 1]
+    const reduceMotion = useReducedMotion()
+    const [finderRef, finderTop] = useStickyCover<HTMLDivElement>()
 
     useEffect(() => {
         void getSite().then(setSite)
@@ -62,29 +77,63 @@ export default function VisaAssistance() {
         <div className="luxury-paper font-poppins flex min-h-svh flex-col">
             <Seo title={seo.title} description={seo.description} path="/visa-assistance" />
             <Header />
-            <main className="site-container flex-1 pb-24 pt-32 sm:pt-36">
-                <header className="mx-auto max-w-3xl text-center">
-                    <p className="text-xs font-medium uppercase tracking-[0.3em] text-royal">Visa Services</p>
-                    <h1 className="mt-4 font-noto-serif text-4xl text-ink sm:text-5xl">
-                        Where Is Your AVENture Taking You?
-                    </h1>
-                    <p className="mt-6 font-noto-serif text-lg italic text-royal sm:text-xl">
-                        &ldquo;No complicated terms. Just answer what feels right for your journey.&rdquo;
-                    </p>
-                </header>
+            <main className="flex-1">
+                <div
+                    ref={finderRef}
+                    className={reduceMotion ? undefined : 'sticky z-0'}
+                    style={reduceMotion ? undefined : { top: finderTop }}
+                >
+                    <div className="site-container pb-16 pt-28 sm:pt-32">
+                        <motion.header
+                            className="mx-auto max-w-5xl text-center"
+                            initial={reduceMotion ? false : 'hidden'}
+                            animate="visible"
+                            variants={stagger}
+                        >
+                            <motion.p variants={fadeUp} className="text-xs font-medium uppercase tracking-[0.3em] text-royal">
+                                Visa Services
+                            </motion.p>
+                            <motion.h1
+                                variants={fadeUp}
+                                className="mt-3 font-noto-serif text-[clamp(1.75rem,4.6vw,3rem)] leading-tight text-ink sm:whitespace-nowrap"
+                            >
+                                Where Is Your AVENture Taking You?
+                            </motion.h1>
+                            <motion.p variants={fadeUp} className="mt-2 font-noto-serif text-lg italic text-royal sm:text-xl">
+                                &ldquo;No complicated terms. Just answer what feels right for your journey.&rdquo;
+                            </motion.p>
+                        </motion.header>
 
-                <FinderCard
-                    step={step}
-                    onAdvance={(next) => setHistory((prev) => [...prev, next])}
-                    onBack={() => setHistory((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev))}
-                    onStartOver={() => setHistory([{ kind: 'intro' }, { kind: 'purpose' }])}
-                />
+                        <motion.div
+                            initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.65, delay: 0.35, ease: EASE }}
+                        >
+                            <FinderCard
+                                step={step}
+                                onAdvance={(next) => setHistory((prev) => [...prev, next])}
+                                onBack={() => setHistory((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev))}
+                                onStartOver={() => setHistory([{ kind: 'intro' }, { kind: 'purpose' }])}
+                            />
+                        </motion.div>
+                    </div>
+                </div>
 
-                <ExploreAll recommended={recommended} />
+                <section className="relative z-10 bg-white py-20 shadow-[0_0_50px_-30px_rgba(22,55,101,0.35)] sm:py-24">
+                    <div className="site-container">
+                        <ExploreAll recommended={recommended} />
 
-                <p className="mx-auto mt-16 max-w-2xl text-center font-noto-serif text-lg text-ink/70">
-                    Answer a few questions. Find your direction. Start your AVENture.
-                </p>
+                        <motion.p
+                            initial={reduceMotion ? false : 'hidden'}
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            variants={fadeUp}
+                            className="mx-auto mt-16 max-w-2xl text-center font-noto-serif text-lg text-ink/70"
+                        >
+                            Answer a few questions. Find your direction. Start your AVENture.
+                        </motion.p>
+                    </div>
+                </section>
             </main>
             {site && <Footer site={site} />}
         </div>
@@ -248,7 +297,7 @@ function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
     return (
         <section
             aria-label="Visa finder"
-            className="mx-auto mt-12 max-w-[40rem] scroll-mt-28 border border-royal/15 bg-white/70 px-6 py-8 shadow-[0_18px_40px_-28px_rgba(22,55,101,0.45)] sm:px-10 sm:py-10"
+            className="mx-auto mt-8 max-w-5xl scroll-mt-28 border border-royal/15 bg-white/70 px-6 py-7 shadow-[0_18px_40px_-28px_rgba(22,55,101,0.45)] sm:px-10 sm:py-8"
         >
             <AnimatePresence mode="wait" initial={false}>
                 <motion.div
@@ -302,7 +351,7 @@ function QuestionStep({ headingRef, number, title, options, selectedId, onChoose
             >
                 {title}
             </h2>
-            <ul aria-labelledby={headingId} className="mt-6 space-y-2.5">
+            <ul aria-labelledby={headingId} className="mt-6 grid gap-2.5 sm:grid-cols-2">
                 {options.map((option) => {
                     const checked = option.id === selectedId
                     return (
@@ -311,7 +360,7 @@ function QuestionStep({ headingRef, number, title, options, selectedId, onChoose
                                 type="button"
                                 aria-pressed={checked}
                                 onClick={() => onChoose(option.id)}
-                                className={`flex min-h-12 w-full cursor-pointer items-center gap-3 border px-4 py-3 text-left text-sm leading-6 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal ${
+                                className={`flex h-full min-h-12 w-full cursor-pointer items-center gap-3 border px-4 py-3 text-left text-sm leading-6 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal ${
                                     checked
                                         ? 'border-royal bg-royal/[0.06] text-ink'
                                         : 'border-royal/15 bg-white/60 text-ink/75 hover:border-royal/40'
@@ -332,7 +381,7 @@ function QuestionStep({ headingRef, number, title, options, selectedId, onChoose
                 })}
             </ul>
 
-            <button type="button" onClick={onBack} className={`${quietButtonClass} mt-8`}>
+            <button type="button" onClick={onBack} className={`${quietButtonClass} mt-6`}>
                 <ArrowLeft size={16} />
                 Back
             </button>
@@ -372,7 +421,7 @@ function MatchResult({
     const ready = readiness === 'yes' || readiness === 'arranging'
 
     return (
-        <div>
+        <div className="mx-auto max-w-2xl">
             <p className="text-xs font-medium uppercase tracking-[0.24em] text-royal">Your AVENture result</p>
             <h2 ref={headingRef} tabIndex={-1} className="mt-3 font-noto-serif text-2xl text-ink outline-none sm:text-3xl">
                 Here&rsquo;s Where Your Answers Lead.
@@ -416,7 +465,7 @@ function MatchResult({
 
 function UnsureResult({ headingRef, onBack, onStartOver }: ResultNavProps) {
     return (
-        <div>
+        <div className="mx-auto max-w-2xl">
             <p className="text-xs font-medium uppercase tracking-[0.24em] text-royal">Not sure or still confused?</p>
             <h2 ref={headingRef} tabIndex={-1} className="mt-3 font-noto-serif text-2xl text-ink outline-none sm:text-3xl">
                 That&rsquo;s completely okay.
@@ -441,19 +490,33 @@ function UnsureResult({ headingRef, onBack, onStartOver }: ResultNavProps) {
 }
 
 function ExploreAll({ recommended }: { recommended: VisaId | null }) {
+    const reduceMotion = useReducedMotion()
     const rowClass =
         'group flex min-h-14 items-center justify-between gap-3 border px-4 py-3 text-sm transition-colors hover:border-gold-deep'
 
     return (
-        <section aria-labelledby="explore-all-title" className="mx-auto mt-16 max-w-5xl">
-            <h2 id="explore-all-title" className="text-center font-noto-serif text-2xl text-ink sm:text-3xl">
+        <section aria-labelledby="explore-all-title" className="mx-auto max-w-5xl">
+            <motion.h2
+                id="explore-all-title"
+                initial={reduceMotion ? false : 'hidden'}
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeUp}
+                className="text-center font-noto-serif text-2xl text-ink sm:text-3xl"
+            >
                 Explore All AVENTURES Services
-            </h2>
-            <ul className="mt-8 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+            </motion.h2>
+            <motion.ul
+                className="mt-8 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3"
+                initial={reduceMotion ? false : 'hidden'}
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+                variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}
+            >
                 {visaServices.map((service) => {
                     const isRecommended = service.id === recommended
                     return (
-                        <li key={service.id}>
+                        <motion.li key={service.id} variants={fadeUp}>
                             <Link
                                 to={service.href}
                                 className={`${rowClass} ${
@@ -473,11 +536,11 @@ function ExploreAll({ recommended }: { recommended: VisaId | null }) {
                                     className="shrink-0 text-royal/50 transition group-hover:translate-x-0.5 group-hover:text-gold-deep"
                                 />
                             </Link>
-                        </li>
+                        </motion.li>
                     )
                 })}
                 {extraExploreLinks.map((link) => (
-                    <li key={link.id}>
+                    <motion.li key={link.id} variants={fadeUp}>
                         <Link to={link.href} className={`${rowClass} border-royal/15 bg-white/55`}>
                             <span className="font-medium text-royal">{link.label}</span>
                             <ArrowRight
@@ -485,9 +548,9 @@ function ExploreAll({ recommended }: { recommended: VisaId | null }) {
                                 className="shrink-0 text-royal/50 transition group-hover:translate-x-0.5 group-hover:text-gold-deep"
                             />
                         </Link>
-                    </li>
+                    </motion.li>
                 ))}
-            </ul>
+            </motion.ul>
         </section>
     )
 }

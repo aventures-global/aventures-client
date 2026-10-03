@@ -101,7 +101,7 @@ export default function Contact({ site, topFaqs }: ContactProps) {
     )
 
     return (
-        <section id="contact" className="page-section">
+        <section id="contact" className="page-section bg-oat">
             <div className="site-container flex min-h-0 flex-1 flex-col">
                 <motion.h2
                     initial={{ opacity: 0, y: 16 }}

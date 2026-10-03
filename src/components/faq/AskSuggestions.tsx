@@ -33,33 +33,37 @@ export default function AskSuggestions({ faqs, question }: AskSuggestionsProps) 
 
     const matches = useMemo(() => searchFaqs(faqs, query, MIN_SCORE).slice(0, MAX_SUGGESTIONS), [faqs, query])
 
+    const hasMatches = matches.length > 0
+
     return (
         <div aria-live="polite">
-            {matches.length > 0 && (
-                <div className="border-l-2 border-gold-deep bg-white/60 px-5 py-5">
-                    <p className="text-xs font-medium uppercase tracking-[0.24em] text-royal">
-                        This might already be answered
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-ink/60">
-                        If none of these cover your situation, go ahead and send your question.
-                    </p>
+            <div className={`border-l-2 border-gold-deep bg-white/60 px-5 py-5 ${hasMatches ? '' : 'hidden lg:block'}`}>
+                <p className="text-xs font-medium uppercase tracking-[0.24em] text-royal">
+                    This might already be answered
+                </p>
+                <p className="mt-2 text-sm leading-6 text-ink/60">
+                    {hasMatches
+                        ? 'If none of these cover your situation, go ahead and send your question.'
+                        : 'Start typing your question and related answers from our FAQs will appear here.'}
+                </p>
+                {hasMatches && (
                     <div className="mt-4">
                         <FaqAccordion items={matches} single compact headingLevel="h4" />
                     </div>
-                    <Link
-                        to="/faq"
-                        className="group mt-4 inline-flex items-center gap-2 text-sm font-medium text-royal underline-offset-4 hover:text-gold-deep hover:underline"
-                    >
-                        Browse all FAQs
-                        <ArrowRight
-                            size={15}
-                            strokeWidth={1.75}
-                            className="transition-transform duration-300 group-hover:translate-x-1"
-                            aria-hidden
-                        />
-                    </Link>
-                </div>
-            )}
+                )}
+                <Link
+                    to="/faq"
+                    className="group mt-4 inline-flex items-center gap-2 text-sm font-medium text-royal underline-offset-4 hover:text-gold-deep hover:underline"
+                >
+                    Browse all FAQs
+                    <ArrowRight
+                        size={15}
+                        strokeWidth={1.75}
+                        className="transition-transform duration-300 group-hover:translate-x-1"
+                        aria-hidden
+                    />
+                </Link>
+            </div>
         </div>
     )
 }

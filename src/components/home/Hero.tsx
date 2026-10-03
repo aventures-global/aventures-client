@@ -5,10 +5,10 @@ import SecondaryButton from '../ui/SecondaryButton'
 export default function Hero() {
     const heroRef = useRef<HTMLElement>(null)
     const reduceMotion = useReducedMotion()
-    const { scrollYProgress } = useScroll({
-        target: heroRef,
-        offset: ['start start', 'end start'],
-    })
+    const { scrollY } = useScroll()
+    const scrollYProgress = useTransform(scrollY, (y) =>
+        Math.min(1, y / (heroRef.current?.offsetHeight || window.innerHeight)),
+    )
 
     const titleOpacity = useTransform(scrollYProgress, [0, 0.2, 0.48], [1, 1, 0])
     const titleY = useTransform(scrollYProgress, [0, 0.48], [0, -44])
@@ -21,7 +21,7 @@ export default function Hero() {
     return (
         <section
             ref={heroRef}
-            className="relative flex min-h-svh items-center justify-center overflow-hidden"
+            className={`${reduceMotion ? 'relative' : 'sticky top-0 z-0'} flex min-h-svh items-center justify-center overflow-hidden`}
         >
             <motion.div
                 aria-hidden

@@ -22,7 +22,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
             : `${testimonials.length} recent trips`
 
     return (
-        <section id="testimonials" className="bg-oat py-24 sm:py-28">
+        <section id="testimonials" className="bg-white py-24 sm:py-28">
             <div className="site-container">
                 <motion.div
                     initial={{ opacity: 0, y: 16 }}

@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp, ArrowUpRight } from 'lucide-react'
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { getSite, getTours } from '../api'
@@ -9,6 +9,7 @@ import Seo from '../components/seo/Seo'
 import DestinationsSearch from '../components/tours/DestinationsSearch'
 import SafeImage from '../components/ui/SafeImage'
 import { getSeoForPath } from '../data/seo'
+import { useStickyCover } from '../lib/useStickyCover'
 import { DEFAULT_FILTERS, filterAndSortTours, getTourRegion, type TourRegion } from '../lib/tourSearch'
 import type { SiteInfo, Tour } from '../types/content'
 
@@ -27,6 +28,8 @@ export default function Destinations() {
     const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
     const deferredQuery = useDeferredValue(query)
     const initialGridAnimationDone = useRef(false)
+    const reduceMotion = useReducedMotion()
+    const [finderRef, finderTop] = useStickyCover<HTMLElement>()
 
     useEffect(() => {
         void Promise.all([getTours(), getSite()]).then(([tourData, siteData]) => {
@@ -64,8 +67,13 @@ export default function Destinations() {
         <div className="luxury-paper font-poppins flex min-h-svh flex-col">
             <Seo title={destinationsSeo.title} description={destinationsSeo.description} path="/destinations" />
             <Header />
-            <main className="flex-1 pb-24">
-                <section className="relative flex h-[490px] items-center bg-oat pt-20" aria-labelledby="destination-finder-title">
+            <main className="flex-1">
+                <section
+                    ref={finderRef}
+                    className={`${reduceMotion ? 'relative' : 'sticky z-0'} flex h-[490px] has-[[aria-expanded=true]]:z-20 items-center bg-oat pt-20`}
+                    style={reduceMotion ? undefined : { top: finderTop }}
+                    aria-labelledby="destination-finder-title"
+                >
                     <img
                         src="/assets/images/europe-journeys.jpg?v=1"
                         alt=""
@@ -78,7 +86,7 @@ export default function Destinations() {
                             initial={{ opacity: 0, y: 18 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-                            className="mx-auto flex h-[260px] max-w-4xl flex-col justify-center rounded-xl border border-royal/10 bg-white/55 px-5 shadow-[0_20px_60px_rgba(22,55,101,0.08)] backdrop-blur-sm sm:px-8"
+                            className="mx-auto flex h-[260px] max-w-6xl flex-col justify-center rounded-xl border border-royal/10 bg-white/55 px-5 shadow-[0_20px_60px_rgba(22,55,101,0.08)] backdrop-blur-sm sm:px-8"
                         >
                             <p className="text-xs font-medium uppercase tracking-[0.3em] text-[#9b7512]">Find your next AVENtures</p>
                             <h1 id="destination-finder-title" className="mt-2 whitespace-nowrap font-noto-serif text-[clamp(1.15rem,5.7vw,1.875rem)] leading-tight text-royal sm:text-4xl">Where would you like to go?</h1>
@@ -89,7 +97,7 @@ export default function Destinations() {
                     </div>
                 </section>
 
-                <section className="py-24 sm:py-32" aria-labelledby="journeys-title">
+                <section className="relative z-10 bg-white pb-36 pt-24 shadow-[0_-24px_50px_-30px_rgba(22,55,101,0.35)] sm:pb-44 sm:pt-32" aria-labelledby="journeys-title">
                     <div className="site-container flex items-end justify-between gap-6">
                         <div>
                             <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-[#9b7512]">Curated journeys</p>
