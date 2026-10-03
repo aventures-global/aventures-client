@@ -19,9 +19,12 @@ export default function SafeImage({
 
     // Let callers override the fit; two object-* utilities would otherwise collide.
     const fitClass = imgClassName.includes('object-') ? '' : 'object-cover'
+    // Absolute image layers must not also receive `relative`; conflicting
+    // positioning utilities can make the image participate in page layout.
+    const positionClass = className.includes('absolute') ? '' : 'relative'
 
     return (
-        <div className={`relative overflow-hidden ${className}`}>
+        <div className={`${positionClass} overflow-hidden ${className}`}>
             {status !== 'loaded' && (
                 <div
                     className={`absolute inset-0 skeleton-shimmer ${skeletonClassName}`}

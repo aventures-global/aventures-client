@@ -10,9 +10,11 @@ import Destinations from './pages/Destinations'
 import Faq from './pages/Faq'
 import ForgotPassword from './pages/ForgotPassword'
 import Home from './pages/Home'
+import Inquire from './pages/Inquire'
 import Login from './pages/Login'
 import MerchDetail from './pages/MerchDetail'
 import NotFound from './pages/NotFound'
+import Onboarding from './pages/Onboarding'
 import Privacy from './pages/Privacy'
 import ResetPassword from './pages/ResetPassword'
 import ServiceRequest from './pages/ServiceRequest'
@@ -28,20 +30,23 @@ import VisaService from './pages/VisaService'
 
 function AnimatedRoutes() {
     const location = useLocation()
+    const state = location.state as { backgroundLocation?: typeof location } | null
+    const backgroundLocation = state?.backgroundLocation
+    const pageLocation = backgroundLocation ?? location
 
     return (
         <>
-            <ScrollToTop />
+            {!backgroundLocation && <ScrollToTop />}
             <AnimatePresence mode="wait">
                 <motion.div
-                    key={location.pathname}
+                    key={pageLocation.pathname}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.25 }}
                     className="max-w-full overflow-x-clip"
                 >
-                    <Routes location={location}>
+                    <Routes location={pageLocation}>
                         <Route path="/" element={<Home />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/destinations" element={<Destinations />} />
@@ -56,6 +61,9 @@ function AnimatedRoutes() {
                         <Route path="/verify-reset" element={<VerifyReset />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                         <Route path="/custom-tour" element={<CustomTour />} />
+                        <Route path="/onboarding" element={<Onboarding />} />
+                        <Route path="/start-your-aventure" element={<Onboarding />} />
+                        <Route path="/inquire" element={<Inquire />} />
                         <Route
                             path="/flights"
                             element={
@@ -97,6 +105,9 @@ function AnimatedRoutes() {
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </motion.div>
+            </AnimatePresence>
+            <AnimatePresence>
+                {backgroundLocation && location.pathname === '/inquire' && <Inquire key="inquire-modal" modal />}
             </AnimatePresence>
         </>
     )

@@ -184,15 +184,20 @@ export default function Header() {
     const location = useLocation()
     const onHome = location.pathname === '/'
     const onVisaServicePage = location.pathname.startsWith(VISA_SERVICE_PREFIX)
+    const onDestinationsIndex = location.pathname === '/destinations'
+    const onDestinationDetail = location.pathname.startsWith('/destinations/')
+    const hasEditorialHero = onHome || onDestinationDetail
     const lightPage = LIGHT_PAGES.has(location.pathname) || onVisaServicePage
     const { user, isLoggedIn, logout } = useAuth()
     const { itemCount } = useCart()
-    const overHomeHero = onHome && !pastHero
+    const overHomeHero = hasEditorialHero && !pastHero
+    const lightNavigation = pastHero || onDestinationsIndex
 
     useEffect(() => {
         const onScroll = () => {
             setScrolled(window.scrollY > 24)
-            setPastHero(lightPage || (onHome && window.scrollY >= window.innerHeight * 0.9))
+            const heroThreshold = onHome ? 0.9 : 0.7
+            setPastHero(lightPage || (hasEditorialHero && window.scrollY >= window.innerHeight * heroThreshold))
         }
         onScroll()
         window.addEventListener('scroll', onScroll, { passive: true })
@@ -201,7 +206,7 @@ export default function Header() {
             window.removeEventListener('scroll', onScroll)
             window.removeEventListener('resize', onScroll)
         }
-    }, [onHome, lightPage])
+    }, [hasEditorialHero, lightPage, onHome])
 
     useEffect(() => setDrawerOpen(false), [location.pathname])
 
@@ -235,7 +240,7 @@ export default function Header() {
             className={`inline-flex min-h-10 items-center justify-center border-2 px-4 font-sans text-sm tracking-wide transition-colors ${
                 overHomeHero
                     ? 'border-[#ddab12] text-[#e1b21d] hover:bg-[#ddab12] hover:text-white'
-                    : pastHero
+                    : lightNavigation
                     ? 'border-royal text-royal hover:bg-royal hover:text-cream'
                     : 'border-white text-white hover:border-gold-deep hover:bg-gold-deep hover:text-white'
             }`}
@@ -252,7 +257,7 @@ export default function Header() {
             className={`fixed inset-x-0 top-0 z-[80] border-b pt-[env(safe-area-inset-top,0px)] transition-colors duration-500 ${
                 overHomeHero
                     ? 'border-transparent bg-transparent'
-                    : pastHero
+                    : lightNavigation
                       ? 'border-royal/10 bg-oat/90 shadow-[0_8px_30px_rgba(22,55,101,0.06)] backdrop-blur-md'
                       : 'border-white/10 bg-ink/95 shadow-[0_8px_30px_rgba(0,0,0,0.18)] backdrop-blur-md'
             }`}
@@ -263,7 +268,7 @@ export default function Header() {
                 }`}
             >
                 <Link className="justify-self-start" to="/" aria-label="AVENtures home" onClick={scrollHomeToTop}>
-                    <BrandLogo dark={pastHero} />
+                    <BrandLogo dark={lightNavigation} />
                 </Link>
 
                 <div className="ml-auto flex items-center gap-4 sm:gap-5">
@@ -274,7 +279,7 @@ export default function Header() {
                                 to={link.to}
                                 end={link.to === '/'}
                                 className={({ isActive }) =>
-                                    linkClass(isNavActive(link.to, isActive), pastHero)
+                                    linkClass(isNavActive(link.to, isActive), lightNavigation)
                                 }
                                 onClick={scrollHomeToTop}
                             >
@@ -286,7 +291,7 @@ export default function Header() {
                     <button
                         type="button"
                         className={`relative z-[81] -mr-1 flex min-h-11 min-w-11 items-center justify-center rounded-md transition-colors hover:text-gold xl:hidden ${
-                            pastHero ? 'text-black' : 'text-white'
+                            lightNavigation ? 'text-black' : 'text-white'
                         }`}
                         aria-label={drawerOpen ? 'Close menu' : 'Open menu'}
                         aria-expanded={drawerOpen}

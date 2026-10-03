@@ -1,5 +1,3 @@
-import Fuse from 'fuse.js'
-
 export type SearchableFaq = { id: string; question: string; answer: string }
 
 const STOP_WORDS = new Set([
@@ -28,6 +26,39 @@ function tokenize(query: string) {
     return meaningful.length > 0 ? meaningful : splitWords(query)
 }
 
+function editDistance(left: string, right: string) {
+    const previous = Array.from({ length: right.length + 1 }, (_, index) => index)
+    for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+        let diagonal = previous[0]
+        previous[0] = leftIndex
+        for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+            const above = previous[rightIndex]
+            previous[rightIndex] = Math.min(
+                previous[rightIndex] + 1,
+                previous[rightIndex - 1] + 1,
+                diagonal + (left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1),
+            )
+            diagonal = above
+        }
+    }
+    return previous[right.length]
+}
+
+function tokenCloseness(token: string, text: string) {
+    if (text.includes(token)) return 1
+
+    let best = 0
+    for (const word of text.split(/[^\p{L}\p{N}]+/u).filter(Boolean)) {
+        if (word.includes(token) || token.includes(word)) {
+            best = Math.max(best, Math.min(word.length, token.length) / Math.max(word.length, token.length))
+            continue
+        }
+        const distance = editDistance(token, word)
+        best = Math.max(best, 1 - distance / Math.max(token.length, word.length))
+    }
+    return best >= 0.6 ? best : 0
+}
+
 /**
  * Ranks FAQs by closeness to `query`. Each word is matched fuzzily (typos and partial
  * words count), questions weigh more than answers, and FAQs matching more of the words
@@ -38,36 +69,16 @@ export function searchFaqs<T extends SearchableFaq>(faqs: T[], query: string, mi
     const trimmed = query.trim()
     if (!trimmed) return []
 
-    const fuse = new Fuse(faqs, {
-        keys: [
-            { name: 'question', weight: 0.7 },
-            { name: 'answer', weight: 0.3 },
-        ],
-        includeScore: true,
-        ignoreLocation: true,
-        ignoreFieldNorm: true,
-        ignoreDiacritics: true,
-        threshold: 0.34,
-        minMatchCharLength: 2,
-    })
-
     const tokens = tokenize(trimmed)
-    const scores = new Map<string, number>()
-
-    for (const token of tokens) {
-        for (const result of fuse.search(token)) {
-            const closeness = 1 - (result.score ?? 1)
-            scores.set(result.item.id, (scores.get(result.item.id) ?? 0) + closeness)
-        }
-    }
-
     const phrase = normalize(trimmed)
     const ranked = faqs.flatMap((faq) => {
-        const tokenScore = scores.get(faq.id)
-        if (tokenScore === undefined) return []
-        let score = tokenScore / tokens.length
-        if (normalize(faq.question).includes(phrase)) score += 1
-        else if (normalize(faq.answer).includes(phrase)) score += 0.4
+        const question = normalize(faq.question)
+        const answer = normalize(faq.answer)
+        const matches = tokens.map((token) => Math.max(tokenCloseness(token, question) * 0.7, tokenCloseness(token, answer) * 0.3))
+        if (!matches.some(Boolean)) return []
+        let score = matches.reduce((total, match) => total + match, 0) / tokens.length
+        if (question.includes(phrase)) score += 1
+        else if (answer.includes(phrase)) score += 0.4
         return [{ faq, score }]
     })
 
