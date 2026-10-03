@@ -20,9 +20,10 @@ const landingLinks = [
     { label: 'Shop', to: '/shop' },
 ] as const
 
-/** Routes already on the cream palette; they use the light header from the top. */
-const LIGHT_PAGES = new Set(['/faq', '/ask', '/visa-assistance', '/privacy', '/terms', '/sitemap'])
 const VISA_SERVICE_PREFIX = '/services/visa/'
+
+/** Every page mounts its own Header, so the intro must survive remounts to play only once. */
+let introPlayed = false
 
 function linkClass(active: boolean, dark: boolean) {
     return `font-noto-serif text-base tracking-wide transition-colors ${
@@ -184,20 +185,18 @@ export default function Header() {
     const location = useLocation()
     const onHome = location.pathname === '/'
     const onVisaServicePage = location.pathname.startsWith(VISA_SERVICE_PREFIX)
-    const onDestinationsIndex = location.pathname === '/destinations'
     const onDestinationDetail = location.pathname.startsWith('/destinations/')
     const hasEditorialHero = onHome || onDestinationDetail
-    const lightPage = LIGHT_PAGES.has(location.pathname) || onVisaServicePage
     const { user, isLoggedIn, logout } = useAuth()
     const { itemCount } = useCart()
     const overHomeHero = hasEditorialHero && !pastHero
-    const lightNavigation = pastHero || onDestinationsIndex
+    const lightNavigation = !overHomeHero
 
     useEffect(() => {
         const onScroll = () => {
             setScrolled(window.scrollY > 24)
             const heroThreshold = onHome ? 0.9 : 0.7
-            setPastHero(lightPage || (hasEditorialHero && window.scrollY >= window.innerHeight * heroThreshold))
+            setPastHero(hasEditorialHero && window.scrollY >= window.innerHeight * heroThreshold)
         }
         onScroll()
         window.addEventListener('scroll', onScroll, { passive: true })
@@ -206,9 +205,14 @@ export default function Header() {
             window.removeEventListener('scroll', onScroll)
             window.removeEventListener('resize', onScroll)
         }
-    }, [hasEditorialHero, lightPage, onHome])
+    }, [hasEditorialHero, onHome])
 
     useEffect(() => setDrawerOpen(false), [location.pathname])
+
+    const [playIntro] = useState(() => !introPlayed && !reduceMotion)
+    useEffect(() => {
+        introPlayed = true
+    }, [])
 
     const scrollHomeToTop = () => {
         if (location.pathname !== '/') return
@@ -240,9 +244,7 @@ export default function Header() {
             className={`inline-flex min-h-10 items-center justify-center border-2 px-4 font-sans text-sm tracking-wide transition-colors ${
                 overHomeHero
                     ? 'border-[#ddab12] text-[#e1b21d] hover:bg-[#ddab12] hover:text-white'
-                    : lightNavigation
-                    ? 'border-royal text-royal hover:bg-royal hover:text-cream'
-                    : 'border-white text-white hover:border-gold-deep hover:bg-gold-deep hover:text-white'
+                    : 'border-royal text-royal hover:bg-royal hover:text-cream'
             }`}
         >
             Log In
@@ -251,15 +253,13 @@ export default function Header() {
 
     const header = (
         <motion.header
-            initial={reduceMotion ? false : { opacity: 0, y: -18 }}
+            initial={playIntro ? { opacity: 0, y: -18 } : false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             className={`fixed inset-x-0 top-0 z-[80] border-b pt-[env(safe-area-inset-top,0px)] transition-colors duration-500 ${
                 overHomeHero
                     ? 'border-transparent bg-transparent'
-                    : lightNavigation
-                      ? 'border-royal/10 bg-oat/90 shadow-[0_8px_30px_rgba(22,55,101,0.06)] backdrop-blur-md'
-                      : 'border-white/10 bg-ink/95 shadow-[0_8px_30px_rgba(0,0,0,0.18)] backdrop-blur-md'
+                    : 'border-royal/10 bg-white/90 shadow-[0_8px_30px_rgba(22,55,101,0.06)] backdrop-blur-md'
             }`}
         >
             <div
@@ -313,7 +313,7 @@ export default function Header() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 0.2 }}
-                        className="border-t border-royal/10 bg-oat/95 shadow-[0_18px_40px_rgba(22,55,101,0.14)] backdrop-blur-md xl:hidden"
+                        className="border-t border-royal/10 bg-white/95 shadow-[0_18px_40px_rgba(22,55,101,0.14)] backdrop-blur-md xl:hidden"
                     >
                         <div className="site-container flex flex-col gap-1 py-4">
                             {landingLinks.map((link) => {

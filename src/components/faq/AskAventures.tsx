@@ -1,5 +1,4 @@
 import { ArrowRight, ChevronDown } from 'lucide-react'
-import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ASK_VISA_TYPES, type AskForm } from '../../hooks/useAskForm'
 import { buildMailtoHref, FormHoneypot, lineFieldClass } from '../../lib/forms'
@@ -8,8 +7,6 @@ type AskAventuresProps = {
     form: AskForm
     /** Offered as a fallback when sending fails. */
     email?: string
-    /** Rendered under the question field. */
-    suggestions?: ReactNode
 }
 
 const primaryButtonClass =
@@ -24,7 +21,7 @@ const nextSteps = [
     { to: '/destinations', label: 'Explore destinations' },
 ]
 
-export default function AskAventures({ form, email, suggestions }: AskAventuresProps) {
+export default function AskAventures({ form, email }: AskAventuresProps) {
     const { fields, setField, status, submit, reset } = form
     const sending = status === 'sending'
 
@@ -64,7 +61,7 @@ export default function AskAventures({ form, email, suggestions }: AskAventuresP
                         </button>
                     </div>
                 ) : (
-                    <form onSubmit={submit} className="space-y-6">
+                    <form onSubmit={submit} className="space-y-5">
                         <FormHoneypot />
                         <div className="grid gap-4 sm:grid-cols-2">
                             <input
@@ -133,15 +130,14 @@ export default function AskAventures({ form, email, suggestions }: AskAventuresP
                             name="question"
                             placeholder="Tell us what you’d like to know..."
                             aria-label="Your question"
-                            rows={5}
+                            rows={4}
                             maxLength={5000}
                             value={fields.question}
                             onChange={(e) => setField('question', e.target.value)}
-                            className={`${lineFieldClass} min-h-36 resize-y`}
+                            className={`${lineFieldClass} min-h-28 resize-y`}
                             disabled={sending}
                         />
-                        {suggestions}
-                        <div className="flex flex-col items-start gap-3 pt-2">
+                        <div className="flex flex-col items-start gap-3 pt-1">
                             <button type="submit" disabled={sending} className={primaryButtonClass}>
                                 {sending ? 'Sending...' : 'Ask AVENtures'}
                                 {!sending && (
@@ -173,7 +169,7 @@ export default function AskAventures({ form, email, suggestions }: AskAventuresP
                 )}
             </div>
 
-            <p className="mt-10 font-noto-serif text-lg italic text-gold-deep">
+            <p className="mt-8 font-noto-serif text-lg italic text-gold-deep">
                 Your question could be the first step toward your next AVENture.
             </p>
         </div>
