@@ -9,11 +9,15 @@ export function FacebookIcon({ size = 18, className }: IconProps) {
             width={size}
             height={size}
             viewBox="0 0 24 24"
-            fill="currentColor"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className={className}
             aria-hidden
         >
-            <path d="M14 8h2.5V4.5H14c-2.2 0-4 1.8-4 4V11H7.5v3.5H10V22h3.5v-7.5H16l.5-3.5H13.5V8.5c0-.3.2-.5.5-.5z" />
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
         </svg>
     )
 }

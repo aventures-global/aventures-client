@@ -14,6 +14,7 @@
   "dependencies": {
     "@neondatabase/neon-js": "^0.7.0-beta",
     "@tailwindcss/vite": "^4.3.3",
+    "fuse.js": "^7.5.0",
     "lucide-react": "^1.47.0",
     "motion": "^13.4.0",
     "react": "^19.2.8",

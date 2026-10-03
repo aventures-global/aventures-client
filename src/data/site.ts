@@ -45,6 +45,4 @@ export const siteInfo: SiteInfo = {
         { id: 'support', label: 'End-to-End Support' },
         { id: 'experts', label: 'Local Experts' },
     ],
-    contactIntro:
-        'Tell us where you want to go. We will shape a journey that feels effortless from the first inquiry to your return home.',
 }
