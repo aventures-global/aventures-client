@@ -54,24 +54,15 @@ export default function Privacy() {
                 <section className="space-y-3">
                     <h2 className="font-serif text-xl text-white">Form submissions</h2>
                     <p>
-                        Inquiry forms on this site are delivered through Formspree, a third-party form
-                        service. Submissions are sent to our team at{' '}
+                        Inquiry forms on this site are processed by our own server and delivered by
+                        email to our team at{' '}
                         <a
                             href={`mailto:${siteInfo.email}`}
                             className="text-gold hover:text-ivory"
                         >
                             {siteInfo.email}
                         </a>
-                        . See{' '}
-                        <a
-                            href="https://formspree.io/legal/privacy-policy/"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-gold hover:text-ivory"
-                        >
-                            Formspree’s privacy policy
-                        </a>{' '}
-                        for how they process form data.
+                        . We do not store form submissions in a database.
                     </p>
                 </section>
 

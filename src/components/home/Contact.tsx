@@ -6,10 +6,10 @@ import type { SiteInfo } from '../../types/content'
 import {
     buildMailtoHref,
     formFieldClass,
-    FormspreeHoneypot,
-    submitFormspree,
+    FormHoneypot,
+    submitInquiry,
     type SubmitStatus,
-} from '../../lib/formspree'
+} from '../../lib/forms'
 import { FacebookIcon, InstagramIcon } from '../ui/SocialIcons'
 
 type ContactProps = {
@@ -54,34 +54,18 @@ export default function Contact({ site }: ContactProps) {
         }
     }, [searchParams])
 
-    async function handleSubmit(event: FormEvent) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
 
-        const subject = buildSubject(firstName, lastName, destination)
-        const mailtoHref = contactMailto(
-            site.email,
-            firstName,
-            lastName,
-            email,
-            destination,
-            message,
-        )
-
         setStatus('sending')
-        const result = await submitFormspree({
+        const result = await submitInquiry(event.currentTarget, {
+            kind: 'contact',
             firstName,
             lastName,
             email,
-            destination,
+            destination: destination || undefined,
             message,
-            _subject: subject,
         })
-
-        if (result === 'mailto') {
-            setStatus('idle')
-            window.location.href = mailtoHref
-            return
-        }
 
         if (result === 'error') {
             setStatus('error')
@@ -125,7 +109,7 @@ export default function Contact({ site }: ContactProps) {
                         onSubmit={handleSubmit}
                         className="space-y-4"
                     >
-                        <FormspreeHoneypot />
+                        <FormHoneypot />
                         <div className="grid gap-4 sm:grid-cols-2">
                             <input
                                 required

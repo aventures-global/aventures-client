@@ -3,10 +3,10 @@ import { useSearchParams } from 'react-router-dom'
 import {
     buildMailtoHref,
     formFieldClass,
-    FormspreeHoneypot,
-    submitFormspree,
+    FormHoneypot,
+    submitInquiry,
     type SubmitStatus,
-} from '../../lib/formspree'
+} from '../../lib/forms'
 
 type CustomTourFormProps = {
     fallbackEmail: string
@@ -93,6 +93,7 @@ export default function CustomTourForm({ fallbackEmail }: CustomTourFormProps) {
 
     function buildPayload() {
         return {
+            kind: 'custom-tour' as const,
             firstName,
             lastName,
             email,
@@ -103,9 +104,7 @@ export default function CustomTourForm({ fallbackEmail }: CustomTourFormProps) {
             tripLength: tripLength || undefined,
             flights: flightLabel(),
             addOns: addOnsLabel(),
-            notes,
-            service: 'custom-tour',
-            _subject: buildSubject(),
+            notes: notes || undefined,
         }
     }
 
@@ -123,20 +122,11 @@ export default function CustomTourForm({ fallbackEmail }: CustomTourFormProps) {
         setNotes('')
     }
 
-    async function handleSubmit(event: FormEvent) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
 
-        const subject = buildSubject()
-        const mailtoHref = buildMailtoHref(fallbackEmail, subject, buildMailtoBody())
-
         setStatus('sending')
-        const result = await submitFormspree(buildPayload())
-
-        if (result === 'mailto') {
-            setStatus('idle')
-            window.location.href = mailtoHref
-            return
-        }
+        const result = await submitInquiry(event.currentTarget, buildPayload())
 
         if (result === 'error') {
             setStatus('error')
@@ -152,7 +142,7 @@ export default function CustomTourForm({ fallbackEmail }: CustomTourFormProps) {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <FormspreeHoneypot />
+            <FormHoneypot />
 
             <div className="grid gap-4 sm:grid-cols-2">
                 <input

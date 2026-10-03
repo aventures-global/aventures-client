@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import PageShell from '../components/layout/PageShell'
 import { requestPasswordReset } from '../lib/authApi'
-import { formFieldClass } from '../lib/formspree'
+import { formFieldClass } from '../lib/forms'
 
 export default function ForgotPassword() {
     const navigate = useNavigate()

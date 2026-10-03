@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import PageShell from '../components/layout/PageShell'
 import { resetPassword } from '../lib/authApi'
 import { useAuth } from '../lib/auth'
-import { formFieldClass } from '../lib/formspree'
+import { formFieldClass } from '../lib/forms'
 
 export default function ResetPassword() {
     const { otp } = useAuth()
