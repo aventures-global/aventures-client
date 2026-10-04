@@ -1,11 +1,10 @@
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, useSearchParams } from 'react-router-dom'
 import { AnimatePresence } from 'motion/react'
 import ScrollToTop from './components/ScrollToTop'
 import About from './pages/About'
 import Ask from './pages/Ask'
 import Blog from './pages/Blog'
 import Cart from './pages/Cart'
-import CustomTour from './pages/CustomTour'
 import Destinations from './pages/Destinations'
 import Faq from './pages/Faq'
 import ForgotPassword from './pages/ForgotPassword'
@@ -27,6 +26,13 @@ import VerifyEmail from './pages/VerifyEmail'
 import VerifyReset from './pages/VerifyReset'
 import VisaAssistance from './pages/VisaAssistance'
 import VisaService from './pages/VisaService'
+
+function CustomTourRedirect() {
+    const [searchParams] = useSearchParams()
+    const tour = searchParams.get('tour')
+    const to = tour ? `/start-your-aventure?destination=${encodeURIComponent(tour)}` : '/start-your-aventure'
+    return <Navigate to={to} replace />
+}
 
 function AnimatedRoutes() {
     const location = useLocation()
@@ -52,7 +58,7 @@ function AnimatedRoutes() {
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/verify-reset" element={<VerifyReset />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route path="/custom-tour" element={<CustomTour />} />
+                    <Route path="/custom-tour" element={<CustomTourRedirect />} />
                     <Route path="/onboarding" element={<Onboarding />} />
                     <Route path="/start-your-aventure" element={<Onboarding />} />
                     <Route path="/inquire" element={<Inquire />} />

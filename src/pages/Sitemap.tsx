@@ -17,7 +17,7 @@ const siteLinks: SitemapLink[] = [
     { label: 'Services', to: '/#services' },
     { label: 'Destinations', to: '/destinations' },
     { label: 'Shop', to: '/shop' },
-    { label: 'Custom tour', to: '/custom-tour' },
+    { label: 'Start your AVENture', to: '/start-your-aventure' },
     { label: 'Why travel with us?', to: '/#why' },
     { label: 'Contact', to: '/#contact' },
     { label: 'FAQs', to: '/faq' },

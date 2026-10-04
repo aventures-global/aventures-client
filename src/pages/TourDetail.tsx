@@ -69,7 +69,7 @@ export default function TourDetail() {
                         <p className="flex items-center gap-2 text-xs uppercase tracking-[0.24em] text-gold"><MapPin size={14} />{tour.location}</p>
                         <h1 className="mt-3 font-noto-serif text-5xl leading-[1.04] text-white sm:text-6xl lg:text-7xl">{tour.title}</h1>
                         <p className="mt-4 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">{tour.tagline}</p>
-                        <Link to={`/custom-tour?tour=${encodeURIComponent(tour.title)}`} className="mt-7 inline-flex items-center gap-2 border border-white/45 bg-white/10 px-6 py-3 text-sm text-white backdrop-blur-sm transition hover:border-gold hover:bg-gold hover:text-royal">Plan this destination <ArrowRight size={15} /></Link>
+                        <Link to={`/start-your-aventure?destination=${encodeURIComponent(tour.location)}`} className="mt-7 inline-flex items-center gap-2 border border-white/45 bg-white/10 px-6 py-3 text-sm text-white backdrop-blur-sm transition hover:border-gold hover:bg-gold hover:text-royal">Plan this destination <ArrowRight size={15} /></Link>
                     </motion.div>
                 </div>
             </section>

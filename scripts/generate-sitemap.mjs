@@ -60,7 +60,6 @@ const staticPaths = [
     '/about',
     '/destinations',
     '/shop',
-    '/custom-tour',
     '/start-your-aventure',
     '/flights',
     '/hotels',
