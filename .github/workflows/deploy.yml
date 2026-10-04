@@ -17,10 +17,12 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
+            source ~/.nvm/nvm.sh
+
             cd /var/www/aventures-client
 
             git fetch origin main
             git reset --hard origin/main
 
             npm ci
-            npm run build 
+            npm run build
