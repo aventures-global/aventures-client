@@ -8,7 +8,8 @@ import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
 import JourneyCta from '../components/ui/JourneyCta'
 import SafeImage from '../components/ui/SafeImage'
-import type { SiteInfo, Testimonial, Tour } from '../types/content'
+import { EXPERIENCE_CATEGORIES } from '../data/destinationContent'
+import type { SiteInfo, Testimonial, Tour, TourExperience } from '../types/content'
 import NotFound from './NotFound'
 
 const coverFocus: Record<string, string> = {
@@ -17,13 +18,7 @@ const coverFocus: Record<string, string> = {
     'boracay-serenity': 'object-[center_58%]',
 }
 
-const visualCategories = [
-    ['See', 'Landmarks, scenery, architecture, and views that define the destination.'],
-    ['Taste', 'Local flavors, markets, cafés, and dining experiences worth seeking out.'],
-    ['Experience', 'Activities and attractions that bring you closer to the place.'],
-    ['Discover', 'Culture, traditions, and everyday moments beyond the familiar routes.'],
-    ['Explore', 'Neighborhoods, streets, and local corners best found at your own pace.'],
-] as const
+const tipIcons = [CalendarClock, Luggage, Files, Compass]
 
 export default function TourDetail() {
     const { slug } = useParams<{ slug: string }>()
@@ -60,7 +55,6 @@ export default function TourDetail() {
     }
     if (tour === null) return <NotFound />
 
-    const gallery = tour.gallery.length ? tour.gallery : [tour.coverImage]
     return (
         <div className="luxury-paper font-poppins min-h-svh overflow-x-clip text-ink">
             <Seo title={`${tour.title} — AVENtures`} description={tour.shortDescription || tour.tagline} path={`/destinations/${tour.slug}`} image={tour.coverImage} />
@@ -82,20 +76,24 @@ export default function TourDetail() {
             </section>
 
             <main>
-                {visualCategories.map(([title, description], index) => (
-                    <ExperienceStory
-                        key={title}
-                        title={title}
-                        description={description}
-                        image={gallery[index % gallery.length]}
-                        highlight={tour.highlights[index % tour.highlights.length] ?? tour.tagline}
-                        location={tour.location}
-                        reverse={index % 2 === 1}
-                        tinted={index % 2 === 1}
-                    />
-                ))}
+                {EXPERIENCE_CATEGORIES.map((category, index) => {
+                    const experience = tour.experiences[index]
+                    if (!experience) return null
+                    return (
+                        <ExperienceStory
+                            key={category.label}
+                            title={category.label}
+                            experience={experience}
+                            fallbackImage={tour.coverImage}
+                            location={tour.location}
+                            intro={index === 0}
+                            reverse={index % 2 === 1}
+                            tinted={index % 2 === 1}
+                        />
+                    )
+                })}
 
-                <EditorialSection eyebrow="Must Try · Traveler Stories" title="Stories worth following" items={tour.highlights.slice(0, 3)} tour={tour} testimonials={testimonials} />
+                {tour.storyTitles.length > 0 && <EditorialSection eyebrow="Must Try · Traveler Stories" title="Stories worth following" items={tour.storyTitles} tour={tour} testimonials={testimonials} />}
 
                 <section className="relative overflow-hidden bg-royal py-20 text-white sm:py-28">
                     <div aria-hidden className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:48px_48px]" />
@@ -111,22 +109,20 @@ export default function TourDetail() {
                             </div>
                         </div>
                         <ol className="grid gap-x-9 sm:grid-cols-2">
-                            {[
-                                [CalendarClock, `Give yourself time to experience ${tour.location} without rushing.`],
-                                [Luggage, 'Pack for the weather, local customs, and the activities you want to try.'],
-                                [Files, 'Keep digital and printed copies of important travel documents.'],
-                                [Compass, 'Leave room for local recommendations and unplanned discoveries.'],
-                            ].map(([Icon, tip], index) => (
-                                <li key={tip as string} className="group flex gap-4 border-t border-gold/25 py-6">
-                                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/35 text-gold transition group-hover:bg-gold group-hover:text-royal">
-                                        <Icon size={16} strokeWidth={1.5} />
-                                    </span>
-                                    <div>
-                                        <span className="text-[10px] uppercase tracking-[0.18em] text-gold/65">Brief 0{index + 1}</span>
-                                        <p className="mt-2 text-sm leading-7 text-white/72">{tip as string}</p>
-                                    </div>
-                                </li>
-                            ))}
+                            {tour.travelTips.map((tip, index) => {
+                                const Icon = tipIcons[index % tipIcons.length]
+                                return (
+                                    <li key={index} className="group flex gap-4 border-t border-gold/25 py-6">
+                                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/35 text-gold transition group-hover:bg-gold group-hover:text-royal">
+                                            <Icon size={16} strokeWidth={1.5} />
+                                        </span>
+                                        <div>
+                                            <span className="text-[10px] uppercase tracking-[0.18em] text-gold/65">Brief 0{index + 1}</span>
+                                            <p className="mt-2 text-sm leading-7 text-white/72">{tip}</p>
+                                        </div>
+                                    </li>
+                                )
+                            })}
                         </ol>
                     </div>
                 </section>
@@ -150,24 +146,24 @@ export default function TourDetail() {
 
 function ExperienceStory({
     title,
-    description,
-    image,
-    highlight,
+    experience,
+    fallbackImage,
     location,
+    intro,
     reverse,
     tinted,
 }: {
     title: string
-    description: string
-    image: string
-    highlight: string
+    experience: TourExperience
+    fallbackImage: string
     location: string
+    intro: boolean
     reverse: boolean
     tinted: boolean
 }) {
     return (
         <section className={`py-16 sm:py-24 ${tinted ? 'bg-white/45' : ''}`}>
-            {title === 'See' && (
+            {intro && (
                 <div className="site-container mb-6 sm:mb-20">
                     <p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">Things to see · Digital Experience</p>
                     <h2 className="mt-3 font-noto-serif text-4xl text-royal sm:text-5xl">Explore before you travel</h2>
@@ -183,7 +179,7 @@ function ExperienceStory({
             >
                 <div className={`overflow-hidden rounded-xl shadow-[0_20px_55px_rgba(22,55,101,0.12)] ${reverse ? 'lg:order-2' : ''}`}>
                     <SafeImage
-                        src={image}
+                        src={experience.image || fallbackImage}
                         alt={`${title} in ${location}`}
                         className="aspect-[4/3] w-full"
                         imgClassName="object-cover transition duration-1000 hover:scale-[1.025]"
@@ -191,9 +187,9 @@ function ExperienceStory({
                 </div>
                 <div className={reverse ? 'lg:order-1' : ''}>
                     <p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">{title}</p>
-                    <h3 className="mt-3 font-noto-serif text-2xl leading-tight text-royal sm:text-4xl">{highlight}</h3>
-                    <p className="mt-1 max-w-xl text-base leading-8 text-ink/65">{description}</p>
-                    <p className="mt-4 max-w-xl text-sm leading-7 text-ink/50">This space can hold a signature story about {location}—from a local recommendation and cultural detail to the moments that make this experience distinct from anywhere else.</p>
+                    <h3 className="mt-3 font-noto-serif text-2xl leading-tight text-royal sm:text-4xl">{experience.headline}</h3>
+                    <p className="mt-1 max-w-xl text-base leading-8 text-ink/65">{experience.summary}</p>
+                    <p className="mt-4 max-w-xl whitespace-pre-line text-sm leading-7 text-ink/50">{experience.body}</p>
                     <span className="mt-7 block h-px w-16 bg-[#9b7512]/55" />
                 </div>
             </motion.article>
@@ -216,7 +212,7 @@ function EditorialSection({ eyebrow, title, items, tour, testimonials }: { eyebr
                         const name = story?.name ?? 'AVENtures Traveler'
                         const initials = name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
                         return (
-                            <article key={item} className="rounded-xl border border-royal/10 bg-white/50 p-6 shadow-[0_12px_35px_rgba(22,55,101,0.06)]">
+                            <article key={index} className="rounded-xl border border-royal/10 bg-white/50 p-6 shadow-[0_12px_35px_rgba(22,55,101,0.06)]">
                                 <div className="flex items-center gap-3">
                                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-royal font-noto-serif text-sm text-gold">{initials}</span>
                                     <div><p className="text-sm font-medium text-royal">{name}</p><p className="mt-0.5 text-xs text-ink/40">{story?.trip ?? tour.location}</p></div>

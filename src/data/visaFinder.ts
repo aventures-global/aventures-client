@@ -433,6 +433,16 @@ export function getVisaService(id: VisaId) {
 }
 
 export const extraExploreLinks = [
-    { id: 'tours', label: 'Travel & Tours', href: '/destinations' },
-    { id: 'ask', label: 'Ask AVENTURES', href: ASK_AVENTURES_HREF },
+    {
+        id: 'tours',
+        label: 'Travel & Tours',
+        href: '/destinations',
+        note: 'Think beyond the visa. Dream about the destination.',
+    },
+    {
+        id: 'ask',
+        label: 'Ask AVENTURES',
+        href: ASK_AVENTURES_HREF,
+        note: 'When the path is unclear, ask before you move forward.',
+    },
 ]
