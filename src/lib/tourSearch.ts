@@ -50,7 +50,7 @@ function matchesQuery(tour: Tour, query: string): boolean {
         tour.tagline,
         tour.shortDescription,
         tour.location,
-        ...tour.experiences.map((experience) => experience.headline),
+        ...tour.experiences.flatMap((experience) => [experience.eyebrow, experience.headline]),
         ...tour.storyTitles,
     ]
         .join(' ')

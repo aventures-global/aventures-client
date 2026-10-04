@@ -8,7 +8,6 @@ import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
 import JourneyCta from '../components/ui/JourneyCta'
 import SafeImage from '../components/ui/SafeImage'
-import { EXPERIENCE_CATEGORIES } from '../data/destinationContent'
 import type { SiteInfo, Testimonial, Tour, TourExperience } from '../types/content'
 import NotFound from './NotFound'
 
@@ -76,13 +75,10 @@ export default function TourDetail() {
             </section>
 
             <main>
-                {EXPERIENCE_CATEGORIES.map((category, index) => {
-                    const experience = tour.experiences[index]
-                    if (!experience) return null
+                {tour.experiences.map((experience, index) => {
                     return (
                         <ExperienceStory
-                            key={category.label}
-                            title={category.label}
+                            key={index}
                             experience={experience}
                             fallbackImage={tour.coverImage}
                             location={tour.location}
@@ -145,7 +141,6 @@ export default function TourDetail() {
 }
 
 function ExperienceStory({
-    title,
     experience,
     fallbackImage,
     location,
@@ -153,7 +148,6 @@ function ExperienceStory({
     reverse,
     tinted,
 }: {
-    title: string
     experience: TourExperience
     fallbackImage: string
     location: string
@@ -180,13 +174,13 @@ function ExperienceStory({
                 <div className={`overflow-hidden rounded-xl shadow-[0_20px_55px_rgba(22,55,101,0.12)] ${reverse ? 'lg:order-2' : ''}`}>
                     <SafeImage
                         src={experience.image || fallbackImage}
-                        alt={`${title} in ${location}`}
+                        alt={`${experience.eyebrow || experience.headline} in ${location}`}
                         className="aspect-[4/3] w-full"
                         imgClassName="object-cover transition duration-1000 hover:scale-[1.025]"
                     />
                 </div>
                 <div className={reverse ? 'lg:order-1' : ''}>
-                    <p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">{title}</p>
+                    <p className="text-xs uppercase tracking-[0.28em] text-[#9b7512]">{experience.eyebrow}</p>
                     <h3 className="mt-3 font-noto-serif text-2xl leading-tight text-royal sm:text-4xl">{experience.headline}</h3>
                     <p className="mt-1 max-w-xl text-base leading-8 text-ink/65">{experience.summary}</p>
                     <p className="mt-4 max-w-xl whitespace-pre-line text-sm leading-7 text-ink/50">{experience.body}</p>
