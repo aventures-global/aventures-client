@@ -12,6 +12,7 @@ type PageShellProps = {
     eyebrow?: string
     description?: string
     noIndex?: boolean
+    appearance?: 'dark' | 'paper'
     children: ReactNode
 }
 
@@ -20,6 +21,7 @@ export default function PageShell({
     eyebrow,
     description,
     noIndex = false,
+    appearance = 'dark',
     children,
 }: PageShellProps) {
     const location = useLocation()
@@ -31,7 +33,7 @@ export default function PageShell({
     }, [])
 
     return (
-        <div className="flex min-h-svh flex-col bg-ink">
+        <div className={`flex min-h-svh flex-col ${appearance === 'paper' ? 'luxury-paper font-poppins' : 'bg-ink'}`}>
             <Seo
                 title={routeSeo.title}
                 description={description ?? routeSeo.description}
@@ -40,8 +42,8 @@ export default function PageShell({
             />
             <Header />
             <main className="site-container flex-1 pb-24 pt-36">
-                {eyebrow ? <p className="text-sm text-gold">{eyebrow}</p> : null}
-                <h1 className="mt-2 font-serif text-4xl text-gold-gradient sm:text-5xl">{title}</h1>
+                {eyebrow ? <p className={`text-sm ${appearance === 'paper' ? 'font-medium uppercase tracking-[0.28em] text-royal' : 'text-gold'}`}>{eyebrow}</p> : null}
+                <h1 className={`mt-2 text-4xl sm:text-5xl ${appearance === 'paper' ? 'font-noto-serif text-royal' : 'font-serif text-gold-gradient'}`}>{title}</h1>
                 <div className="mt-10">{children}</div>
             </main>
             {site && <Footer site={site} />}
