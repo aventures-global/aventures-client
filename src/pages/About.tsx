@@ -29,7 +29,7 @@ export default function About() {
                 More than a travel agency, we are people who understand what it means to plan, prepare, hope, and finally go.
             </p>
 
-            <nav aria-label="About AVENTURES sections" className="sticky top-20 z-20 mb-4 bg-oat/95 pt-2 backdrop-blur-xl sm:mb-8">
+            <nav aria-label="About AVENTURES sections" className="sticky top-[var(--header-height,4rem)] z-20 mb-4 bg-oat/95 pt-2 backdrop-blur-xl sm:mb-8">
                 <div className="grid grid-cols-2 border-b border-royal/20 sm:grid-cols-4">
                     {aboutTabs.map((tab) => (
                         <button key={tab.id} type="button" aria-pressed={activeTab === tab.id} onClick={() => selectTab(tab.id)} className={`relative -mb-px flex min-h-14 items-center justify-center border-b-2 px-3 text-center text-[11px] font-medium uppercase tracking-[0.1em] transition-colors sm:text-xs ${activeTab === tab.id ? 'border-gold-deep text-royal' : 'border-transparent text-royal/50 hover:text-royal'}`}>
@@ -103,7 +103,7 @@ function BehindTheDream() {
                     </div>
                     <figcaption className="px-2 pb-5 pt-5 sm:px-3 sm:pb-6 sm:pt-6">
                         <p className="text-xs font-medium uppercase tracking-[0.24em] text-gold-deep">The woman behind AVENTURES</p>
-                        <h3 className="mt-2 font-noto-serif text-2xl text-royal">{founderStory.name}</h3>
+                        <h3 className="mt-2 font-noto-serif text-2xl font-semibold text-royal">{founderStory.name}</h3>
                         <p className="mt-1 text-sm text-ink/55">{founderStory.role}</p>
                     </figcaption>
                 </figure>
@@ -112,7 +112,7 @@ function BehindTheDream() {
                         <div><p className="text-xs font-semibold uppercase tracking-[0.24em] text-gold-deep">Why her story matters</p><p className="mt-4 leading-8 text-ink/65">{founderStory.whyItMatters}</p></div>
                 </div>
             </div>
-            <blockquote className="mx-auto mt-16 max-w-4xl text-center font-noto-serif text-2xl italic leading-relaxed text-royal sm:text-3xl">“{founderStory.quote}”</blockquote>
+            <blockquote className="mx-auto mt-16 max-w-4xl text-center font-noto-serif text-2xl font-semibold italic leading-relaxed text-royal sm:text-3xl">“{founderStory.quote}”</blockquote>
             <p className="mt-8 text-center text-sm text-ink/50">AVENTURES does not promise visa approval. Visa decisions remain with the appropriate U.S. government authorities.</p>
         </section>
     )
