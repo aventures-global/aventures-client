@@ -113,7 +113,6 @@ function BehindTheDream() {
                 </div>
             </div>
             <blockquote className="mx-auto mt-16 max-w-4xl text-center font-noto-serif text-2xl font-semibold italic leading-relaxed text-royal sm:text-3xl">“{founderStory.quote}”</blockquote>
-            <p className="mt-8 text-center text-sm text-ink/50">AVENTURES does not promise visa approval. Visa decisions remain with the appropriate U.S. government authorities.</p>
         </section>
     )
 }
