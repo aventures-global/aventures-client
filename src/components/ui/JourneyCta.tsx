@@ -12,7 +12,7 @@ export default function JourneyCta() {
                 <h2 className="mx-auto mt-4 max-w-4xl font-noto-serif text-4xl leading-tight sm:text-5xl lg:text-6xl">Think beyond the visa. Dream about the destination.</h2>
                 <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/65">Explore a destination. Discover the experience. Start imagining yourself there.</p>
                 <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                    <Link to="/onboarding" className="inline-flex min-w-48 items-center justify-center gap-2 bg-gold px-6 py-3 text-sm text-royal transition hover:bg-white">Start your journey <ArrowRight size={15} /></Link>
+                    <Link to="/start-your-aventure" className="inline-flex min-w-48 items-center justify-center gap-2 bg-gold px-6 py-3 text-sm text-royal transition hover:bg-white">Start your journey <ArrowRight size={15} /></Link>
                     <Link to="/inquire" state={{ backgroundLocation: location }} className="inline-flex min-w-48 items-center justify-center gap-2 border border-white/35 px-6 py-3 text-sm text-white transition hover:border-white hover:bg-white hover:text-royal">Book a consultation <ArrowRight size={15} /></Link>
                 </div>
             </div>

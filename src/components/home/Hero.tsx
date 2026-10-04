@@ -88,7 +88,7 @@ export default function Hero() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.65, delay: 0.68, ease: 'easeOut' }}
                         >
-                            <SecondaryButton to="#contact" className="!border-2">
+                            <SecondaryButton to="/start-your-aventure" className="!border-2">
                                 Start Your AVENture
                             </SecondaryButton>
                         </motion.div>

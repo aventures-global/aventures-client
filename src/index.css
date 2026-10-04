@@ -9,6 +9,33 @@
   font-weight: 400;
 }
 
+.onboarding-date {
+  color-scheme: light;
+  accent-color: #163765;
+}
+
+.onboarding-date::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.72;
+  filter: sepia(1) saturate(2.2) hue-rotate(355deg) brightness(0.72);
+}
+
+.onboarding-date::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.number-no-spinner {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.number-no-spinner::-webkit-inner-spin-button,
+.number-no-spinner::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
 @font-face {
   font-family: "Noto Serif";
   src: url("/assets/fonts/Noto_Serif_Display/NotoSerifDisplay-VariableFont_wdth,wght.ttf") format("truetype");
