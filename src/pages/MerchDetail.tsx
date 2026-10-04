@@ -44,15 +44,15 @@ export default function MerchDetail() {
 
     if (product === undefined) {
         return (
-            <div className="min-h-svh bg-ink">
+            <div className="luxury-paper font-poppins min-h-svh">
                 <Header />
                 <div className="site-container grid gap-10 pb-20 pt-32 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
-                    <div className="aspect-[3/4] skeleton-shimmer rounded-2xl" />
+                    <div className="aspect-[3/4] animate-pulse bg-royal/10" />
                     <div className="space-y-4 pt-4">
-                        <div className="h-4 w-28 skeleton-shimmer rounded" />
-                        <div className="h-8 w-2/3 skeleton-shimmer rounded" />
-                        <div className="h-4 w-full skeleton-shimmer rounded" />
-                        <div className="h-4 w-5/6 skeleton-shimmer rounded" />
+                        <div className="h-4 w-28 animate-pulse bg-royal/10" />
+                        <div className="h-8 w-2/3 animate-pulse bg-royal/10" />
+                        <div className="h-4 w-full animate-pulse bg-royal/10" />
+                        <div className="h-4 w-5/6 animate-pulse bg-royal/10" />
                     </div>
                 </div>
             </div>
@@ -90,7 +90,7 @@ export default function MerchDetail() {
     }
 
     return (
-        <div className="min-h-svh max-w-full overflow-x-clip bg-ink">
+        <div className="luxury-paper font-poppins min-h-svh max-w-full overflow-x-clip">
             <Seo
                 title={`${product.name} — AVENtures Shop`}
                 description={product.tagline}
@@ -102,7 +102,7 @@ export default function MerchDetail() {
             <main className="site-container min-w-0 pb-20 pt-28 sm:pt-32">
                 <Link
                     to="/shop"
-                    className="mb-8 inline-flex items-center gap-2 text-sm text-silver/80 transition hover:text-gold"
+                    className="mb-8 inline-flex items-center gap-2 text-sm text-royal/65 transition hover:text-gold-deep"
                 >
                     <ArrowLeft size={16} strokeWidth={1.5} />
                     Back to shop
@@ -112,26 +112,26 @@ export default function MerchDetail() {
                     <MerchGallery name={product.name} images={galleryImages} />
 
                     <div>
-                        <p className="text-[11px] uppercase tracking-[0.22em] text-gold">
+                        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-gold-deep">
                             {product.category}
                         </p>
-                        <h1 className="mt-2 font-serif text-3xl text-gold-gradient sm:text-4xl">
+                        <h1 className="mt-2 font-noto-serif text-4xl text-royal sm:text-5xl">
                             {product.name}
                         </h1>
-                        <p className="mt-2 text-base text-silver/75">{product.tagline}</p>
-                        <p className="mt-5 max-w-xl text-sm leading-relaxed text-silver/90 sm:text-base">
+                        <p className="mt-3 text-base text-ink/55">{product.tagline}</p>
+                        <p className="mt-6 max-w-xl text-sm leading-7 text-ink/70 sm:text-base">
                             {product.description}
                         </p>
-                        <p className="mt-6 font-serif text-2xl text-gold-gradient">{product.price}</p>
-                        <p className="mt-2 text-sm text-silver/60">
+                        <p className="mt-7 font-noto-serif text-3xl text-royal">{product.price}</p>
+                        <p className="mt-2 text-sm text-ink/50">
                             {product.inStock ? 'In stock · demo catalog' : 'Sold out'}
                             {isPhotography ? ' · archival matte' : ''}
                         </p>
 
-                        <aside className="mt-8 rounded-2xl border border-white/10 bg-ink-card/50 p-6 sm:p-7">
+                        <aside className="mt-8 border border-royal/10 bg-white p-6 shadow-[0_16px_45px_rgba(22,55,101,0.08)] sm:p-7">
                             {product.sizes?.length ? (
                                 <div>
-                                    <p className="text-sm text-silver/80">
+                                    <p className="text-sm font-medium text-royal/75">
                                         {isPhotography ? 'Print size' : 'Size'}
                                     </p>
                                     <div
@@ -147,8 +147,8 @@ export default function MerchDetail() {
                                                 aria-pressed={size === option}
                                                 className={`rounded-lg border px-3.5 py-2 text-sm transition ${
                                                     size === option
-                                                        ? 'border-gold bg-gold/10 text-gold'
-                                                        : 'border-white/15 text-silver/80 hover:border-gold/40'
+                                                        ? 'border-royal bg-royal text-cream'
+                                                        : 'border-royal/15 text-royal/70 hover:border-gold-deep/60'
                                                 }`}
                                             >
                                                 {option}
@@ -159,7 +159,7 @@ export default function MerchDetail() {
                             ) : null}
 
                             <div className={product.sizes?.length ? 'mt-5' : ''}>
-                                <label htmlFor="merch-qty" className="text-sm text-silver/80">
+                                <label htmlFor="merch-qty" className="text-sm font-medium text-royal/75">
                                     Quantity
                                 </label>
                                 <input
@@ -171,7 +171,7 @@ export default function MerchDetail() {
                                     onChange={(event) =>
                                         setQty(Math.max(1, Math.min(10, Number(event.target.value) || 1)))
                                     }
-                                    className="mt-2 w-24 rounded-lg border border-white/15 bg-ink-soft px-3 py-2.5 text-sm text-white outline-none focus:border-gold/60"
+                                    className="mt-2 w-24 border border-royal/15 bg-oat px-3 py-2.5 text-sm text-ink outline-none transition focus:border-gold-deep"
                                 />
                             </div>
 
@@ -180,7 +180,7 @@ export default function MerchDetail() {
                                     type="button"
                                     disabled={!product.inStock}
                                     onClick={() => requireAuthThenCart(false)}
-                                    className="btn-gold rounded-xl px-6 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="bg-royal px-6 py-3 text-sm text-cream transition hover:bg-gold-deep hover:text-royal disabled:cursor-not-allowed disabled:opacity-50"
                                 >
                                     Add to cart
                                 </button>
@@ -188,23 +188,23 @@ export default function MerchDetail() {
                                     type="button"
                                     disabled={!product.inStock}
                                     onClick={() => requireAuthThenCart(true)}
-                                    className="rounded-xl border border-white/20 px-6 py-3 text-sm text-white transition hover:border-gold/50 hover:text-gold disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="border border-royal px-6 py-3 text-sm text-royal transition hover:bg-royal hover:text-cream disabled:cursor-not-allowed disabled:opacity-50"
                                 >
                                     Buy
                                 </button>
                             </div>
 
                             {added ? (
-                                <p className="mt-4 text-sm text-gold">
+                                <p className="mt-4 text-sm text-royal">
                                     Added to cart.{' '}
-                                    <Link to="/cart" className="underline hover:text-ivory">
+                                    <Link to="/cart" className="underline decoration-gold-deep underline-offset-4 hover:text-gold-deep">
                                         View cart
                                     </Link>
                                 </p>
                             ) : null}
 
                             {!isLoggedIn ? (
-                                <p className="mt-5 text-xs leading-relaxed text-silver/55">
+                                <p className="mt-5 text-xs leading-relaxed text-ink/50">
                                     You can browse without an account. Add to cart and Buy will ask you to
                                     log in (demo — any details work).
                                 </p>
