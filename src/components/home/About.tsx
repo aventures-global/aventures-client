@@ -19,7 +19,7 @@ export default function About() {
     }
 
     return (
-        <section id="about" className="bg-white py-24 sm:py-32">
+        <section id="about" className="bg-white pt-24 sm:pt-32">
             <div className="site-container">
                 <motion.div
                     initial={{ opacity: 0, y: 24 }}

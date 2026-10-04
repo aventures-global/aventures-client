@@ -207,6 +207,18 @@ export default function Header() {
         }
     }, [hasEditorialHero, onHome])
 
+    const barRef = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+        const bar = barRef.current
+        if (!bar) return
+        const root = document.documentElement
+        const publish = () => root.style.setProperty('--header-height', `${bar.offsetTop + bar.offsetHeight}px`)
+        publish()
+        const observer = new ResizeObserver(publish)
+        observer.observe(bar)
+        return () => observer.disconnect()
+    }, [])
+
     useEffect(() => setDrawerOpen(false), [location.pathname])
 
     const [playIntro] = useState(() => !introPlayed && !reduceMotion)
@@ -263,6 +275,7 @@ export default function Header() {
             }`}
         >
             <div
+                ref={barRef}
                 className={`flex w-full items-center gap-8 px-6 transition-all duration-300 sm:px-8 lg:px-10 xl:px-14 2xl:px-20 ${
                     scrolled ? 'py-3' : 'py-5'
                 }`}

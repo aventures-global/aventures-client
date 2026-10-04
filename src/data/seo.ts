@@ -40,11 +40,6 @@ const routeCopy: Record<string, SeoRouteCopy> = {
         title: 'Cart — AVENtures',
         description: 'Your AVENtures merchandise cart.',
     },
-    '/custom-tour': {
-        title: 'Custom Tour — AVENtures',
-        description:
-            'Request a private custom itinerary with AVENtures — paced around your dates, interests, and comfort.',
-    },
     '/flights': {
         title: 'Flights — AVENtures',
         description:
