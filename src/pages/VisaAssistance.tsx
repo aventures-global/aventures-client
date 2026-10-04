@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight, Check, RotateCcw } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion, type Variants } from 'motion/react'
-import { useCallback, useEffect, useId, useRef, useState, type RefCallback } from 'react'
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode, type RefCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { getSite } from '../api'
 import Footer from '../components/layout/Footer'
@@ -51,11 +51,6 @@ const fadeUp: Variants = {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
 }
 
-const stagger: Variants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.1 } },
-}
-
 const STARTING_POINT_DISCLAIMER =
     'Your answers are only a starting point. The appropriate visa category depends on your individual circumstances and the specific purpose of your intended travel.'
 
@@ -65,49 +60,42 @@ export default function VisaAssistance() {
     const [history, setHistory] = useState<Step[]>([{ kind: 'intro' }])
     const step = history[history.length - 1]
     const reduceMotion = useReducedMotion()
-    const [finderRef, finderTop] = useStickyCover<HTMLDivElement>()
+    const [finderRef, finderTop] = useStickyCover<HTMLElement>()
 
     useEffect(() => {
         void getSite().then(setSite)
     }, [])
 
     const recommended = step.kind === 'result' ? step.visa : null
+    const isIntro = step.kind === 'intro'
 
     return (
         <div className="luxury-paper font-poppins flex min-h-svh flex-col">
             <Seo title={seo.title} description={seo.description} path="/visa-assistance" />
             <Header />
             <main className="flex-1">
-                <div
+                <section
                     ref={finderRef}
-                    className={reduceMotion ? undefined : 'sticky z-0'}
+                    className={`${reduceMotion ? 'relative' : 'sticky z-0'} flex min-h-[490px] items-center bg-oat ${
+                        reduceMotion
+                            ? ''
+                            : 'transition-[padding] duration-[600ms] ease-[cubic-bezier(0.22,0.7,0.2,1)]'
+                    } ${isIntro ? 'pt-20' : 'py-24 sm:py-28'}`}
                     style={reduceMotion ? undefined : { top: finderTop }}
+                    aria-labelledby="visa-finder-title"
                 >
-                    <div className="site-container pb-16 pt-28 sm:pt-32">
-                        <motion.header
-                            className="mx-auto max-w-5xl text-center"
-                            initial={reduceMotion ? false : 'hidden'}
-                            animate="visible"
-                            variants={stagger}
-                        >
-                            <motion.p variants={fadeUp} className="text-xs font-medium uppercase tracking-[0.3em] text-royal">
-                                Visa Services
-                            </motion.p>
-                            <motion.h1
-                                variants={fadeUp}
-                                className="mt-3 font-noto-serif text-[clamp(1.75rem,4.6vw,3rem)] leading-tight text-ink sm:whitespace-nowrap"
-                            >
-                                Where Is Your AVENture Taking You?
-                            </motion.h1>
-                            <motion.p variants={fadeUp} className="mt-2 font-noto-serif text-lg italic text-royal sm:text-xl">
-                                &ldquo;No complicated terms. Just answer what feels right for your journey.&rdquo;
-                            </motion.p>
-                        </motion.header>
-
+                    <img
+                        src="/assets/images/visa-services.jpg?v=1"
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 h-full w-full object-cover object-center"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,24,49,0.23),rgba(10,35,70,0.32),rgba(5,18,38,0.45))]" />
+                    <div className="site-container relative z-10">
                         <motion.div
-                            initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+                            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.65, delay: 0.35, ease: EASE }}
+                            transition={{ duration: 0.65, ease: EASE }}
                         >
                             <FinderCard
                                 step={step}
@@ -117,21 +105,11 @@ export default function VisaAssistance() {
                             />
                         </motion.div>
                     </div>
-                </div>
+                </section>
 
-                <section className="relative z-10 bg-white py-20 shadow-[0_0_50px_-30px_rgba(22,55,101,0.35)] sm:py-24">
+                <section className="relative z-10 bg-white pb-20 pt-24 shadow-[0_-24px_50px_-30px_rgba(22,55,101,0.35)] sm:pb-24 sm:pt-32">
                     <div className="site-container">
                         <ExploreAll recommended={recommended} />
-
-                        <motion.p
-                            initial={reduceMotion ? false : 'hidden'}
-                            whileInView="visible"
-                            viewport={{ once: true }}
-                            variants={fadeUp}
-                            className="mx-auto mt-16 max-w-2xl text-center font-noto-serif text-lg text-ink/70"
-                        >
-                            Answer a few questions. Find your direction. Start your AVENture.
-                        </motion.p>
                     </div>
                 </section>
             </main>
@@ -150,6 +128,8 @@ type FinderCardProps = {
 function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
     const reduceMotion = useReducedMotion()
     const hasInteracted = useRef(false)
+    const titleRef = useRef<HTMLHeadingElement>(null)
+    const isIntro = step.kind === 'intro'
     const [purposeId, setPurposeId] = useState<string | null>(null)
     const [roleId, setRoleId] = useState<string | null>(null)
     const [readinessId, setReadinessId] = useState<Readiness | null>(null)
@@ -181,6 +161,17 @@ function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
         if (advanceTimer.current) window.clearTimeout(advanceTimer.current)
     }, [])
 
+    useEffect(() => {
+        if (!isIntro || !hasInteracted.current) return
+        const node = titleRef.current
+        if (!node) return
+        node.focus({ preventScroll: true })
+        const card = node.closest('section')
+        if (card && card.getBoundingClientRect().top < 96) {
+            card.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' })
+        }
+    }, [isIntro, reduceMotion])
+
     /** Holds the checked state on screen briefly so the choice registers before the step changes. */
     const choose = (record: () => void, next: Step) => {
         if (advanceTimer.current) return
@@ -202,15 +193,10 @@ function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
     let body
     if (step.kind === 'intro') {
         body = (
-            <div className="text-center">
-                <h2 ref={headingRef} tabIndex={-1} className="font-noto-serif text-2xl text-ink outline-none sm:text-3xl">
-                    Let&rsquo;s find your AVENture
-                </h2>
-                <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-ink/60">
-                    Three short questions. You can also browse every service below.
-                </p>
-                <button type="button" onClick={() => go({ kind: 'purpose' })} className={`${primaryButtonClass} mt-7`}>
-                    Let&rsquo;s Find Your AVENture
+            <div>
+                <p className="mt-3 text-sm leading-7 text-ink/60">Three questions, or browse every service below.</p>
+                <button type="button" onClick={() => go({ kind: 'purpose' })} className={`${primaryButtonClass} mt-5 w-full`}>
+                    Start
                     <ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5" />
                 </button>
             </div>
@@ -297,20 +283,94 @@ function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
     return (
         <section
             aria-label="Visa finder"
-            className="mx-auto mt-8 max-w-5xl scroll-mt-28 border border-royal/15 bg-white/70 px-6 py-7 shadow-[0_18px_40px_-28px_rgba(22,55,101,0.45)] sm:px-10 sm:py-8"
+            className="mx-auto max-w-6xl scroll-mt-28 rounded-xl border border-royal/10 bg-white/55 px-5 shadow-[0_20px_60px_rgba(22,55,101,0.08)] backdrop-blur-sm sm:px-8"
         >
-            <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                    key={stepKey}
-                    initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -8 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    {body}
-                </motion.div>
-            </AnimatePresence>
+            <AnimatedHeight watch={stepKey} reduceMotion={reduceMotion}>
+                <div className={isIntro ? 'flex min-h-[260px] flex-col justify-center' : 'py-7 sm:py-8'}>
+                    <header className={isIntro ? undefined : 'mb-6 border-b border-royal/10 pb-5'}>
+                        <p className="text-xs font-medium uppercase tracking-[0.3em] text-[#9b7512]">Visa services</p>
+                        <h1
+                            ref={titleRef}
+                            id="visa-finder-title"
+                            tabIndex={-1}
+                            className="mt-2 font-noto-serif text-[clamp(1.15rem,5.7vw,1.875rem)] leading-tight text-royal outline-none sm:text-4xl"
+                        >
+                            Where is your AVENture taking you?
+                        </h1>
+                    </header>
+                    <AnimatePresence mode="popLayout" initial={false}>
+                        <motion.div
+                            key={stepKey}
+                            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -8 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            {body}
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+            </AnimatedHeight>
         </section>
+    )
+}
+
+const EXPAND_EASE = [0.22, 0.7, 0.2, 1] as const
+
+function AnimatedHeight({
+    children,
+    watch,
+    reduceMotion,
+}: {
+    children: ReactNode
+    watch: string
+    reduceMotion: boolean | null
+}) {
+    const innerRef = useRef<HTMLDivElement>(null)
+    const allowMotion = useRef(false)
+    const heightRef = useRef<number | 'auto'>('auto')
+    const [motionState, setMotionState] = useState<{ height: number | 'auto'; duration: number }>({
+        height: 'auto',
+        duration: 0,
+    })
+
+    useLayoutEffect(() => {
+        const el = innerRef.current
+        if (!el) return
+        const apply = () => {
+            const next = el.offsetHeight
+            const current = heightRef.current
+            if (current === next) return
+            const from = typeof current === 'number' ? current : next
+            const delta = Math.abs(next - from)
+            const duration =
+                !allowMotion.current || reduceMotion || delta < 8
+                    ? 0
+                    : Math.min(0.6, Math.max(0.3, delta / 620))
+            heightRef.current = next
+            setMotionState({ height: next, duration })
+        }
+        apply()
+        const observer = new ResizeObserver(apply)
+        observer.observe(el)
+        const frame = requestAnimationFrame(() => {
+            allowMotion.current = true
+        })
+        return () => {
+            observer.disconnect()
+            cancelAnimationFrame(frame)
+        }
+    }, [watch, reduceMotion])
+
+    return (
+        <motion.div
+            initial={false}
+            animate={{ height: motionState.height }}
+            transition={{ duration: motionState.duration, ease: EXPAND_EASE }}
+            className="overflow-hidden"
+        >
+            <div ref={innerRef}>{children}</div>
+        </motion.div>
     )
 }
 
@@ -489,25 +549,44 @@ function UnsureResult({ headingRef, onBack, onStartOver }: ResultNavProps) {
     )
 }
 
+const visaCategory: Record<VisaId, string> = {
+    tourist: 'Visit',
+    fiance: 'Family',
+    k2: 'Family',
+    j1: 'Exchange',
+    r1: 'Religious',
+    r2: 'Religious',
+    p1: 'Performance',
+    p2: 'Performance',
+    e2: 'Investment',
+}
+
 function ExploreAll({ recommended }: { recommended: VisaId | null }) {
     const reduceMotion = useReducedMotion()
-    const rowClass =
-        'group flex min-h-14 items-center justify-between gap-3 border px-4 py-3 text-sm transition-colors hover:border-gold-deep'
+    const visaCardClass =
+        'group relative flex h-full w-full flex-col rounded-[3px] border border-royal/15 bg-cream px-5 py-6 transition-colors duration-300 hover:border-[#9b7512] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal'
+    const arrowClass =
+        'shrink-0 text-royal/30 transition duration-300 group-hover:translate-x-0.5 group-hover:text-[#9b7512]'
 
     return (
         <section aria-labelledby="explore-all-title" className="mx-auto max-w-5xl">
-            <motion.h2
-                id="explore-all-title"
+            <motion.div
                 initial={reduceMotion ? false : 'hidden'}
                 whileInView="visible"
                 viewport={{ once: true }}
                 variants={fadeUp}
-                className="text-center font-noto-serif text-2xl text-ink sm:text-3xl"
+                className="text-center"
             >
-                Explore All AVENTURES Services
-            </motion.h2>
+                <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-[#9b7512]">Visa services</p>
+                <h2 id="explore-all-title" className="mt-2 font-noto-serif text-2xl text-ink sm:text-3xl">
+                    Explore All AVENTURES Services
+                </h2>
+                <p className="mx-auto mt-4 max-w-xl text-balance font-noto-serif text-lg italic leading-relaxed text-ink/70">
+                    Answer a few questions. Find your direction. Start your AVENture.
+                </p>
+            </motion.div>
             <motion.ul
-                className="mt-8 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3"
+                className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
                 initial={reduceMotion ? false : 'hidden'}
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
@@ -516,37 +595,52 @@ function ExploreAll({ recommended }: { recommended: VisaId | null }) {
                 {visaServices.map((service) => {
                     const isRecommended = service.id === recommended
                     return (
-                        <motion.li key={service.id} variants={fadeUp}>
+                        <motion.li key={service.id} variants={fadeUp} className="flex">
                             <Link
                                 to={service.href}
-                                className={`${rowClass} ${
-                                    isRecommended ? 'border-royal bg-royal/[0.06]' : 'border-royal/15 bg-white/55'
-                                }`}
+                                className={`${visaCardClass} ${isRecommended ? 'border-l-2 border-l-[#9b7512]' : ''}`}
                             >
-                                <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                                    <span className="font-medium text-ink">{service.title}</span>
-                                    {isRecommended && (
-                                        <span className="rounded-full bg-gold-deep px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
-                                            Recommended
-                                        </span>
-                                    )}
+                                <span className="pr-6 text-[10px] font-medium uppercase tracking-[0.22em] text-[#9b7512]">
+                                    {visaCategory[service.id]}
                                 </span>
+                                {isRecommended && (
+                                    <span className="mt-2 pr-6 text-[10px] font-medium uppercase tracking-[0.18em] text-[#9b7512]">
+                                        Suggested for you
+                                    </span>
+                                )}
+                                <span className="mt-3 pr-6 font-noto-serif text-lg leading-snug text-royal sm:text-xl">
+                                    {service.title}
+                                </span>
+                                <span className="mt-2.5 text-sm leading-6 text-ink/60">{service.description}</span>
                                 <ArrowRight
-                                    size={16}
-                                    className="shrink-0 text-royal/50 transition group-hover:translate-x-0.5 group-hover:text-gold-deep"
+                                    aria-hidden="true"
+                                    size={15}
+                                    strokeWidth={1.5}
+                                    className={`absolute top-6 right-5 ${arrowClass}`}
                                 />
                             </Link>
                         </motion.li>
                     )
                 })}
+            </motion.ul>
+            <motion.ul
+                className="mt-12 grid gap-4 sm:grid-cols-2"
+                initial={reduceMotion ? false : 'hidden'}
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.4 }}
+                variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}
+            >
                 {extraExploreLinks.map((link) => (
-                    <motion.li key={link.id} variants={fadeUp}>
-                        <Link to={link.href} className={`${rowClass} border-royal/15 bg-white/55`}>
-                            <span className="font-medium text-royal">{link.label}</span>
-                            <ArrowRight
-                                size={16}
-                                className="shrink-0 text-royal/50 transition group-hover:translate-x-0.5 group-hover:text-gold-deep"
-                            />
+                    <motion.li key={link.id} variants={fadeUp} className="flex">
+                        <Link
+                            to={link.href}
+                            className="group flex h-full w-full items-center justify-between gap-6 rounded-[3px] border border-royal/10 bg-white px-6 py-5 transition-colors duration-300 hover:border-[#9b7512] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal"
+                        >
+                            <span className="min-w-0">
+                                <span className="block font-noto-serif text-lg leading-snug text-ink">{link.label}</span>
+                                <span className="mt-1.5 block text-sm leading-6 text-ink/55">{link.note}</span>
+                            </span>
+                            <ArrowRight aria-hidden="true" size={15} strokeWidth={1.5} className={arrowClass} />
                         </Link>
                     </motion.li>
                 ))}
