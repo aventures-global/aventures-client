@@ -20,7 +20,7 @@ export const REGION_OPTIONS: { id: TourRegion | 'all'; label: string }[] = [
     { id: 'philippines', label: 'Philippines' },
     { id: 'east-asia', label: 'East Asia' },
     { id: 'southeast-asia', label: 'Southeast Asia' },
-    { id: 'americas', label: 'Americas' },
+    { id: 'americas', label: 'USA' },
     { id: 'europe', label: 'Europe' },
 ]
 
