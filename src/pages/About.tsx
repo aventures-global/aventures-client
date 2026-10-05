@@ -3,6 +3,10 @@ import { ArrowRight, Check, Compass, Eye, Heart, Mail, MapPin, Phone, Plane, Shi
 import PageShell from '../components/layout/PageShell'
 import JourneyCta from '../components/ui/JourneyCta'
 import { aboutTabs, founderStory, originStory, transparency, whyAventures, type AboutTabId } from '../data/about'
+import { relatedBusiness } from '../data/site'
+
+const storyLinkClass =
+    'font-medium text-royal underline decoration-gold-deep/60 underline-offset-4 transition-colors hover:text-gold-deep'
 
 function tabFromHash(): AboutTabId {
     const hash = window.location.hash.slice(1) as AboutTabId
@@ -29,13 +33,18 @@ export default function About() {
                 More than a travel agency, we are people who understand what it means to plan, prepare, hope, and finally go.
             </p>
 
-            <nav aria-label="About AVENTURES sections" className="sticky top-[var(--header-height,4rem)] z-20 mb-4 bg-oat/95 pt-2 backdrop-blur-xl sm:mb-8">
-                <div className="grid grid-cols-2 border-b border-royal/20 sm:grid-cols-4">
-                    {aboutTabs.map((tab) => (
-                        <button key={tab.id} type="button" aria-pressed={activeTab === tab.id} onClick={() => selectTab(tab.id)} className={`relative -mb-px flex min-h-14 items-center justify-center border-b-2 px-3 text-center text-[11px] font-medium uppercase tracking-[0.1em] transition-colors sm:text-xs ${activeTab === tab.id ? 'border-gold-deep text-royal' : 'border-transparent text-royal/50 hover:text-royal'}`}>
-                            {tab.label}
-                        </button>
-                    ))}
+            <nav
+                aria-label="About AVENTURES sections"
+                className="sticky top-[var(--header-height,4.5rem)] z-30 mb-4 w-screen bg-[#f8f5ee] [margin-left:calc(50%-50vw)] before:pointer-events-none before:absolute before:inset-x-0 before:bottom-full before:h-8 before:bg-[#f8f5ee] before:content-[''] sm:mb-8"
+            >
+                <div className="site-container">
+                    <div className="grid grid-cols-2 border-b border-royal/20 sm:grid-cols-4">
+                        {aboutTabs.map((tab) => (
+                            <button key={tab.id} type="button" aria-pressed={activeTab === tab.id} onClick={() => selectTab(tab.id)} className={`relative -mb-px flex min-h-14 items-center justify-center border-b-2 bg-[#f8f5ee] px-3 text-center text-[11px] font-medium uppercase tracking-[0.1em] transition-colors sm:text-xs ${activeTab === tab.id ? 'border-gold-deep text-royal' : 'border-transparent text-royal/50 hover:text-royal'}`}>
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </nav>
 
@@ -92,10 +101,30 @@ function WhyUs() {
     )
 }
 
+function RelatedBusinessLink({ className = storyLinkClass }: { className?: string }) {
+    return (
+        <a href={relatedBusiness.url} target="_blank" rel="noreferrer" className={className}>
+            {relatedBusiness.name}
+        </a>
+    )
+}
+
+function FounderIntro() {
+    const [before, after] = founderStory.intro.split(relatedBusiness.name)
+    if (after === undefined) return <p>{founderStory.intro}</p>
+    return (
+        <p>
+            {before}
+            <RelatedBusinessLink />
+            {after}
+        </p>
+    )
+}
+
 function BehindTheDream() {
     return (
         <section id="behind-the-dream" className="py-16 sm:py-24">
-            <SectionIntro eyebrow={founderStory.eyebrow} title={founderStory.title}><p>{founderStory.intro}</p></SectionIntro>
+            <SectionIntro eyebrow={founderStory.eyebrow} title={founderStory.title}><FounderIntro /></SectionIntro>
             <div className="mt-12 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch lg:gap-16">
                 <figure className="border border-royal/10 bg-white p-3 shadow-[0_18px_45px_rgba(22,55,101,0.14)] sm:p-4">
                     <div className="overflow-hidden bg-royal">
@@ -105,6 +134,9 @@ function BehindTheDream() {
                         <p className="text-xs font-medium uppercase tracking-[0.24em] text-gold-deep">The woman behind AVENTURES</p>
                         <h3 className="mt-2 font-noto-serif text-2xl font-semibold text-royal">{founderStory.name}</h3>
                         <p className="mt-1 text-sm text-ink/55">{founderStory.role}</p>
+                        <p className="mt-4 text-sm text-ink/55">
+                            Also founded <RelatedBusinessLink />
+                        </p>
                     </figcaption>
                 </figure>
                 <div className="space-y-10 lg:flex lg:h-full lg:flex-col lg:justify-center lg:gap-10 lg:space-y-0">

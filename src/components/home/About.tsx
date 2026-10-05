@@ -1,15 +1,20 @@
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { motion } from 'motion/react'
-import { useRef, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
+// import { ArrowLeft } from 'lucide-react'
+// import { useRef, type ReactNode } from 'react'
+
+/*
 const team = [
     { name: 'Avery Reyes', role: 'Travel Designer', initials: 'AR' },
     { name: 'Marco Santos', role: 'Journey Specialist', initials: 'MS' },
     { name: 'Nia Bennett', role: 'Client Experience', initials: 'NB' },
 ]
+*/
 
 export default function About() {
+    /*
     const teamRef = useRef<HTMLDivElement>(null)
     const moveTeam = (direction: -1 | 1) => {
         teamRef.current?.scrollBy({
@@ -17,9 +22,10 @@ export default function About() {
             behavior: 'smooth',
         })
     }
+    */
 
     return (
-        <section id="about" className="bg-white pt-24 sm:pt-32">
+        <section id="about" className="bg-white py-24 sm:py-32">
             <div className="site-container">
                 <motion.div
                     initial={{ opacity: 0, y: 24 }}
@@ -45,6 +51,7 @@ export default function About() {
                 </motion.div>
             </div>
 
+            {/*
             <div className="mt-24 bg-royal py-16 sm:mt-28 sm:py-20">
                 <div className="site-container">
                     <div>
@@ -104,10 +111,12 @@ export default function About() {
                     </div>
                 </div>
             </div>
+            */}
         </section>
     )
 }
 
+/*
 function TeamArrow({
     children,
     label,
@@ -130,3 +139,4 @@ function TeamArrow({
         </button>
     )
 }
+*/

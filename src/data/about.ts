@@ -1,3 +1,5 @@
+import { relatedBusiness } from './site'
+
 export type AboutTabId = 'why-us' | 'behind-the-dream' | 'origin' | 'transparency'
 
 export const aboutTabs: { id: AboutTabId; label: string; shortLabel: string }[] = [
@@ -26,7 +28,7 @@ export const founderStory = {
     title: 'A dream helped build a company.',
     name: 'Mary Kathleen Kayce Avendula',
     role: 'CEO of AVENTURES',
-    intro: 'Her professional journey began as a nursing graduate in the Philippines. She later moved into entrepreneurship through Kikay’s Lechon and developed hands-on experience with U.S. visa applications and processing through her work with REK Global Philippines.',
+    intro: `Her professional journey began as a nursing graduate in the Philippines. She later moved into entrepreneurship through Kikay’s Lechon and developed hands-on experience with U.S. visa applications and processing through her work with ${relatedBusiness.name}.`,
     story: 'Mary Kathleen and her husband once stood where many aspiring clients stand today—with a dream of building a life in America and the determination to make it happen. Their own experience with preparation, patience, and the visa process became part of the foundation behind AVENTURES.',
     whyItMatters: 'Every application belongs to a person: a family waiting, a relationship worth pursuing, a future being planned, or a dream that took years to build. That is why AVENTURES aims to provide hands-on service, careful preparation, clear guidance, and personal attention.',
     quote: 'Sometimes, the person helping you pursue your dream is someone who once had to pursue one of her own.',

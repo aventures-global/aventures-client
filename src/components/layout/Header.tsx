@@ -209,14 +209,23 @@ export default function Header() {
 
     const barRef = useRef<HTMLDivElement>(null)
     useEffect(() => {
-        const bar = barRef.current
-        if (!bar) return
+        const header = barRef.current?.closest('header')
+        if (!header) return
         const root = document.documentElement
-        const publish = () => root.style.setProperty('--header-height', `${bar.offsetTop + bar.offsetHeight}px`)
+        const publish = () => {
+            const height = Math.ceil(header.getBoundingClientRect().height)
+            root.style.setProperty('--header-height', `${height}px`)
+        }
         publish()
         const observer = new ResizeObserver(publish)
-        observer.observe(bar)
-        return () => observer.disconnect()
+        observer.observe(header)
+        window.addEventListener('scroll', publish, { passive: true })
+        window.addEventListener('resize', publish)
+        return () => {
+            observer.disconnect()
+            window.removeEventListener('scroll', publish)
+            window.removeEventListener('resize', publish)
+        }
     }, [])
 
     useEffect(() => setDrawerOpen(false), [location.pathname])

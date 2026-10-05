@@ -1,6 +1,7 @@
 import { Mail, MapPin, Phone } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { memo } from 'react'
+import { relatedBusiness } from '../../data/site'
 import type { SiteInfo } from '../../types/content'
 import BrandLogo from '../ui/BrandLogo'
 import { FacebookIcon, InstagramIcon, TikTokIcon } from '../ui/SocialIcons'
@@ -117,44 +118,62 @@ function Footer({ site }: FooterProps) {
                         </ul>
                     </nav>
 
-                    <nav aria-label="Social media">
-                        <h2 className={headingClass}>Social</h2>
-                        <ul className="space-y-2.5">
-                            <li>
-                                <a
-                                    href={site.facebookUrl}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className={`${navClass} inline-flex items-center gap-2.5`}
-                                >
-                                    <FacebookIcon size={16} className="shrink-0 text-white/80" />
-                                    {displayHandle(site.socialHandles.facebook)}
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href={site.instagramUrl}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className={`${navClass} inline-flex items-center gap-2.5`}
-                                >
-                                    <InstagramIcon size={16} className="shrink-0 text-white/80" />
-                                    {displayHandle(site.socialHandles.instagram)}
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href={site.tiktokUrl}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className={`${navClass} inline-flex items-center gap-2.5`}
-                                >
-                                    <TikTokIcon size={16} className="shrink-0 text-white/80" />
-                                    {displayHandle(site.socialHandles.tiktok)}
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <div className="flex flex-col">
+                        <nav aria-label="Social media">
+                            <h2 className={headingClass}>Social</h2>
+                            <ul className="space-y-2.5">
+                                <li>
+                                    <a
+                                        href={site.facebookUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className={`${navClass} inline-flex items-center gap-2.5`}
+                                    >
+                                        <FacebookIcon size={16} className="shrink-0 text-white/80" />
+                                        {displayHandle(site.socialHandles.facebook)}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href={site.instagramUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className={`${navClass} inline-flex items-center gap-2.5`}
+                                    >
+                                        <InstagramIcon size={16} className="shrink-0 text-white/80" />
+                                        {displayHandle(site.socialHandles.instagram)}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href={site.tiktokUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className={`${navClass} inline-flex items-center gap-2.5`}
+                                    >
+                                        <TikTokIcon size={16} className="shrink-0 text-white/80" />
+                                        {displayHandle(site.socialHandles.tiktok)}
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                        <nav aria-label="Partners" className="mt-2.5">
+                            <h2 className="mb-2.5 text-sm font-semibold text-white">Partners</h2>
+                            <ul className="space-y-2.5">
+                                <li>
+                                    <a
+                                        href={relatedBusiness.url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className={navClass}
+                                    >
+                                        {relatedBusiness.name}
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
 

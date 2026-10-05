@@ -1,5 +1,10 @@
 import type { SiteInfo } from '../types/content'
 
+export const relatedBusiness = {
+    name: 'REK Global Philippines',
+    url: 'https://www.facebook.com/rekph',
+} as const
+
 const contactEmail =
     (import.meta.env.VITE_CONTACT_EMAIL as string | undefined)?.trim() || 'admin@aventurestravel.com'
 
