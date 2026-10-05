@@ -50,6 +50,7 @@ function AnimatedRoutes() {
                     <Route path="/about/:section" element={<About />} />
                     <Route path="/destinations" element={<Destinations />} />
                     <Route path="/destinations/:slug" element={<TourDetail />} />
+                    <Route path="/traveler-quiz" element={<Navigate to="/#traveler-quiz" replace />} />
                     <Route path="/shop" element={<Shop />} />
                     <Route path="/shop/:slug" element={<MerchDetail />} />
                     <Route path="/cart" element={<Cart />} />
