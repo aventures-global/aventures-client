@@ -12,6 +12,7 @@ import Destinations from '../components/home/Destinations'
 import Hero from '../components/home/Hero'
 import Offers from '../components/home/Offers'
 import Testimonials from '../components/home/Testimonials'
+import TravelerQuiz from '../components/home/TravelerQuiz'
 import WhyUs from '../components/home/WhyUs'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
@@ -61,6 +62,7 @@ export default function Home() {
                     <About />
                     <Offers offers={offers} />
                     {site && <WhyUs site={site} />}
+                    <TravelerQuiz />
                     <Testimonials testimonials={testimonials} />
                     {site && <Contact site={site} topFaqs={topFaqs} />}
                 </div>
