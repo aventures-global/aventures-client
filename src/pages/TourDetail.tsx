@@ -2,12 +2,13 @@ import { ArrowLeft, ArrowRight, CalendarClock, ChevronLeft, ChevronRight, Compas
 import { motion } from 'motion/react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getSite, getTestimonials, getTourBySlug, getTours } from '../api'
+import { getSite } from '../api'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
 import JourneyCta from '../components/ui/JourneyCta'
 import SafeImage from '../components/ui/SafeImage'
+import { useTestimonials, useTour, useTours } from '../hooks/useTourDetail'
 import type { SiteInfo, Testimonial, Tour, TourExperience } from '../types/content'
 import NotFound from './NotFound'
 
@@ -21,25 +22,14 @@ const tipIcons = [CalendarClock, Luggage, Files, Compass]
 
 export default function TourDetail() {
     const { slug } = useParams<{ slug: string }>()
-    const [tour, setTour] = useState<Tour | null | undefined>(undefined)
-    const [allTours, setAllTours] = useState<Tour[]>([])
+    const { data: tour, isPlaceholderData } = useTour(slug)
+    const { data: allTours = [] } = useTours()
+    const { data: testimonials = [] } = useTestimonials()
     const [site, setSite] = useState<SiteInfo | null>(null)
-    const [testimonials, setTestimonials] = useState<Testimonial[]>([])
 
     useEffect(() => {
-        if (!slug) {
-            setTour(null)
-            return
-        }
-        void Promise.all([getTourBySlug(slug), getTours().catch(() => []), getSite(), getTestimonials().catch(() => [])]).then(
-            ([tourData, toursData, siteData, testimonialData]) => {
-                setTour(tourData)
-                setAllTours(toursData)
-                setSite(siteData)
-                setTestimonials(testimonialData)
-            },
-        )
-    }, [slug])
+        void getSite().then(setSite)
+    }, [])
 
     const suggestedTours = useMemo(() => {
         if (!tour) return []
@@ -49,31 +39,25 @@ export default function TourDetail() {
         return [...sameRegion, ...others].slice(0, 3)
     }, [allTours, tour])
 
+    if (!slug || tour === null) return <NotFound />
     if (tour === undefined) {
         return <div className="luxury-paper min-h-svh"><Header /><div className="h-[70svh] animate-pulse bg-royal/10" /></div>
     }
-    if (tour === null) return <NotFound />
+    const contentPending = isPlaceholderData && tour.experiences.length === 0
 
     return (
         <div className="luxury-paper font-poppins min-h-svh overflow-x-clip text-ink">
             <Seo title={`${tour.title} — AVENtures`} description={tour.shortDescription || tour.tagline} path={`/destinations/${tour.slug}`} image={tour.coverImage} />
             <Header />
 
-            <section className="relative flex min-h-[38rem] h-[76svh] items-end overflow-hidden">
-                <SafeImage src={tour.coverImage} alt={tour.location} className="absolute inset-0 h-full w-full" imgClassName={`object-cover ${coverFocus[tour.id] ?? 'object-center'}`} />
-                <div className="absolute inset-0 bg-[#071831]/22" />
-                <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-[#071831]/85 via-[#071831]/42 to-transparent" />
-                <div className="site-container relative z-10 pb-12 sm:pb-16">
-                    <Link to="/destinations" className="inline-flex items-center gap-2 text-sm text-white/80 transition hover:text-gold"><ArrowLeft size={16} />Back to destinations</Link>
-                    <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }} className="mt-7 max-w-4xl">
-                        <p className="flex items-center gap-2 text-xs uppercase tracking-[0.24em] text-gold"><MapPin size={14} />{tour.location}</p>
-                        <h1 className="mt-3 font-noto-serif text-5xl leading-[1.04] text-white sm:text-6xl lg:text-7xl">{tour.title}</h1>
-                        <p className="mt-4 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">{tour.tagline}</p>
-                        <Link to={`/start-your-aventure?destination=${encodeURIComponent(tour.location)}`} className="mt-7 inline-flex items-center gap-2 border border-white/45 bg-white/10 px-6 py-3 text-sm text-white backdrop-blur-sm transition hover:border-gold hover:bg-gold hover:text-royal">Plan this destination <ArrowRight size={15} /></Link>
-                    </motion.div>
-                </div>
-            </section>
+            <TourHero tour={tour} />
 
+            {contentPending ? (
+                <div className="site-container grid gap-6 py-20 sm:py-28 lg:grid-cols-2">
+                    <div className="aspect-[4/3] animate-pulse rounded-xl bg-royal/10" />
+                    <div className="space-y-4"><div className="h-8 w-2/3 animate-pulse rounded bg-royal/10" /><div className="h-4 w-full animate-pulse rounded bg-royal/5" /><div className="h-4 w-5/6 animate-pulse rounded bg-royal/5" /></div>
+                </div>
+            ) : (
             <main>
                 {tour.experiences.map((experience, index) => {
                     return (
@@ -135,8 +119,28 @@ export default function TourDetail() {
 
                 <JourneyCta />
             </main>
+            )}
             {site && <Footer site={site} />}
         </div>
+    )
+}
+
+function TourHero({ tour }: { tour: Tour }) {
+    return (
+        <section className="relative flex min-h-[38rem] h-[76svh] items-end overflow-hidden">
+            <SafeImage src={tour.coverImage} alt={tour.location} className="absolute inset-0 h-full w-full" imgClassName={`object-cover ${coverFocus[tour.id] ?? 'object-center'}`} />
+            <div className="absolute inset-0 bg-[#071831]/22" />
+            <div className="absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-[#071831]/85 via-[#071831]/42 to-transparent" />
+            <div className="site-container relative z-10 pb-12 sm:pb-16">
+                <Link to="/destinations" className="inline-flex items-center gap-2 text-sm text-white/80 transition hover:text-gold"><ArrowLeft size={16} />Back to destinations</Link>
+                <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }} className="mt-7 max-w-4xl">
+                    <p className="flex items-center gap-2 text-xs uppercase tracking-[0.24em] text-gold"><MapPin size={14} />{tour.location}</p>
+                    <h1 className="mt-3 font-noto-serif text-5xl leading-[1.04] text-white sm:text-6xl lg:text-7xl">{tour.title}</h1>
+                    <p className="mt-4 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">{tour.tagline}</p>
+                    <Link to={`/start-your-aventure?destination=${encodeURIComponent(tour.location)}`} className="mt-7 inline-flex items-center gap-2 border border-white/45 bg-white/10 px-6 py-3 text-sm text-white backdrop-blur-sm transition hover:border-gold hover:bg-gold hover:text-royal">Plan this destination <ArrowRight size={15} /></Link>
+                </motion.div>
+            </div>
+        </section>
     )
 }
 

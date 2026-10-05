@@ -8,6 +8,8 @@ type SafeImageProps = {
     skeletonClassName?: string
 }
 
+const loadedSources = new Set<string>()
+
 export default function SafeImage({
     src,
     alt,
@@ -15,7 +17,8 @@ export default function SafeImage({
     imgClassName = '',
     skeletonClassName = '',
 }: SafeImageProps) {
-    const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading')
+    const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>(() => (loadedSources.has(src) ? 'loaded' : 'loading'))
+    const [instant] = useState(() => loadedSources.has(src))
 
     // Let callers override the fit; two object-* utilities would otherwise collide.
     const fitClass = imgClassName.includes('object-') ? '' : 'object-cover'
@@ -35,10 +38,13 @@ export default function SafeImage({
                 <img
                     src={src}
                     alt={alt}
-                    className={`h-full w-full ${fitClass} transition-opacity duration-500 ${
+                    className={`h-full w-full ${fitClass} ${instant ? '' : 'transition-opacity duration-500'} ${
                         status === 'loaded' ? 'opacity-100' : 'opacity-0'
                     } ${imgClassName}`}
-                    onLoad={() => setStatus('loaded')}
+                    onLoad={() => {
+                        loadedSources.add(src)
+                        setStatus('loaded')
+                    }}
                     onError={() => setStatus('error')}
                 />
             )}
