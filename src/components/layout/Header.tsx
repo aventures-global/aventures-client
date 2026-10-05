@@ -26,7 +26,7 @@ const VISA_SERVICE_PREFIX = '/services/visa/'
 let introPlayed = false
 
 function linkClass(active: boolean, dark: boolean) {
-    return `font-noto-serif text-base tracking-wide transition-colors ${
+    return `font-noto-serif text-base font-semibold tracking-wide transition-colors ${
         active
             ? 'text-gold-deep'
             : dark
@@ -36,7 +36,7 @@ function linkClass(active: boolean, dark: boolean) {
 }
 
 function mobileLinkClass(active: boolean) {
-    return `flex min-h-11 items-center font-noto-serif text-base ${
+    return `flex min-h-11 items-center font-noto-serif text-base font-semibold ${
         active ? 'text-[#9b7512]' : 'text-ink/75 hover:text-[#9b7512]'
     }`
 }
