@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/about",
+      "destination": "/about/why-us",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/((?!sitemap\\.xml$|robots\\.txt$).*)",
