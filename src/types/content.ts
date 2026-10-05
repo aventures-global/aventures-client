@@ -50,6 +50,20 @@ export type Tour = {
     region?: string
 }
 
+export type TourSummary = Pick<Tour, 'id' | 'slug' | 'title' | 'tagline' | 'coverImage' | 'location' | 'featured' | 'region'>
+
+export type TourSearchPage = {
+    items: TourSummary[]
+    nextCursor: number | null
+    total: number
+}
+
+export type TourSuggestion =
+    | { kind: 'spelling'; suggestion: string; matches: TourSummary[] }
+    | { kind: 'covered'; place: string; country: string; isCountry: boolean; matches: TourSummary[] }
+    | { kind: 'nearby'; place: string; matches: (TourSummary & { distanceKm: number })[] }
+    | { kind: 'none' }
+
 export type MerchProduct = {
     id: string
     slug: string

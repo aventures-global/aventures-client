@@ -8,6 +8,8 @@ import type {
     SiteInfo,
     Testimonial,
     Tour,
+    TourSearchPage,
+    TourSuggestion,
 } from '../types/content'
 import { apiFetch } from '../lib/apiClient'
 
@@ -33,6 +35,36 @@ export async function getFaqs(): Promise<FaqData> {
 
 export async function getTours(): Promise<Tour[]> {
     return apiFetch<Tour[]>('/api/tours')
+}
+
+export const TOUR_PAGE_SIZE = 12
+
+export type TourSearchParams = {
+    q: string
+    regions: string[]
+    dir: 'asc' | 'desc'
+}
+
+export async function searchTours(
+    params: TourSearchParams,
+    cursor: number,
+    signal?: AbortSignal,
+): Promise<TourSearchPage> {
+    const search = new URLSearchParams({
+        sort: 'name',
+        dir: params.dir,
+        cursor: String(cursor),
+        limit: String(TOUR_PAGE_SIZE),
+    })
+    if (params.q.trim()) search.set('q', params.q.trim())
+    if (params.regions.length > 0) search.set('regions', params.regions.join(','))
+    return apiFetch<TourSearchPage>(`/api/tours/search?${search}`, { signal })
+}
+
+export const TOUR_SUGGEST_MIN_LENGTH = 3
+
+export async function suggestTours(q: string, signal?: AbortSignal): Promise<TourSuggestion> {
+    return apiFetch<TourSuggestion>(`/api/tours/suggest?${new URLSearchParams({ q })}`, { signal })
 }
 
 export async function getFeaturedTours(): Promise<Tour[]> {
