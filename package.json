@@ -8,6 +8,7 @@
     "prebuild": "npm run sitemap",
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "postbuild": "node scripts/copy-spa-404.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

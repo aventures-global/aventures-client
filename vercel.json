@@ -8,7 +8,235 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!sitemap\\.xml$|robots\\.txt$).*)",
+      "source": "/about/why-us",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/about/behind-the-dream",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/about/origin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/about/transparency",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/shop",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/start-your-aventure",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/flights",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/hotels",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/cars",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/visa-assistance",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/services/visa/tourist",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/services/visa/k1-k2",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/services/visa/j1",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/services/visa/r1-r2",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/services/visa/p1-p2",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/services/visa/e2",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/faq",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ask",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/sitemap",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/philippine-discovery",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/cebu-tour",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/boracay-serenity",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/south-korea-kwave",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/japan-tradition",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/usa-dream-big",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/thailand-calling",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/indonesia-escape",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/europe-journeys",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/siargao-island",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/bohol-countryside",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/coron-lagoons",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/china-tour",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/california-coast",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/hokkaido-seasons",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/jeju-island",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/phuket-phi-phi",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/chiang-mai-highlands",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/destinations/labuan-bajo-komodo",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/shop/journey-tee",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/shop/globe-tote",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/shop/palawan-print",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/shop/kyoto-print",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/shop/boracay-print",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/traveler-quiz",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/cart",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/signup",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/verify-email",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/forgot-password",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/verify-reset",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/reset-password",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/custom-tour",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/onboarding",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/inquire",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/blog",
       "destination": "/index.html"
     }
   ]

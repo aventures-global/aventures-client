@@ -93,6 +93,24 @@ const paths = [
     ...merchSlugs.map((slug) => `/shop/${slug}`),
 ]
 
+/** Real app routes that should return 200 but stay out of the sitemap. */
+const appOnlyPaths = [
+    '/traveler-quiz',
+    '/cart',
+    '/login',
+    '/signup',
+    '/verify-email',
+    '/forgot-password',
+    '/verify-reset',
+    '/reset-password',
+    '/custom-tour',
+    '/onboarding',
+    '/inquire',
+    '/blog',
+]
+
+const rewritePaths = [...new Set([...paths.filter((path) => path !== '/'), ...appOnlyPaths])]
+
 const today = new Date().toISOString().slice(0, 10)
 
 function xmlEscape(value) {
@@ -128,4 +146,22 @@ Sitemap: ${siteUrl}/sitemap.xml
 writeFileSync(join(publicDir, 'sitemap.xml'), sitemap)
 writeFileSync(join(publicDir, 'robots.txt'), robots)
 
-console.log(`Wrote sitemap.xml (${paths.length} URLs) and robots.txt for ${siteUrl}`)
+const vercelConfig = {
+    redirects: [
+        {
+            source: '/about',
+            destination: '/about/why-us',
+            permanent: true,
+        },
+    ],
+    rewrites: rewritePaths.map((source) => ({
+        source,
+        destination: '/index.html',
+    })),
+}
+
+writeFileSync(join(root, 'vercel.json'), `${JSON.stringify(vercelConfig, null, 2)}\n`)
+
+console.log(
+    `Wrote sitemap.xml (${paths.length} URLs), robots.txt, and ${rewritePaths.length} SPA rewrites for ${siteUrl}`,
+)
