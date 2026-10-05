@@ -12,18 +12,13 @@ import {
     ASK_AVENTURES_HREF,
     START_VISA_ASSISTANCE_HREF,
     askAboutVisaHref,
-    extraExploreLinks,
-    getVisaService,
-    purposeQuestion,
+    findVisaService,
     readinessNote,
-    readinessQuestions,
-    roleQuestions,
-    visaServices,
-    type PathId,
-    type Readiness,
-    type VisaId,
-} from '../data/visaFinder'
+    visaServiceHref,
+} from '../data/visaCatalog'
+import { useVisaCatalog } from '../hooks/useVisaCatalog'
 import type { SiteInfo } from '../types/content'
+import type { PathId, Readiness, VisaCatalog, VisaId } from '../types/visa'
 
 type Step =
     | { kind: 'intro' }
@@ -51,11 +46,9 @@ const fadeUp: Variants = {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
 }
 
-const STARTING_POINT_DISCLAIMER =
-    'Your answers are only a starting point. The appropriate visa category depends on your individual circumstances and the specific purpose of your intended travel.'
-
 export default function VisaAssistance() {
     const seo = getSeoForPath('/visa-assistance')
+    const catalog = useVisaCatalog()
     const [site, setSite] = useState<SiteInfo | null>(null)
     const [history, setHistory] = useState<Step[]>([{ kind: 'intro' }])
     const step = history[history.length - 1]
@@ -97,19 +90,32 @@ export default function VisaAssistance() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.65, ease: EASE }}
                         >
-                            <FinderCard
-                                step={step}
-                                onAdvance={(next) => setHistory((prev) => [...prev, next])}
-                                onBack={() => setHistory((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev))}
-                                onStartOver={() => setHistory([{ kind: 'intro' }, { kind: 'purpose' }])}
-                            />
+                            {catalog ? (
+                                <FinderCard
+                                    catalog={catalog}
+                                    step={step}
+                                    onAdvance={(next) => setHistory((prev) => [...prev, next])}
+                                    onBack={() => setHistory((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev))}
+                                    onStartOver={() => setHistory([{ kind: 'intro' }, { kind: 'purpose' }])}
+                                />
+                            ) : (
+                                <div
+                                    aria-busy="true"
+                                    aria-label="Loading the visa finder"
+                                    className="mx-auto min-h-[260px] max-w-6xl rounded-xl border border-royal/10 bg-white/55 shadow-[0_20px_60px_rgba(22,55,101,0.08)] backdrop-blur-sm"
+                                />
+                            )}
                         </motion.div>
                     </div>
                 </section>
 
                 <section className="relative z-10 bg-white pb-20 pt-24 shadow-[0_-24px_50px_-30px_rgba(22,55,101,0.35)] sm:pb-24 sm:pt-32">
                     <div className="site-container">
-                        <ExploreAll recommended={recommended} />
+                        {catalog ? (
+                            <ExploreAll catalog={catalog} recommended={recommended} />
+                        ) : (
+                            <div aria-hidden className="mx-auto min-h-[600px] max-w-5xl" />
+                        )}
                     </div>
                 </section>
             </main>
@@ -119,13 +125,15 @@ export default function VisaAssistance() {
 }
 
 type FinderCardProps = {
+    catalog: VisaCatalog
     step: Step
     onAdvance: (next: Step) => void
     onBack: () => void
     onStartOver: () => void
 }
 
-function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
+function FinderCard({ catalog, step, onAdvance, onBack, onStartOver }: FinderCardProps) {
+    const { finder } = catalog
     const reduceMotion = useReducedMotion()
     const hasInteracted = useRef(false)
     const titleRef = useRef<HTMLHeadingElement>(null)
@@ -206,11 +214,11 @@ function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
             <QuestionStep
                 headingRef={headingRef}
                 number={1}
-                title={purposeQuestion.title}
-                options={purposeQuestion.options}
+                title={finder.purpose.title}
+                options={finder.purpose.options}
                 selectedId={purposeId}
                 onChoose={(id) => {
-                    const option = purposeQuestion.options.find((o) => o.id === id)!
+                    const option = finder.purpose.options.find((o) => o.id === id)!
                     choose(
                         () => {
                             if (id !== purposeId) {
@@ -226,7 +234,7 @@ function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
             />
         )
     } else if (step.kind === 'role') {
-        const question = roleQuestions[step.path]
+        const question = finder.roles[step.path]
         body = (
             <QuestionStep
                 headingRef={headingRef}
@@ -248,7 +256,7 @@ function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
             />
         )
     } else if (step.kind === 'readiness') {
-        const question = readinessQuestions[step.visa]
+        const question = finder.readiness[step.visa]
         body = (
             <QuestionStep
                 headingRef={headingRef}
@@ -266,6 +274,7 @@ function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
     } else if (step.kind === 'result') {
         body = (
             <MatchResult
+                catalog={catalog}
                 headingRef={headingRef}
                 visa={step.visa}
                 readiness={step.readiness}
@@ -274,7 +283,14 @@ function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
             />
         )
     } else {
-        body = <UnsureResult headingRef={headingRef} onBack={back} onStartOver={startOver} />
+        body = (
+            <UnsureResult
+                disclaimer={finder.disclaimer}
+                headingRef={headingRef}
+                onBack={back}
+                onStartOver={startOver}
+            />
+        )
     }
 
     const stepKey =
@@ -288,14 +304,14 @@ function FinderCard({ step, onAdvance, onBack, onStartOver }: FinderCardProps) {
             <AnimatedHeight watch={stepKey} reduceMotion={reduceMotion}>
                 <div className={isIntro ? 'flex min-h-[260px] flex-col justify-center' : 'py-7 sm:py-8'}>
                     <header className={isIntro ? undefined : 'mb-6 border-b border-royal/10 pb-5'}>
-                        <p className="text-xs font-medium uppercase tracking-[0.3em] text-[#9b7512]">Visa services</p>
+                        <p className="text-xs font-medium uppercase tracking-[0.3em] text-[#9b7512]">{finder.eyebrow}</p>
                         <h1
                             ref={titleRef}
                             id="visa-finder-title"
                             tabIndex={-1}
                             className="mt-2 font-noto-serif text-[clamp(1.15rem,5.7vw,1.875rem)] leading-tight text-royal outline-none sm:text-4xl"
                         >
-                            Where is your AVENture taking you?
+                            {finder.heading}
                         </h1>
                     </header>
                     <AnimatePresence mode="popLayout" initial={false}>
@@ -471,14 +487,25 @@ function ResultNav({ onBack, onStartOver }: Omit<ResultNavProps, 'headingRef'>) 
 }
 
 function MatchResult({
+    catalog,
     headingRef,
     visa,
     readiness,
     onBack,
     onStartOver,
-}: ResultNavProps & { visa: VisaId; readiness: Readiness }) {
-    const service = getVisaService(visa)
+}: ResultNavProps & { catalog: VisaCatalog; visa: VisaId; readiness: Readiness }) {
+    const service = findVisaService(catalog, visa)
     const ready = readiness === 'yes' || readiness === 'arranging'
+    if (!service) {
+        return (
+            <UnsureResult
+                disclaimer={catalog.finder.disclaimer}
+                headingRef={headingRef}
+                onBack={onBack}
+                onStartOver={onStartOver}
+            />
+        )
+    }
 
     return (
         <div className="mx-auto max-w-2xl">
@@ -500,10 +527,10 @@ function MatchResult({
             </p>
             <p className="mt-4 text-sm leading-7 text-ink/80">
                 <span className="font-medium text-royal">Your next step: </span>
-                {readinessNote(visa, readiness)}
+                {readinessNote(catalog, visa, readiness)}
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-3">
-                <Link to={service.href} className={primaryButtonClass}>
+                <Link to={visaServiceHref(catalog, service)} className={primaryButtonClass}>
                     Explore {service.shortLabel}
                     <ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5" />
                 </Link>
@@ -518,12 +545,12 @@ function MatchResult({
                 )}
             </div>
             <ResultNav onBack={onBack} onStartOver={onStartOver} />
-            <p className="mt-8 border-t border-royal/10 pt-5 text-xs leading-6 text-ink/50">{STARTING_POINT_DISCLAIMER}</p>
+            <p className="mt-8 border-t border-royal/10 pt-5 text-xs leading-6 text-ink/50">{catalog.finder.disclaimer}</p>
         </div>
     )
 }
 
-function UnsureResult({ headingRef, onBack, onStartOver }: ResultNavProps) {
+function UnsureResult({ disclaimer, headingRef, onBack, onStartOver }: ResultNavProps & { disclaimer: string }) {
     return (
         <div className="mx-auto max-w-2xl">
             <p className="text-xs font-medium uppercase tracking-[0.24em] text-royal">Not sure or still confused?</p>
@@ -544,24 +571,12 @@ function UnsureResult({ headingRef, onBack, onStartOver }: ResultNavProps) {
                 </Link>
             </div>
             <ResultNav onBack={onBack} onStartOver={onStartOver} />
-            <p className="mt-8 border-t border-royal/10 pt-5 text-xs leading-6 text-ink/50">{STARTING_POINT_DISCLAIMER}</p>
+            <p className="mt-8 border-t border-royal/10 pt-5 text-xs leading-6 text-ink/50">{disclaimer}</p>
         </div>
     )
 }
 
-const visaCategory: Record<VisaId, string> = {
-    tourist: 'Visit',
-    fiance: 'Family',
-    k2: 'Family',
-    j1: 'Exchange',
-    r1: 'Religious',
-    r2: 'Religious',
-    p1: 'Performance',
-    p2: 'Performance',
-    e2: 'Investment',
-}
-
-function ExploreAll({ recommended }: { recommended: VisaId | null }) {
+function ExploreAll({ catalog, recommended }: { catalog: VisaCatalog; recommended: VisaId | null }) {
     const reduceMotion = useReducedMotion()
     const visaCardClass =
         'group relative flex h-full w-full flex-col rounded-[3px] border border-royal/15 bg-cream px-5 py-6 transition-colors duration-300 hover:border-[#9b7512] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal'
@@ -592,16 +607,16 @@ function ExploreAll({ recommended }: { recommended: VisaId | null }) {
                 viewport={{ once: true, amount: 0.2 }}
                 variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}
             >
-                {visaServices.map((service) => {
+                {catalog.services.map((service) => {
                     const isRecommended = service.id === recommended
                     return (
                         <motion.li key={service.id} variants={fadeUp} className="flex">
                             <Link
-                                to={service.href}
+                                to={visaServiceHref(catalog, service)}
                                 className={`${visaCardClass} ${isRecommended ? 'border-l-2 border-l-[#9b7512]' : ''}`}
                             >
                                 <span className="pr-6 text-[10px] font-medium uppercase tracking-[0.22em] text-[#9b7512]">
-                                    {visaCategory[service.id]}
+                                    {service.category}
                                 </span>
                                 {isRecommended && (
                                     <span className="mt-2 pr-6 text-[10px] font-medium uppercase tracking-[0.18em] text-[#9b7512]">
@@ -630,7 +645,7 @@ function ExploreAll({ recommended }: { recommended: VisaId | null }) {
                 viewport={{ once: true, amount: 0.4 }}
                 variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}
             >
-                {extraExploreLinks.map((link) => (
+                {catalog.finder.exploreLinks.map((link) => (
                     <motion.li key={link.id} variants={fadeUp} className="flex">
                         <Link
                             to={link.href}

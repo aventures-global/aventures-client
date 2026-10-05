@@ -1,6 +1,7 @@
 import type { AskVisaType } from '../hooks/useAskForm'
+import type { FinderOption, PathId, Readiness, VisaId, VisaPageSlug } from '../types/visa'
 
-export type VisaId = 'tourist' | 'fiance' | 'k2' | 'j1' | 'r1' | 'r2' | 'p1' | 'p2' | 'e2'
+export type { FinderOption, PathId, Readiness, VisaId, VisaPageSlug }
 
 type VisaServiceDetails = {
     id: VisaId
@@ -20,8 +21,6 @@ type VisaServiceDetails = {
 
 export type VisaService = VisaServiceDetails & { href: string }
 
-export type VisaPageSlug = 'tourist' | 'k1-k2' | 'j1' | 'r1-r2' | 'p1-p2' | 'e2'
-
 export type VisaPage = {
     slug: VisaPageSlug
     title: string
@@ -29,14 +28,8 @@ export type VisaPage = {
     visas: VisaId[]
 }
 
-const CHECKLIST_DIR = '/assets/pdfs/visa-general-checklists'
-
-export type FinderOption = {
-    id: string
-    label: string
-    /** `null` routes to the unsure result. */
-    visa: VisaId | null
-}
+/** R2 folder holding the printable checklists. Kept literal because the server seed imports this file. */
+const CHECKLIST_DIR = 'https://pub-99ebb469dda04547813e7149f4af3469.r2.dev/visa-checklists'
 
 export const ASK_AVENTURES_HREF = '/ask'
 
@@ -248,8 +241,6 @@ export function askAboutVisaHref(service: VisaService) {
     return `${ASK_AVENTURES_HREF}?visa=${encodeURIComponent(service.askVisaType)}`
 }
 
-export type PathId = 'visiting' | 'fiance' | 'exchange' | 'religious' | 'performance' | 'investing'
-
 export type PurposeOption = {
     id: string
     label: string
@@ -261,8 +252,6 @@ export type Question = {
     title: string
     options: FinderOption[]
 }
-
-export type Readiness = 'yes' | 'arranging' | 'no' | 'unsure'
 
 export type ReadinessOption = {
     id: Readiness
@@ -408,14 +397,14 @@ export const readinessQuestions: Record<VisaId, { title: string; options: Readin
     },
 }
 
-const readinessNotes: Record<Readiness, string> = {
+export const readinessNotes: Record<Readiness, string> = {
     yes: 'With that already in place, you can review this service and start your visa assistance with AVENTURES.',
     arranging: 'AVENTURES can help you understand what still needs to be in place while you finish arranging it.',
     no: 'That’s okay. Talk to AVENTURES first, and we’ll explain what usually needs to be in place for this visa.',
     unsure: 'No problem. AVENTURES can walk you through what typically needs to be in place before you apply.',
 }
 
-const touristReadinessNotes: Record<Readiness, string> = {
+export const touristReadinessNotes: Record<Readiness, string> = {
     yes: 'With your plans set, you can review this service and start your visa assistance. AVENTURES can arrange the trip too.',
     arranging: 'AVENTURES can help you prepare your application while you firm up your travel plans.',
     no: 'AVENTURES can help with both your visa preparation and your travel plans whenever you’re ready.',

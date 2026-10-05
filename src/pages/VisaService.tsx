@@ -6,16 +6,16 @@ import FaqAccordion from '../components/faq/FaqAccordion'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
-import { visaChecklists } from '../data/visaChecklists'
 import {
     START_VISA_ASSISTANCE_HREF,
     askAboutVisaHref,
-    getVisaPage,
-    getVisaService,
+    findVisaPage,
+    findVisaService,
     visaPagePath,
-    type VisaService as VisaServiceInfo,
-} from '../data/visaFinder'
+} from '../data/visaCatalog'
+import { useVisaCatalog } from '../hooks/useVisaCatalog'
 import type { FaqData, FaqItem, SiteInfo } from '../types/content'
+import type { VisaServiceContent } from '../types/visa'
 import NotFound from './NotFound'
 
 /** `null` while loading; `'error'` when the catalog could not be fetched. */
@@ -40,7 +40,8 @@ function scrollBehavior(): ScrollBehavior {
 
 export default function VisaService() {
     const { slug } = useParams<{ slug: string }>()
-    const page = getVisaPage(slug)
+    const catalog = useVisaCatalog()
+    const page = catalog ? findVisaPage(catalog, slug) : undefined
     const location = useLocation()
     const [site, setSite] = useState<SiteInfo | null>(null)
     const [faqs, setFaqs] = useState<FaqState>(null)
@@ -52,15 +53,30 @@ export default function VisaService() {
             .catch(() => setFaqs('error'))
     }, [])
 
-    const faqsSettled = faqs !== null
+    const settled = faqs !== null && catalog !== null
     useEffect(() => {
-        if (!faqsSettled || !location.hash) return
+        if (!settled || !location.hash) return
         document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' })
-    }, [faqsSettled, location.hash])
+    }, [settled, location.hash])
+
+    if (!catalog) {
+        return (
+            <div className="luxury-paper font-poppins flex min-h-svh flex-col">
+                <Header />
+                <main className="site-container flex-1 pb-24 pt-32 sm:pt-36" aria-busy="true">
+                    <div className="mx-auto max-w-4xl space-y-6">
+                        <div className="h-4 w-40 animate-pulse rounded bg-royal/10" />
+                        <div className="h-12 w-3/4 animate-pulse rounded bg-royal/10" />
+                        <div className="h-72 animate-pulse rounded bg-royal/[0.06]" />
+                    </div>
+                </main>
+            </div>
+        )
+    }
 
     if (!page) return <NotFound />
 
-    const services = page.visas.map(getVisaService)
+    const services = page.visas.flatMap((id) => findVisaService(catalog, id) ?? [])
     const shared = services.length > 1
 
     return (
@@ -125,20 +141,23 @@ export default function VisaService() {
 }
 
 type VisaSectionProps = {
-    service: VisaServiceInfo
+    service: VisaServiceContent
     faqs: FaqState
     showTitle: boolean
 }
 
 function VisaSection({ service, faqs, showTitle }: VisaSectionProps) {
-    const checklist = visaChecklists[service.id]
+    const checklist = service.checklist
+    const categories = faqs && faqs !== 'error' ? faqs.categories : []
     const category =
-        faqs && faqs !== 'error' ? faqs.categories.find((c) => sameText(c.name, service.faqCategory)) : undefined
+        categories.find((c) => service.faqCategoryId && c.id === service.faqCategoryId) ??
+        categories.find((c) => service.faqCategory && sameText(c.name, service.faqCategory))
     const categoryFaqs = category?.faqs ?? []
-    const find = (question?: string) =>
-        question ? categoryFaqs.find((faq) => sameText(faq.question, question)) : undefined
-    const intro = find(service.introQuestion)
-    const qualify = find(service.qualifyQuestion)
+    const find = (id: string | null, question: string) =>
+        (id ? categoryFaqs.find((faq) => faq.id === id) : undefined) ??
+        (question ? categoryFaqs.find((faq) => sameText(faq.question, question)) : undefined)
+    const intro = find(service.introFaqId, service.introQuestion)
+    const qualify = find(service.qualifyFaqId, service.qualifyQuestion)
     const more = categoryFaqs.filter((faq) => faq !== intro && faq !== qualify)
     const headingId = `${service.anchor}-title`
     const SubHeading = showTitle ? 'h3' : 'h2'
@@ -185,14 +204,14 @@ function VisaSection({ service, faqs, showTitle }: VisaSectionProps) {
                 )}
 
                 <div className="mt-8 grid gap-x-12 gap-y-8 md:grid-cols-2">
-                    {checklist.groups.map((group) => (
-                        <div key={group.title}>
+                    {checklist.groups.map((group, groupIndex) => (
+                        <div key={`${groupIndex}-${group.title}`}>
                             <MinorHeading className="border-b border-royal/15 pb-2 text-sm font-semibold uppercase tracking-[0.12em] text-royal">
                                 {group.title}
                             </MinorHeading>
                             <ul className="mt-3 space-y-2">
-                                {group.items.map((item) => (
-                                    <li key={item} className="flex gap-3 text-sm leading-6 text-ink/75">
+                                {group.items.map((item, itemIndex) => (
+                                    <li key={`${itemIndex}-${item}`} className="flex gap-3 text-sm leading-6 text-ink/75">
                                         <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-gold-deep" />
                                         <span>{item}</span>
                                     </li>
@@ -208,8 +227,8 @@ function VisaSection({ service, faqs, showTitle }: VisaSectionProps) {
                 </div>
 
                 <a
-                    href={service.checklist.href}
-                    download={service.checklist.downloadName}
+                    href={service.checklistPdf.href}
+                    download={service.checklistPdf.downloadName}
                     className={`${secondaryButtonClass} mt-8`}
                 >
                     <Download size={16} aria-hidden />

@@ -5,7 +5,7 @@ export type ChecklistGroup = {
     items: string[]
 }
 
-/** On-page copy of the printable checklists in `public/assets/pdfs/visa-general-checklists`. Keep in sync with the PDFs. */
+/** On-page copy of the printable checklist PDFs stored in R2 under `visa-checklists/`. Keep in sync with the PDFs. */
 export type VisaChecklist = {
     tagline: string
     intro?: string

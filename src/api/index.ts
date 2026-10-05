@@ -11,6 +11,8 @@ import type {
     TourSearchPage,
     TourSuggestion,
 } from '../types/content'
+import type { VisaCatalog } from '../types/visa'
+import { buildVisaCatalog } from '../data/visaCatalog'
 import { apiFetch } from '../lib/apiClient'
 
 export async function getSite(): Promise<SiteInfo> {
@@ -31,6 +33,15 @@ export async function getTestimonials(): Promise<Testimonial[]> {
 
 export async function getFaqs(): Promise<FaqData> {
     return apiFetch<FaqData>('/api/faqs')
+}
+
+/** Falls back to the built-in catalog so the visa pages still render if the API is unreachable. */
+export async function getVisaCatalog(): Promise<VisaCatalog> {
+    try {
+        return await apiFetch<VisaCatalog>('/api/visa')
+    } catch {
+        return buildVisaCatalog()
+    }
 }
 
 export async function getTours(): Promise<Tour[]> {
