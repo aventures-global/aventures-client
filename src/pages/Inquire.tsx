@@ -27,11 +27,20 @@ export default function Inquire({ modal = false }: { modal?: boolean }) {
     }, [])
     useEffect(() => {
         if (!modal) return
-        const previous = document.body.style.overflow
+        const root = document.documentElement
+        const previousBehavior = root.style.scrollBehavior
+        const previousOverflow = document.body.style.overflow
+        const y = window.scrollY
+        root.style.scrollBehavior = 'auto'
         document.body.style.overflow = 'hidden'
-        const close = (event: KeyboardEvent) => { if (event.key === 'Escape') navigate(-1) }
-        window.addEventListener('keydown', close)
-        return () => { document.body.style.overflow = previous; window.removeEventListener('keydown', close) }
+        const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') navigate(-1) }
+        window.addEventListener('keydown', onKey)
+        return () => {
+            document.body.style.overflow = previousOverflow
+            window.scrollTo({ top: y, left: 0, behavior: 'instant' })
+            root.style.scrollBehavior = previousBehavior
+            window.removeEventListener('keydown', onKey)
+        }
     }, [modal, navigate])
 
     const close = () => navigate(-1)

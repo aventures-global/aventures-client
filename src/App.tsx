@@ -42,7 +42,7 @@ function AnimatedRoutes() {
 
     return (
         <>
-            {!backgroundLocation && <ScrollToTop />}
+            <ScrollToTop />
             <div key={pageLocation.pathname} className="max-w-full overflow-x-clip">
                 <Routes location={pageLocation}>
                     <Route path="/" element={<Home />} />
