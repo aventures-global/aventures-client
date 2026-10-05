@@ -83,9 +83,11 @@ export type SiteInfo = {
     addressLines: string[]
     facebookUrl: string
     instagramUrl: string
+    tiktokUrl: string
     socialHandles: {
         facebook: string
         instagram: string
+        tiktok: string
     }
     whyUsIntro: string
     whyUsPoints: WhyUsPoint[]

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { memo } from 'react'
 import type { SiteInfo } from '../../types/content'
 import BrandLogo from '../ui/BrandLogo'
-import { FacebookIcon, InstagramIcon } from '../ui/SocialIcons'
+import { FacebookIcon, InstagramIcon, TikTokIcon } from '../ui/SocialIcons'
 
 type FooterProps = {
     site: SiteInfo
@@ -140,6 +140,17 @@ function Footer({ site }: FooterProps) {
                                 >
                                     <InstagramIcon size={16} className="shrink-0 text-white/80" />
                                     {displayHandle(site.socialHandles.instagram)}
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href={site.tiktokUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className={`${navClass} inline-flex items-center gap-2.5`}
+                                >
+                                    <TikTokIcon size={16} className="shrink-0 text-white/80" />
+                                    {displayHandle(site.socialHandles.tiktok)}
                                 </a>
                             </li>
                         </ul>

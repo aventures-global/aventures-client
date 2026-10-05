@@ -33,9 +33,11 @@ export const siteInfo: SiteInfo = {
     ],
     facebookUrl: 'https://www.facebook.com/AventuresGlobal',
     instagramUrl: 'https://www.instagram.com/aventuresglobal',
+    tiktokUrl: 'https://www.tiktok.com/@aventuresglobal',
     socialHandles: {
         facebook: '@aventuresglobal',
         instagram: '@aventuresglobal',
+        tiktok: '@aventuresglobal',
     },
     whyUsIntro: 'Why Travel With Us?',
     whyUsPoints: [
