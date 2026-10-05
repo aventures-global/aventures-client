@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aventurestravel.com/sitemap.xml
+Sitemap: https://localhost:5174/sitemap.xml
