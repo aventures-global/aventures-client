@@ -1,103 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-        <loc>https://aventures-client.vercel.app</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/about</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/about</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/destinations</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/about/why-us</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/shop</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/about/behind-the-dream</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/custom-tour</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/about/origin</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/flights</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/about/transparency</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/hotels</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/destinations</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/cars</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/shop</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/faq</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/start-your-aventure</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/privacy</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/flights</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/sitemap</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/hotels</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/destinations/philippine-discovery</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/cars</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/destinations/cebu-tour</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/visa-assistance</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/destinations/boracay-serenity</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/services/visa/tourist</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/destinations/south-korea-kwave</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/services/visa/k1-k2</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/destinations/japan-tradition</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/services/visa/j1</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/destinations/usa-dream-big</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/services/visa/r1-r2</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/destinations/thailand-calling</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/services/visa/p1-p2</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/destinations/indonesia-escape</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/services/visa/e2</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/destinations/europe-journeys</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/faq</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/shop/journey-tee</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/ask</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/shop/globe-tote</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/privacy</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/shop/palawan-print</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/terms</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/shop/kyoto-print</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/sitemap</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
   <url>
-        <loc>https://aventures-client.vercel.app/shop/boracay-print</loc>
-        <lastmod>2026-10-01</lastmod>
-    </url>
+    <loc>https://localhost:5174/destinations/philippine-discovery</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/cebu-tour</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/boracay-serenity</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/south-korea-kwave</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/japan-tradition</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/usa-dream-big</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/thailand-calling</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/indonesia-escape</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/europe-journeys</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/siargao-island</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/bohol-countryside</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/coron-lagoons</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/china-tour</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/california-coast</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/hokkaido-seasons</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/jeju-island</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/phuket-phi-phi</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/chiang-mai-highlands</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/destinations/labuan-bajo-komodo</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/shop/journey-tee</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/shop/globe-tote</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/shop/palawan-print</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/shop/kyoto-print</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
+  <url>
+    <loc>https://localhost:5174/shop/boracay-print</loc>
+    <lastmod>2026-10-05</lastmod>
+  </url>
 </urlset>

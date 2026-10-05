@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aventures-client.vercel.app/sitemap.xml
+Sitemap: https://localhost:5174/sitemap.xml
