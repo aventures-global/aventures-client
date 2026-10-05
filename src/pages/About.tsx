@@ -18,7 +18,7 @@ export default function About() {
     if (!isAboutTab(section)) return <Navigate to={aboutSectionPath('why-us')} replace />
 
     return (
-        <PageShell appearance="paper" title="About AVENTURES" eyebrow="Our story, our purpose">
+        <PageShell title="About AVENTURES" eyebrow="Our story, our purpose">
             <p className="mb-10 max-w-2xl text-base leading-8 text-ink/65 sm:text-lg">
                 More than a travel agency, we are people who understand what it means to plan, prepare, hope, and finally go.
             </p>

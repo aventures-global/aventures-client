@@ -28,9 +28,6 @@ const siteLinks: SitemapLink[] = [
 ]
 
 const serviceLinks: SitemapLink[] = [
-    { label: 'Flights', to: '/flights' },
-    { label: 'Hotels', to: '/hotels' },
-    { label: 'Cars & Transfers', to: '/cars' },
     { label: 'Visa Services', to: '/visa-assistance' },
     ...visaPages.map((page) => ({ label: page.title, to: visaPagePath(page.slug) })),
 ]

@@ -7,7 +7,6 @@ export const offers: ServiceOffer[] = [
         description:
             'Competitive fares and thoughtful routing, coordinated around your complete journey.',
         icon: 'plane',
-        href: '/flights',
         span: 'square',
     },
     {
@@ -16,7 +15,6 @@ export const offers: ServiceOffer[] = [
         description:
             'Carefully selected stays balancing location, comfort, character, and value.',
         icon: 'bag',
-        href: '/hotels',
         span: 'square',
     },
     {
@@ -34,7 +32,6 @@ export const offers: ServiceOffer[] = [
         description:
             'Trusted local professionals providing comfortable transport and meaningful destination insight.',
         icon: 'car',
-        href: '/cars',
         span: 'square',
     },
     {

@@ -117,7 +117,7 @@ function AccountMenu({
                 aria-expanded={menuOpen}
                 aria-controls={menuId}
                 onClick={() => setMenuOpen((value) => !value)}
-                className="relative flex h-9 w-9 items-center justify-center rounded-full border border-gold/45 bg-ink-card text-xs font-semibold tracking-wide text-gold transition hover:border-gold hover:bg-ink-soft"
+                className="relative flex h-9 w-9 items-center justify-center rounded-full border border-royal bg-royal text-xs font-semibold tracking-wide text-cream transition hover:border-gold-deep hover:bg-gold-deep hover:text-royal"
             >
                 {initials}
                 {!menuOpen ? (
@@ -138,19 +138,19 @@ function AccountMenu({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -4, scale: 0.98 }}
                         transition={{ duration: 0.16 }}
-                        className="absolute right-0 top-[calc(100%+0.5rem)] z-[90] w-56 overflow-hidden rounded-xl border border-white/12 bg-ink-soft shadow-xl shadow-black/40"
+                        className="absolute right-0 top-[calc(100%+0.5rem)] z-[90] w-60 overflow-hidden rounded-[3px] border border-royal/10 bg-white font-poppins shadow-[0_18px_45px_rgba(22,55,101,0.16)]"
                     >
-                        <div className="border-b border-white/10 px-3.5 py-3">
-                            <p className="truncate text-sm font-medium text-white">{name}</p>
+                        <div className="border-b border-royal/10 bg-oat/60 px-4 py-3.5">
+                            <p className="truncate font-noto-serif text-base text-royal">{name}</p>
                             {email ? (
-                                <p className="mt-0.5 truncate text-xs text-silver/55">{email}</p>
+                                <p className="mt-0.5 truncate text-xs text-ink/50">{email}</p>
                             ) : null}
                         </div>
 
                         <Link
                             to="/cart"
                             role="menuitem"
-                            className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-silver/85 transition hover:bg-white/5 hover:text-gold"
+                            className="flex items-center gap-2.5 px-4 py-3 text-sm text-ink/75 transition hover:bg-royal/[0.05] hover:text-royal"
                             onClick={() => setMenuOpen(false)}
                         >
                             <ShoppingBag size={15} strokeWidth={1.5} aria-hidden />
@@ -161,7 +161,7 @@ function AccountMenu({
                         <button
                             type="button"
                             role="menuitem"
-                            className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-sm text-silver/85 transition hover:bg-white/5 hover:text-gold"
+                            className="flex w-full items-center gap-2.5 border-t border-royal/10 px-4 py-3 text-left text-sm text-ink/75 transition hover:bg-royal/[0.05] hover:text-royal"
                             onClick={() => {
                                 setMenuOpen(false)
                                 void onLogout()

@@ -34,9 +34,6 @@ export async function submitInquiry(
     }
 }
 
-export const formFieldClass =
-    'w-full rounded-lg border border-white/15 bg-ink-soft px-4 py-3 text-sm text-white outline-none transition placeholder:text-muted focus:border-gold/60'
-
 /** Underlined field for the cream pages. */
 export const lineFieldClass =
     'w-full border-0 border-b-2 border-royal/55 bg-transparent px-0 py-3.5 text-sm text-ink outline-none transition-[border-color] duration-300 placeholder:text-ink/40 focus:border-gold-deep focus:ring-0'

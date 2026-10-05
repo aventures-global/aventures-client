@@ -16,7 +16,6 @@ import NotFound from './pages/NotFound'
 import Onboarding from './pages/Onboarding'
 import Privacy from './pages/Privacy'
 import ResetPassword from './pages/ResetPassword'
-import ServiceRequest from './pages/ServiceRequest'
 import Shop from './pages/Shop'
 import Signup from './pages/Signup'
 import Sitemap from './pages/Sitemap'
@@ -64,36 +63,6 @@ function AnimatedRoutes() {
                     <Route path="/onboarding" element={<Onboarding />} />
                     <Route path="/start-your-aventure" element={<Onboarding />} />
                     <Route path="/inquire" element={<Inquire />} />
-                    <Route
-                        path="/flights"
-                        element={
-                            <ServiceRequest
-                                kind="flights"
-                                title="Flights"
-                                description="Tell us where you are flying and when. We source competitive airfare that fits your itinerary — arranged by request, not a live search."
-                            />
-                        }
-                    />
-                    <Route
-                        path="/hotels"
-                        element={
-                            <ServiceRequest
-                                kind="hotels"
-                                title="Hotels"
-                                description="Share your destination and dates. We shortlist stays for setting, quiet, and ease of movement — curated by request, not a public inventory list."
-                            />
-                        }
-                    />
-                    <Route
-                        path="/cars"
-                        element={
-                            <ServiceRequest
-                                kind="cars"
-                                title="Cars & Transfers"
-                                description="Airport greetings, private cars, and island transfers. Tell us pickup details and we will arrange the vehicle alongside your journey."
-                            />
-                        }
-                    />
                     <Route path="/visa-assistance" element={<VisaAssistance />} />
                     <Route path="/services/visa/:slug" element={<VisaService />} />
                     <Route path="/faq" element={<Faq />} />

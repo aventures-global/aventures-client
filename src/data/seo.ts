@@ -61,21 +61,6 @@ const routeCopy: Record<string, SeoRouteCopy> = {
         title: 'Cart — AVENtures',
         description: 'Your AVENtures merchandise cart.',
     },
-    '/flights': {
-        title: 'Flights — AVENtures',
-        description:
-            'Request airfare coordinated with your hotels and itinerary. We source competitive fares by inquiry.',
-    },
-    '/hotels': {
-        title: 'Hotels — AVENtures',
-        description:
-            'Request curated stays worldwide — hotel arrangements that fit the pace of your private journey.',
-    },
-    '/cars': {
-        title: 'Cars & Transfers — AVENtures',
-        description:
-            'Request private transfers and car arrangements, from airport meet-and-greet to local guides.',
-    },
     '/visa-assistance': {
         title: 'Visa Services — AVENtures',
         description:

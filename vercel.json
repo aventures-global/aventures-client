@@ -36,18 +36,6 @@
       "destination": "/index.html"
     },
     {
-      "source": "/flights",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/hotels",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/cars",
-      "destination": "/index.html"
-    },
-    {
       "source": "/visa-assistance",
       "destination": "/index.html"
     },

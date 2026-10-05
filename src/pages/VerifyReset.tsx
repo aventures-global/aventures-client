@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import PageShell from '../components/layout/PageShell'
+import AuthLayout, { AuthAlert, authFieldExtraClass, authLabelClass, authLinkClass, authPrimaryButtonClass } from '../components/auth/AuthLayout'
 import { verifyResetOtp } from '../lib/authApi'
 import { useAuth } from '../lib/auth'
-import { formFieldClass } from '../lib/forms'
+import { lineFieldClass } from '../lib/forms'
 
 export default function VerifyReset() {
     const { setVerificationCode } = useAuth()
@@ -35,45 +35,26 @@ export default function VerifyReset() {
     }
 
     return (
-        <PageShell title="Verify reset code" eyebrow="Account" noIndex>
-            <div className="mx-auto max-w-md">
-                <p className="text-sm leading-relaxed text-silver/70">
-                    Enter the reset code sent to{' '}
-                    <span className="text-ivory">{email || 'your email'}</span>.
-                </p>
-
-                <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-                    <div>
-                        <label htmlFor="reset-otp" className="mb-1.5 block text-sm text-silver/80">
-                            Reset code
-                        </label>
-                        <input
-                            id="reset-otp"
-                            type="text"
-                            required
-                            inputMode="numeric"
-                            autoComplete="one-time-code"
-                            value={otp}
-                            onChange={(event) => setOtp(event.target.value)}
-                            className={formFieldClass}
-                        />
-                    </div>
-                    {error && <p className="text-sm text-red-300">{error}</p>}
-                    <button
-                        type="submit"
-                        disabled={submitting}
-                        className="btn-gold w-full rounded-xl px-6 py-3 text-sm disabled:opacity-60"
-                    >
-                        {submitting ? 'Checking…' : 'Continue'}
-                    </button>
-                </form>
-
-                <p className="mt-6 text-center text-sm text-silver/70">
-                    <Link to="/forgot-password" className="text-gold transition hover:text-ivory">
-                        Request a new code
-                    </Link>
-                </p>
-            </div>
-        </PageShell>
+        <AuthLayout
+            seoTitle="Verify reset code — AVENtures"
+            seoDescription="Enter your AVENtures password reset code."
+            path="/verify-reset"
+            eyebrow="Account"
+            title="Verify Reset Code"
+            intro={<>Enter the reset code sent to <span className="font-medium text-royal">{email || 'your email'}</span>.</>}
+            panelEyebrow="Back on course"
+            panelTitle="Let's get you back on your way."
+            panelText="Enter the code from your inbox to choose a new password."
+        >
+            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+                <label className={authLabelClass} htmlFor="reset-otp">
+                    Reset code
+                    <input id="reset-otp" type="text" required inputMode="numeric" autoComplete="one-time-code" value={otp} onChange={(event) => setOtp(event.target.value)} className={`${lineFieldClass} ${authFieldExtraClass}`} placeholder="Enter your code" />
+                </label>
+                {error && <AuthAlert>{error}</AuthAlert>}
+                <button type="submit" disabled={submitting} className={authPrimaryButtonClass}>{submitting ? 'Checking…' : 'Continue'}</button>
+            </form>
+            <p className="mt-6 text-center text-sm text-ink/50"><Link to="/forgot-password" className={authLinkClass}>Request a new code</Link></p>
+        </AuthLayout>
     )
 }

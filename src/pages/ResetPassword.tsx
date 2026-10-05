@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
-import PageShell from '../components/layout/PageShell'
+import AuthLayout, { AuthAlert, authFieldExtraClass, authLabelClass, authLinkClass, authPrimaryButtonClass } from '../components/auth/AuthLayout'
 import { resetPassword } from '../lib/authApi'
 import { useAuth } from '../lib/auth'
-import { formFieldClass } from '../lib/forms'
+import { lineFieldClass } from '../lib/forms'
 
 export default function ResetPassword() {
     const { otp } = useAuth()
@@ -39,65 +39,30 @@ export default function ResetPassword() {
     }
 
     return (
-        <PageShell title="Set new password" eyebrow="Account" noIndex>
-            <div className="mx-auto max-w-md">
-                <p className="text-sm leading-relaxed text-silver/70">
-                    Choose a new password for <span className="text-ivory">{email}</span>.
-                </p>
-
-                <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-                    <div>
-                        <label
-                            htmlFor="new-password"
-                            className="mb-1.5 block text-sm text-silver/80"
-                        >
-                            New password
-                        </label>
-                        <input
-                            id="new-password"
-                            type="password"
-                            required
-                            minLength={8}
-                            autoComplete="new-password"
-                            value={password}
-                            onChange={(event) => setPassword(event.target.value)}
-                            className={formFieldClass}
-                        />
-                    </div>
-                    <div>
-                        <label
-                            htmlFor="confirm-password"
-                            className="mb-1.5 block text-sm text-silver/80"
-                        >
-                            Confirm password
-                        </label>
-                        <input
-                            id="confirm-password"
-                            type="password"
-                            required
-                            minLength={8}
-                            autoComplete="new-password"
-                            value={confirm}
-                            onChange={(event) => setConfirm(event.target.value)}
-                            className={formFieldClass}
-                        />
-                    </div>
-                    {error && <p className="text-sm text-red-300">{error}</p>}
-                    <button
-                        type="submit"
-                        disabled={submitting}
-                        className="btn-gold w-full rounded-xl px-6 py-3 text-sm disabled:opacity-60"
-                    >
-                        {submitting ? 'Saving…' : 'Update password'}
-                    </button>
-                </form>
-
-                <p className="mt-6 text-center text-sm text-silver/70">
-                    <Link to="/login" className="text-gold transition hover:text-ivory">
-                        Back to log in
-                    </Link>
-                </p>
-            </div>
-        </PageShell>
+        <AuthLayout
+            seoTitle="Set new password — AVENtures"
+            seoDescription="Choose a new password for your AVENtures account."
+            path="/reset-password"
+            eyebrow="Account"
+            title="Set New Password"
+            intro={<>Choose a new password for <span className="font-medium text-royal">{email}</span>.</>}
+            panelEyebrow="Back on course"
+            panelTitle="A fresh start for your account."
+            panelText="Pick a new password and you will be back to planning in no time."
+        >
+            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+                <label className={authLabelClass} htmlFor="new-password">
+                    New password
+                    <input id="new-password" type="password" required minLength={8} autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} className={`${lineFieldClass} ${authFieldExtraClass}`} placeholder="At least 8 characters" />
+                </label>
+                <label className={authLabelClass} htmlFor="confirm-password">
+                    Confirm password
+                    <input id="confirm-password" type="password" required minLength={8} autoComplete="new-password" value={confirm} onChange={(event) => setConfirm(event.target.value)} className={`${lineFieldClass} ${authFieldExtraClass}`} placeholder="Repeat your new password" />
+                </label>
+                {error && <AuthAlert>{error}</AuthAlert>}
+                <button type="submit" disabled={submitting} className={authPrimaryButtonClass}>{submitting ? 'Saving…' : 'Update password'}</button>
+            </form>
+            <p className="mt-6 text-center text-sm text-ink/50"><Link to="/login" className={authLinkClass}>Back to log in</Link></p>
+        </AuthLayout>
     )
 }

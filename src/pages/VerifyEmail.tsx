@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import PageShell from '../components/layout/PageShell'
+import AuthLayout, { AuthAlert, authFieldExtraClass, authLabelClass, authLinkClass, authPrimaryButtonClass } from '../components/auth/AuthLayout'
 import { resendVerificationEmail, verifyEmailOtp } from '../lib/authApi'
 import { useAuth } from '../lib/auth'
-import { formFieldClass } from '../lib/forms'
+import { lineFieldClass } from '../lib/forms'
 
 function safeNext(raw: string | null): string {
     if (!raw || !raw.startsWith('/') || raw.startsWith('//')) return '/shop'
@@ -54,56 +54,28 @@ export default function VerifyEmail() {
     }
 
     return (
-        <PageShell title="Verify email" eyebrow="Account" noIndex>
-            <div className="mx-auto max-w-md">
-                <p className="text-sm leading-relaxed text-silver/70">
-                    Enter the one-time code we sent to{' '}
-                    <span className="text-ivory">{email || 'your email'}</span>.
-                </p>
-
-                <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-                    <div>
-                        <label htmlFor="verify-otp" className="mb-1.5 block text-sm text-silver/80">
-                            Verification code
-                        </label>
-                        <input
-                            id="verify-otp"
-                            type="text"
-                            required
-                            inputMode="numeric"
-                            autoComplete="one-time-code"
-                            value={otp}
-                            onChange={(event) => setOtp(event.target.value)}
-                            className={formFieldClass}
-                        />
-                    </div>
-                    {error && <p className="text-sm text-red-300">{error}</p>}
-                    {message && <p className="text-sm text-emerald-300">{message}</p>}
-                    <button
-                        type="submit"
-                        disabled={submitting}
-                        className="btn-gold w-full rounded-xl px-6 py-3 text-sm disabled:opacity-60"
-                    >
-                        {submitting ? 'Verifying…' : 'Verify email'}
-                    </button>
-                </form>
-
-                <button
-                    type="button"
-                    onClick={() => {
-                        void handleResend()
-                    }}
-                    className="mt-4 w-full text-sm text-gold transition hover:text-ivory"
-                >
-                    Resend code
-                </button>
-
-                <p className="mt-6 text-center text-sm text-silver/70">
-                    <Link to="/login" className="text-gold transition hover:text-ivory">
-                        Back to log in
-                    </Link>
-                </p>
-            </div>
-        </PageShell>
+        <AuthLayout
+            seoTitle="Verify email — AVENtures"
+            seoDescription="Verify your AVENtures account email."
+            path="/verify-email"
+            eyebrow="Account"
+            title="Verify Email"
+            intro={<>Enter the one-time code we sent to <span className="font-medium text-royal">{email || 'your email'}</span>.</>}
+            panelEyebrow="Almost there"
+            panelTitle="One last check before you go."
+            panelText="Confirm your email so we can keep your account and orders safe."
+        >
+            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+                <label className={authLabelClass} htmlFor="verify-otp">
+                    Verification code
+                    <input id="verify-otp" type="text" required inputMode="numeric" autoComplete="one-time-code" value={otp} onChange={(event) => setOtp(event.target.value)} className={`${lineFieldClass} ${authFieldExtraClass}`} placeholder="Enter your code" />
+                </label>
+                {error && <AuthAlert>{error}</AuthAlert>}
+                {message && <AuthAlert tone="success">{message}</AuthAlert>}
+                <button type="submit" disabled={submitting} className={authPrimaryButtonClass}>{submitting ? 'Verifying…' : 'Verify email'}</button>
+            </form>
+            <button type="button" onClick={() => void handleResend()} className={`mt-5 w-full text-center text-sm ${authLinkClass}`}>Resend code</button>
+            <p className="mt-4 text-center text-sm text-ink/50"><Link to="/login" className={authLinkClass}>Back to log in</Link></p>
+        </AuthLayout>
     )
 }
