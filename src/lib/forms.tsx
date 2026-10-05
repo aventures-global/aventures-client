@@ -2,7 +2,7 @@ import { apiFetch } from './apiClient'
 
 export type SubmitStatus = 'idle' | 'sending' | 'sent' | 'error'
 
-export type InquiryKind = 'contact' | 'custom-tour' | 'flights' | 'hotels' | 'cars'
+export type InquiryKind = 'question' | 'contact' | 'consultation' | 'onboarding' | 'flights' | 'hotels' | 'cars'
 
 export type InquiryPayload = { kind: InquiryKind } & Record<string, string | number | undefined>
 
@@ -37,12 +37,17 @@ export async function submitInquiry(
 export const formFieldClass =
     'w-full rounded-lg border border-white/15 bg-ink-soft px-4 py-3 text-sm text-white outline-none transition placeholder:text-muted focus:border-gold/60'
 
+/** Underlined field for the cream pages. */
+export const lineFieldClass =
+    'w-full border-0 border-b-2 border-royal/55 bg-transparent px-0 py-3.5 text-sm text-ink outline-none transition-[border-color] duration-300 placeholder:text-ink/40 focus:border-gold-deep focus:ring-0'
+
 /** Hidden honeypot field; bots that fill it are silently dropped by the API. */
 export function FormHoneypot() {
     return (
         <input
-            type="text"
+            type="checkbox"
             name={HONEYPOT_NAME}
+            value="1"
             tabIndex={-1}
             autoComplete="off"
             aria-hidden="true"

@@ -1,5 +1,10 @@
 import type { SiteInfo } from '../types/content'
 
+export const relatedBusiness = {
+    name: 'REK Global Philippines',
+    url: 'https://www.facebook.com/rekph',
+} as const
+
 const contactEmail =
     (import.meta.env.VITE_CONTACT_EMAIL as string | undefined)?.trim() || 'admin@aventurestravel.com'
 
@@ -33,9 +38,11 @@ export const siteInfo: SiteInfo = {
     ],
     facebookUrl: 'https://www.facebook.com/AventuresGlobal',
     instagramUrl: 'https://www.instagram.com/aventuresglobal',
+    tiktokUrl: 'https://www.tiktok.com/@aventuresglobal',
     socialHandles: {
         facebook: '@aventuresglobal',
         instagram: '@aventuresglobal',
+        tiktok: '@aventuresglobal',
     },
     whyUsIntro: 'Why Travel With Us?',
     whyUsPoints: [
@@ -45,6 +52,4 @@ export const siteInfo: SiteInfo = {
         { id: 'support', label: 'End-to-End Support' },
         { id: 'experts', label: 'Local Experts' },
     ],
-    contactIntro:
-        'Tell us where you want to go. We will shape a journey that feels effortless from the first inquiry to your return home.',
 }

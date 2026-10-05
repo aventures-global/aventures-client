@@ -9,11 +9,15 @@ export function FacebookIcon({ size = 18, className }: IconProps) {
             width={size}
             height={size}
             viewBox="0 0 24 24"
-            fill="currentColor"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className={className}
             aria-hidden
         >
-            <path d="M14 8h2.5V4.5H14c-2.2 0-4 1.8-4 4V11H7.5v3.5H10V22h3.5v-7.5H16l.5-3.5H13.5V8.5c0-.3.2-.5.5-.5z" />
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
         </svg>
     )
 }
@@ -33,6 +37,25 @@ export function InstagramIcon({ size = 18, className }: IconProps) {
             <rect x="3" y="3" width="18" height="18" rx="5" />
             <circle cx="12" cy="12" r="4" />
             <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+        </svg>
+    )
+}
+
+export function TikTokIcon({ size = 18, className }: IconProps) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+            aria-hidden
+        >
+            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
         </svg>
     )
 }

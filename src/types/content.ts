@@ -26,10 +26,12 @@ export type Testimonial = {
     rating: number
 }
 
-export type TourItineraryDay = {
-    day: number
-    title: string
-    description: string
+export type TourExperience = {
+    eyebrow: string
+    headline: string
+    summary: string
+    body: string
+    image: string
 }
 
 export type Tour = {
@@ -39,18 +41,28 @@ export type Tour = {
     tagline: string
     shortDescription: string
     coverImage: string
-    gallery: string[]
-    duration: string
-    startingPrice: string
     location: string
-    highlights: string[]
-    itinerary: TourItineraryDay[]
-    inclusions: string[]
-    exclusions: string[]
+    experiences: TourExperience[]
+    storyTitles: string[]
+    travelTips: string[]
     featured: boolean
     /** Set in the admin CMS; always present on API responses. */
     region?: string
 }
+
+export type TourSummary = Pick<Tour, 'id' | 'slug' | 'title' | 'tagline' | 'coverImage' | 'location' | 'featured' | 'region'>
+
+export type TourSearchPage = {
+    items: TourSummary[]
+    nextCursor: number | null
+    total: number
+}
+
+export type TourSuggestion =
+    | { kind: 'spelling'; suggestion: string; matches: TourSummary[] }
+    | { kind: 'covered'; place: string; country: string; isCountry: boolean; matches: TourSummary[] }
+    | { kind: 'nearby'; place: string; matches: (TourSummary & { distanceKm: number })[] }
+    | { kind: 'none' }
 
 export type MerchProduct = {
     id: string
@@ -85,11 +97,29 @@ export type SiteInfo = {
     addressLines: string[]
     facebookUrl: string
     instagramUrl: string
+    tiktokUrl: string
     socialHandles: {
         facebook: string
         instagram: string
+        tiktok: string
     }
     whyUsIntro: string
     whyUsPoints: WhyUsPoint[]
-    contactIntro: string
+}
+
+export type FaqItem = {
+    id: string
+    question: string
+    answer: string
+}
+
+export type FaqCategoryGroup = {
+    id: string
+    name: string
+    faqs: FaqItem[]
+}
+
+export type FaqData = {
+    categories: FaqCategoryGroup[]
+    top: FaqItem[]
 }

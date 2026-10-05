@@ -1,13 +1,18 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 
-/** Reset window scroll on pathname changes so mid-page links don't land at the bottom. */
+/** Reset window scroll when the visible page changes. A modal over a background route keeps that page put. */
 export default function ScrollToTop() {
-    const { pathname } = useLocation()
+    const location = useLocation()
+    const state = location.state as { backgroundLocation?: { pathname: string } } | null
+    const pagePath = state?.backgroundLocation?.pathname ?? location.pathname
+    const previousPagePath = useRef<string | null>(null)
 
     useEffect(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-    }, [pathname])
+        if (previousPagePath.current === pagePath) return
+        previousPagePath.current = pagePath
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    }, [pagePath])
 
     return null
 }

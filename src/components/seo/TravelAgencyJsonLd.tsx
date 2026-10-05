@@ -31,7 +31,7 @@ export default function TravelAgencyJsonLd({ site }: JsonLdProps) {
                 addressRegion: 'CA',
                 addressCountry: 'US',
             },
-            sameAs: [site.facebookUrl, site.instagramUrl].filter(Boolean),
+            sameAs: [site.facebookUrl, site.instagramUrl, site.tiktokUrl].filter(Boolean),
         }
 
         const script = document.createElement('script')

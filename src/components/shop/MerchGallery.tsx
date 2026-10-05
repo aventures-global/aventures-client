@@ -14,7 +14,7 @@ export default function MerchGallery({ name, images }: MerchGalleryProps) {
 
     return (
         <div className="space-y-3">
-            <div className="aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-ink-card">
+            <div className="aspect-[4/3] overflow-hidden border border-royal/10 bg-white p-3 shadow-[0_16px_45px_rgba(22,55,101,0.1)] sm:p-4">
                 <SafeImage
                     key={current}
                     src={current}
@@ -40,10 +40,10 @@ export default function MerchGallery({ name, images }: MerchGalleryProps) {
                                 aria-selected={selected}
                                 aria-label={`Show photo ${index + 1}`}
                                 onClick={() => setActive(index)}
-                                className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border transition sm:h-20 sm:w-20 ${
+                                className={`relative h-16 w-16 shrink-0 overflow-hidden border bg-white p-1 transition sm:h-20 sm:w-20 ${
                                     selected
-                                        ? 'border-gold ring-1 ring-gold/40'
-                                        : 'border-white/10 hover:border-gold/40'
+                                        ? 'border-gold-deep ring-1 ring-gold-deep/30'
+                                        : 'border-royal/10 hover:border-gold-deep/50'
                                 }`}
                             >
                                 <SafeImage

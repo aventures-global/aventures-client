@@ -1,4 +1,4 @@
-const FALLBACK_SITE_URL = 'https://aventures-client.vercel.app'
+const FALLBACK_SITE_URL = 'https://aventurestravel.com'
 
 /** Canonical site origin (no trailing slash). */
 export function getSiteUrl(): string {
