@@ -109,7 +109,13 @@ const appOnlyPaths = [
     '/blog',
 ]
 
-const rewritePaths = [...new Set([...paths.filter((path) => path !== '/'), ...appOnlyPaths])]
+const rewritePaths = [
+    ...new Set([
+        ...paths.filter((path) => path !== '/' && !path.startsWith('/shop/')),
+        '/shop/:slug',
+        ...appOnlyPaths,
+    ]),
+]
 
 const today = new Date().toISOString().slice(0, 10)
 

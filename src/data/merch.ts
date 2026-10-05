@@ -13,7 +13,8 @@ const merchImg = {
     boracayDetail: '/assets/images/merch/boracay-print-detail.png',
 }
 
-export const merch: MerchProduct[] = [
+/** Seed source; the server assigns `categoryId` from each `category` name. */
+export const merch: Omit<MerchProduct, 'categoryId'>[] = [
     {
         id: 'journey-tee',
         slug: 'journey-tee',

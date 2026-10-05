@@ -63,7 +63,7 @@ export default function MerchDetail() {
         return <NotFound />
     }
 
-    const isPhotography = product.category === 'Photography'
+    const isPhotography = product.categoryId === 'photography'
     const galleryImages =
         product.gallery.length > 0 ? product.gallery : [product.coverImage]
 

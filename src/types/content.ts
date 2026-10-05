@@ -71,11 +71,19 @@ export type MerchProduct = {
     tagline: string
     description: string
     price: string
+    categoryId: string
     category: string
     coverImage: string
     gallery: string[]
     sizes?: string[]
     inStock: boolean
+}
+
+export type MerchCategory = {
+    id: string
+    name: string
+    sortOrder: number
+    productCount: number
 }
 
 export type SiteInfo = {

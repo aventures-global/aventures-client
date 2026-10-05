@@ -2,6 +2,7 @@ import { offers } from '../data/offers'
 import { siteInfo } from '../data/site'
 import type {
     FaqData,
+    MerchCategory,
     MerchProduct,
     Partner,
     ServiceOffer,
@@ -92,6 +93,10 @@ export async function getTourBySlug(slug: string): Promise<Tour | null> {
 
 export async function getMerch(): Promise<MerchProduct[]> {
     return apiFetch<MerchProduct[]>('/api/merch')
+}
+
+export async function getMerchCategories(): Promise<MerchCategory[]> {
+    return apiFetch<MerchCategory[]>('/api/merch/categories')
 }
 
 export async function getMerchBySlug(slug: string): Promise<MerchProduct | null> {

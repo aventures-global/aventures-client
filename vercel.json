@@ -172,23 +172,7 @@
       "destination": "/index.html"
     },
     {
-      "source": "/shop/journey-tee",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/shop/globe-tote",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/shop/palawan-print",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/shop/kyoto-print",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/shop/boracay-print",
+      "source": "/shop/:slug",
       "destination": "/index.html"
     },
     {

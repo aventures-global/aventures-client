@@ -1,28 +1,46 @@
 import { ArrowUpRight, ShoppingBag } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { getMerch, getSite } from '../api'
+import { Link, useSearchParams } from 'react-router-dom'
+import { getMerch, getMerchCategories, getSite } from '../api'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
 import SafeImage from '../components/ui/SafeImage'
 import { getSeoForPath } from '../data/seo'
 import { useAuth } from '../lib/auth'
-import type { MerchProduct, SiteInfo } from '../types/content'
+import type { MerchCategory, MerchProduct, SiteInfo } from '../types/content'
 
 export default function Shop() {
     const { isLoggedIn } = useAuth()
     const [products, setProducts] = useState<MerchProduct[] | null>(null)
+    const [categories, setCategories] = useState<MerchCategory[]>([])
     const [site, setSite] = useState<SiteInfo | null>(null)
+    const [searchParams, setSearchParams] = useSearchParams()
     const shopSeo = getSeoForPath('/shop')
 
     useEffect(() => {
-        void Promise.all([getMerch(), getSite()]).then(([merchData, siteData]) => {
-            setProducts(merchData)
-            setSite(siteData)
-        })
+        void Promise.all([getMerch(), getMerchCategories().catch(() => []), getSite()]).then(
+            ([merchData, categoryData, siteData]) => {
+                setProducts(merchData)
+                setCategories(categoryData)
+                setSite(siteData)
+            },
+        )
     }, [])
+
+    const usedCategories = categories.filter((category) =>
+        products?.some((product) => product.categoryId === category.id),
+    )
+    const param = searchParams.get('category')
+    const activeCategory = usedCategories.some((category) => category.id === param) ? param : null
+    const visibleProducts = activeCategory
+        ? products?.filter((product) => product.categoryId === activeCategory)
+        : products
+
+    const selectCategory = (id: string | null) => {
+        setSearchParams(id ? { category: id } : {}, { replace: true, preventScrollReset: true })
+    }
 
     return (
         <div className="luxury-paper font-poppins flex min-h-svh flex-col">
@@ -56,7 +74,25 @@ export default function Shop() {
                 </div>
 
                 <div className="site-container pb-24">
-                    {!products ? (
+                    {usedCategories.length > 1 ? (
+                        <div role="group" aria-label="Filter by category" className="mb-8 flex flex-wrap gap-2">
+                            {[{ id: null, name: 'All' }, ...usedCategories].map((category) => {
+                                const selected = activeCategory === category.id
+                                return (
+                                    <button
+                                        key={category.id ?? 'all'}
+                                        type="button"
+                                        aria-pressed={selected}
+                                        onClick={() => selectCategory(category.id)}
+                                        className={`rounded-full border px-4 py-2 text-xs font-medium transition ${selected ? 'border-royal bg-royal text-white shadow-sm' : 'border-royal/20 bg-white/65 text-royal/75 hover:border-royal/45 hover:bg-white/85 hover:text-royal'}`}
+                                    >
+                                        {category.name}
+                                    </button>
+                                )
+                            })}
+                        </div>
+                    ) : null}
+                    {!visibleProducts ? (
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {[0, 1, 2, 3, 4].map((i) => (
                                 <div key={i} className="aspect-[4/3] animate-pulse bg-royal/10" />
@@ -65,7 +101,7 @@ export default function Shop() {
                     ) : (
                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             <AnimatePresence mode="popLayout">
-                                {products.map((product, index) => (
+                                {visibleProducts.map((product, index) => (
                                     <motion.div
                                         key={product.id}
                                         layout
