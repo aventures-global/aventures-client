@@ -7,7 +7,7 @@ const root = join(__dirname, '..')
 const publicDir = join(root, 'public')
 
 /** Same fallback as src/lib/siteUrl.ts when VITE_SITE_URL is unset. */
-const FALLBACK_SITE_URL = 'https://aventures-client.vercel.app'
+const FALLBACK_SITE_URL = 'https://aventurestravel.com'
 
 const preexistingEnv = new Set(
     Object.entries(process.env)
