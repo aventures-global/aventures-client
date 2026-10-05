@@ -5,6 +5,7 @@ import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
 import { getSeoForPath } from '../data/seo'
+import { aboutSectionPath, aboutTabs } from '../data/about'
 import { visaPagePath, visaPages } from '../data/visaFinder'
 import type { MerchProduct, SiteInfo, Tour } from '../types/content'
 
@@ -13,7 +14,7 @@ type SitemapLink = { label: string; to: string }
 const siteLinks: SitemapLink[] = [
     { label: 'Home', to: '/' },
     { label: 'About us', to: '/#about' },
-    { label: 'About us (full story)', to: '/about' },
+    ...aboutTabs.map((tab) => ({ label: tab.label, to: aboutSectionPath(tab.id) })),
     { label: 'Services', to: '/#services' },
     { label: 'Destinations', to: '/destinations' },
     { label: 'Shop', to: '/shop' },

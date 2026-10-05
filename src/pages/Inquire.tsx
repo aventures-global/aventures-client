@@ -130,8 +130,23 @@ function ConsultationForm({ onClose, embedded = false }: { onClose?: () => void;
     async function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setStatus('sending')
-        const subject = `Consultation request${service ? ` — ${service}` : ''} from ${name}`
-        const result = await submitInquiry(event.currentTarget, { kind: 'question', name, email, phone, service, message, subject })
+        const [firstName, ...rest] = name.trim().split(/\s+/)
+        const result = await submitInquiry(event.currentTarget, {
+            kind: 'consultation',
+            firstName,
+            lastName: rest.join(' ') || undefined,
+            email,
+            phone: phone.trim() || undefined,
+            service: service.trim() || undefined,
+            message,
+        })
+        if (result === 'sent') {
+            setName('')
+            setEmail('')
+            setPhone('')
+            setService('')
+            setMessage('')
+        }
         setStatus(result)
     }
 
@@ -146,7 +161,7 @@ function ConsultationForm({ onClose, embedded = false }: { onClose?: () => void;
                 <div className="grid gap-5 sm:grid-cols-2"><input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className={fieldClass} /><input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" className={fieldClass} /></div>
                 <div className="grid gap-5 sm:grid-cols-2"><input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Contact number" className={fieldClass} /><input value={service} onChange={(e) => setService(e.target.value)} placeholder="Service in mind (optional)" className={fieldClass} /></div>
                 <textarea required rows={4} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Tell us what you would like to discuss" className={`${fieldClass} resize-y`} />
-                <div className="flex flex-wrap items-center justify-between gap-4 pt-2"><p className="text-xs text-ink/40">We’ll use these details only to respond to your inquiry.</p><button disabled={status === 'sending'} className="inline-flex items-center gap-2 bg-royal px-6 py-3 text-sm text-white transition hover:bg-[#0e274b] disabled:opacity-60">{status === 'sending' ? 'Sending…' : 'Book consultation'} <ArrowRight size={15} /></button></div>
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-2"><p className="text-xs text-ink/40">We’ll use these details only to respond to your inquiry.</p><button type="submit" disabled={status === 'sending'} className="inline-flex items-center gap-2 bg-royal px-6 py-3 text-sm text-white transition hover:bg-[#0e274b] disabled:opacity-60">{status === 'sending' ? 'Sending…' : 'Book consultation'} <ArrowRight size={15} /></button></div>
                 {status === 'sent' && <p className="text-sm text-royal">Thank you. We’ll be in touch shortly.</p>}
                 {status === 'error' && <p className="text-sm text-red-700">Something went wrong. Please try again.</p>}
             </form>

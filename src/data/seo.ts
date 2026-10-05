@@ -1,3 +1,5 @@
+import { aboutSectionPath, aboutTabs } from './about'
+
 export const DEFAULT_OG_IMAGE = '/assets/images/AVENtures-globe.png'
 
 export const DEFAULT_DESCRIPTION =
@@ -18,6 +20,16 @@ const routeCopy: Record<string, SeoRouteCopy> = {
         description:
             'AVENtures Global is a full-service travel agency specializing in Philippines tours (Cebu, Siargao, Boracay), California travel, visas, and destinations worldwide.',
     },
+    ...Object.fromEntries(
+        aboutTabs.map((tab) => [
+            aboutSectionPath(tab.id),
+            {
+                title: `${tab.label} — AVENtures`,
+                description:
+                    'AVENtures Global is a full-service travel agency specializing in Philippines tours (Cebu, Siargao, Boracay), California travel, visas, and destinations worldwide.',
+            },
+        ]),
+    ),
     '/destinations': {
         title: 'Destinations — AVENtures',
         description:

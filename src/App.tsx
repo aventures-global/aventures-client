@@ -46,7 +46,8 @@ function AnimatedRoutes() {
             <div key={pageLocation.pathname} className="max-w-full overflow-x-clip">
                 <Routes location={pageLocation}>
                     <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<About />} />
+                    <Route path="/about" element={<Navigate to="/about/why-us" replace />} />
+                    <Route path="/about/:section" element={<About />} />
                     <Route path="/destinations" element={<Destinations />} />
                     <Route path="/destinations/:slug" element={<TourDetail />} />
                     <Route path="/shop" element={<Shop />} />

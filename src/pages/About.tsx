@@ -1,31 +1,21 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { ArrowRight, Check, Compass, Eye, Heart, Mail, MapPin, Phone, Plane, ShieldCheck } from 'lucide-react'
+import { Navigate, NavLink, useParams } from 'react-router-dom'
 import PageShell from '../components/layout/PageShell'
 import JourneyCta from '../components/ui/JourneyCta'
-import { aboutTabs, founderStory, originStory, transparency, whyAventures, type AboutTabId } from '../data/about'
+import { aboutSectionPath, aboutTabs, founderStory, originStory, transparency, whyAventures, type AboutTabId } from '../data/about'
 import { relatedBusiness } from '../data/site'
 
 const storyLinkClass =
     'font-medium text-royal underline decoration-gold-deep/60 underline-offset-4 transition-colors hover:text-gold-deep'
 
-function tabFromHash(): AboutTabId {
-    const hash = window.location.hash.slice(1) as AboutTabId
-    return aboutTabs.some((tab) => tab.id === hash) ? hash : 'why-us'
+function isAboutTab(section: string | undefined): section is AboutTabId {
+    return aboutTabs.some((tab) => tab.id === section)
 }
 
 export default function About() {
-    const [activeTab, setActiveTab] = useState<AboutTabId>(tabFromHash)
-
-    useEffect(() => {
-        const syncTab = () => setActiveTab(tabFromHash())
-        window.addEventListener('hashchange', syncTab)
-        return () => window.removeEventListener('hashchange', syncTab)
-    }, [])
-
-    const selectTab = (id: AboutTabId) => {
-        setActiveTab(id)
-        window.history.replaceState(null, '', `${window.location.pathname}#${id}`)
-    }
+    const { section } = useParams()
+    if (!isAboutTab(section)) return <Navigate to={aboutSectionPath('why-us')} replace />
 
     return (
         <PageShell appearance="paper" title="About AVENTURES" eyebrow="Our story, our purpose" description="Meet AVENTURES, discover our story, and learn how we approach travel and visa assistance with care and transparency.">
@@ -40,19 +30,19 @@ export default function About() {
                 <div className="site-container">
                     <div className="grid grid-cols-2 border-b border-royal/20 sm:grid-cols-4">
                         {aboutTabs.map((tab) => (
-                            <button key={tab.id} type="button" aria-pressed={activeTab === tab.id} onClick={() => selectTab(tab.id)} className={`relative -mb-px flex min-h-14 items-center justify-center border-b-2 bg-[#f8f5ee] px-3 text-center text-[11px] font-medium uppercase tracking-[0.1em] transition-colors sm:text-xs ${activeTab === tab.id ? 'border-gold-deep text-royal' : 'border-transparent text-royal/50 hover:text-royal'}`}>
+                            <NavLink key={tab.id} to={aboutSectionPath(tab.id)} className={({ isActive }) => `relative -mb-px flex min-h-14 items-center justify-center border-b-2 bg-[#f8f5ee] px-3 text-center text-[11px] font-medium uppercase tracking-[0.1em] transition-colors sm:text-xs ${isActive ? 'border-gold-deep text-royal' : 'border-transparent text-royal/50 hover:text-royal'}`}>
                                 {tab.label}
-                            </button>
+                            </NavLink>
                         ))}
                     </div>
                 </div>
             </nav>
 
             <div className="animate-[fade-in_300ms_ease-out]">
-                {activeTab === 'why-us' && <WhyUs />}
-                {activeTab === 'behind-the-dream' && <BehindTheDream />}
-                {activeTab === 'origin' && <Origin />}
-                {activeTab === 'transparency' && <Transparency />}
+                {section === 'why-us' && <WhyUs />}
+                {section === 'behind-the-dream' && <BehindTheDream />}
+                {section === 'origin' && <Origin />}
+                {section === 'transparency' && <Transparency />}
             </div>
 
             <div className="relative left-1/2 -mb-24 w-screen -translate-x-1/2"><JourneyCta /></div>

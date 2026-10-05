@@ -58,6 +58,10 @@ const siteUrl = cleanSiteUrl(env('VITE_SITE_URL') || env('SITE_URL') || FALLBACK
 const staticPaths = [
     '/',
     '/about',
+    '/about/why-us',
+    '/about/behind-the-dream',
+    '/about/origin',
+    '/about/transparency',
     '/destinations',
     '/shop',
     '/start-your-aventure',

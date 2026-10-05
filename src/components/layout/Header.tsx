@@ -249,7 +249,7 @@ export default function Header() {
             (to === '/shop' && location.pathname.startsWith('/shop')) ||
             (to === '/destinations' && location.pathname.startsWith('/destinations')) ||
             (to === '/visa-assistance' && (location.pathname === '/visa-assistance' || onVisaServicePage)) ||
-            (to === '/about' && location.pathname === '/about')
+            (to === '/about' && location.pathname.startsWith('/about'))
         )
     }
     const accountAction = isLoggedIn ? (

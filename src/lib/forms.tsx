@@ -2,7 +2,7 @@ import { apiFetch } from './apiClient'
 
 export type SubmitStatus = 'idle' | 'sending' | 'sent' | 'error'
 
-export type InquiryKind = 'question' | 'contact' | 'onboarding' | 'flights' | 'hotels' | 'cars'
+export type InquiryKind = 'question' | 'contact' | 'consultation' | 'onboarding' | 'flights' | 'hotels' | 'cars'
 
 export type InquiryPayload = { kind: InquiryKind } & Record<string, string | number | undefined>
 
