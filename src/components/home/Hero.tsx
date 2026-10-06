@@ -1,8 +1,9 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
+import type { HomePageContent } from '../../types/sitePages'
 import SecondaryButton from '../ui/SecondaryButton'
 
-export default function Hero() {
+export default function Hero({ content }: { content: HomePageContent['hero'] }) {
     const heroRef = useRef<HTMLElement>(null)
     const reduceMotion = useReducedMotion()
     const { scrollY } = useScroll()
@@ -59,7 +60,7 @@ export default function Hero() {
                             transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                             className="hero-title-gradient font-lejour whitespace-nowrap text-[clamp(1.65rem,7vw,6rem)] leading-none"
                         >
-                            JOURNEY MADE EASIER
+                            {content.title}
                         </motion.h1>
                     </motion.div>
                     <motion.div
@@ -76,7 +77,7 @@ export default function Hero() {
                             transition={{ duration: 0.7, delay: 0.48, ease: 'easeOut' }}
                             className="font-noto-serif text-lg text-[#fffaf0] drop-shadow-md sm:text-2xl"
                         >
-                            Dream It. Plan It. Live the AVENture.
+                            {content.subtitle}
                         </motion.p>
                     </motion.div>
                     <motion.div
@@ -89,7 +90,7 @@ export default function Hero() {
                             transition={{ duration: 0.65, delay: 0.68, ease: 'easeOut' }}
                         >
                             <SecondaryButton to="/start-your-aventure" className="!border-2">
-                                Start Your AVENture
+                                {content.ctaLabel}
                             </SecondaryButton>
                         </motion.div>
                     </motion.div>

@@ -5,7 +5,7 @@ import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
 import { getSeoForPath } from '../data/seo'
-import { aboutSectionPath, aboutTabs } from '../data/about'
+import { aboutSectionPath, aboutTabs } from '../data/aboutTabs'
 import { visaPagePath, visaPages } from '../data/visaFinder'
 import type { MerchProduct, SiteInfo, Tour } from '../types/content'
 

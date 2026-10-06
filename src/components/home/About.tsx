@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Link } from 'react-router-dom'
+import type { HomePageContent } from '../../types/sitePages'
 
 // import { ArrowLeft } from 'lucide-react'
 // import { useRef, type ReactNode } from 'react'
@@ -13,7 +14,7 @@ const team = [
 ]
 */
 
-export default function About() {
+export default function About({ content }: { content: HomePageContent['story'] }) {
     /*
     const teamRef = useRef<HTMLDivElement>(null)
     const moveTeam = (direction: -1 | 1) => {
@@ -33,19 +34,19 @@ export default function About() {
                     viewport={{ once: true, amount: 0.3 }}
                     className="mx-auto max-w-3xl text-center"
                 >
-                    <p className="text-xs font-medium uppercase tracking-[0.3em] text-royal">Who we are</p>
+                    <p className="text-xs font-medium uppercase tracking-[0.3em] text-royal">{content.eyebrow}</p>
                     <h2 className="mt-4 font-noto-serif text-4xl text-ink sm:text-5xl">
-                        The AVENTURES Story
+                        {content.title}
                     </h2>
                     <div className="mx-auto mt-6 h-px w-16 bg-gold-deep" />
                     <p className="mt-7 text-base leading-8 text-ink/70 sm:text-lg">
-                        AVENTURES Global Resources and Travel Agency is a full-service travel agency offering curated local and international experiences. We specialize in tours across the Philippines, including Cebu, Siargao, and Boracay, as well as California tours and destinations worldwide.
+                        {content.body}
                     </p>
                     <Link
                         to="/about"
                         className="mt-8 inline-flex items-center gap-3 border-b border-gold-deep pb-1.5 text-sm font-medium uppercase tracking-[0.18em] text-royal transition-colors hover:text-gold-deep"
                     >
-                        Discover our story
+                        {content.linkLabel}
                         <ArrowRight size={16} />
                     </Link>
                 </motion.div>

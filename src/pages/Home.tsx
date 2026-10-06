@@ -19,10 +19,12 @@ import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
 import TravelAgencyJsonLd from '../components/seo/TravelAgencyJsonLd'
 import { getSeoForPath } from '../data/seo'
+import { useSitePage } from '../hooks/useSitePage'
 import type { FaqItem, ServiceOffer, SiteInfo, Testimonial } from '../types/content'
 
 export default function Home() {
     const location = useLocation()
+    const content = useSitePage('home')
     const [site, setSite] = useState<SiteInfo | null>(null)
     const [offers, setOffers] = useState<ServiceOffer[]>([])
     const [testimonials, setTestimonials] = useState<Testimonial[]>([])
@@ -56,12 +58,12 @@ export default function Home() {
             {site && <TravelAgencyJsonLd site={site} />}
             <Header />
             <main>
-                <Hero />
+                <Hero content={content.hero} />
                 <div className="relative z-10 shadow-[0_-24px_50px_-30px_rgba(22,55,101,0.35)]">
                     <Destinations />
-                    <About />
+                    <About content={content.story} />
                     <Offers offers={offers} />
-                    {site && <WhyUs site={site} />}
+                    <WhyUs content={content.whyUs} />
                     <TravelerQuiz />
                     <Testimonials testimonials={testimonials} />
                     {site && <Contact site={site} topFaqs={topFaqs} />}

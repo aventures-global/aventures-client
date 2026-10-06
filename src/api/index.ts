@@ -12,12 +12,23 @@ import type {
     TourSearchPage,
     TourSuggestion,
 } from '../types/content'
+import type { SitePage, SitePageId } from '../types/sitePages'
 import type { VisaCatalog } from '../types/visa'
+import { defaultSitePages } from '../data/sitePages'
 import { buildVisaCatalog } from '../data/visaCatalog'
 import { apiFetch } from '../lib/apiClient'
 
 export async function getSite(): Promise<SiteInfo> {
     return siteInfo
+}
+
+/** Falls back to the built-in copy so the page still renders if the API is unreachable. */
+export async function getSitePage<Id extends SitePageId>(id: Id): Promise<SitePage<Id>> {
+    try {
+        return await apiFetch<SitePage<Id>>(`/api/pages/${id}`)
+    } catch {
+        return { id, content: defaultSitePages[id], updatedAt: null }
+    }
 }
 
 export async function getPartners(): Promise<Partner[]> {

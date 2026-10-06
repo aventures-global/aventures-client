@@ -4,7 +4,10 @@ import { Link, NavLink } from 'react-router-dom'
 import { getSite } from '../../api'
 import { ASK_AVENTURES_HREF } from '../../data/visaFinder'
 import { getSeoForPath } from '../../data/seo'
+import { siteMarkdownVars } from '../../data/site'
+import MiniMarkdown from '../../lib/miniMarkdown'
 import type { SiteInfo } from '../../types/content'
+import type { LegalPageContent } from '../../types/sitePages'
 import Seo from '../seo/Seo'
 import Footer from './Footer'
 import Header from './Header'
@@ -19,13 +22,12 @@ export const legalLinkClass = 'font-medium text-royal underline-offset-4 hover:t
 type LegalPageProps = {
     path: string
     title: string
-    subtitle: string
-    intro: ReactNode
-    lastUpdated: string
-    children: (site: SiteInfo | null) => ReactNode
+    content: LegalPageContent
+    /** Fixed content shown after a section's body, keyed by section id. */
+    sectionExtras?: Record<string, ReactNode>
 }
 
-export default function LegalPage({ path, title, subtitle, intro, lastUpdated, children }: LegalPageProps) {
+export default function LegalPage({ path, title, content, sectionExtras = {} }: LegalPageProps) {
     const seo = getSeoForPath(path)
     const [site, setSite] = useState<SiteInfo | null>(null)
 
@@ -40,8 +42,10 @@ export default function LegalPage({ path, title, subtitle, intro, lastUpdated, c
             <main className="site-container flex-1 pb-24 pt-32 sm:pt-36">
                 <p className="text-xs font-medium uppercase tracking-[0.3em] text-royal">Legal</p>
                 <h1 className="mt-4 font-noto-serif text-4xl text-ink sm:text-5xl">{title}</h1>
-                <p className="mt-5 font-poppins text-xl text-royal sm:text-2xl">{subtitle}</p>
-                <div className="mt-3 max-w-3xl space-y-4 text-base leading-8 text-ink/60">{intro}</div>
+                <p className="mt-5 font-poppins text-xl text-royal sm:text-2xl">{content.subtitle}</p>
+                <div className="mt-3 max-w-3xl space-y-4 text-base leading-8 text-ink/60">
+                    <MiniMarkdown text={content.intro} vars={siteMarkdownVars} linkClassName={legalLinkClass} />
+                </div>
 
                 <nav aria-label="Legal pages" className="mt-8 flex flex-wrap gap-2">
                     {legalLinks.map((link) => (
@@ -61,9 +65,16 @@ export default function LegalPage({ path, title, subtitle, intro, lastUpdated, c
                     ))}
                 </nav>
 
-                <div className="mt-12 max-w-3xl space-y-12">{children(site)}</div>
+                <div className="mt-12 max-w-3xl space-y-12">
+                    {content.sections.map((section) => (
+                        <LegalSection key={section.id} id={section.id} label={section.label} title={section.title}>
+                            <MiniMarkdown text={section.body} vars={siteMarkdownVars} linkClassName={legalLinkClass} />
+                            {sectionExtras[section.id]}
+                        </LegalSection>
+                    ))}
+                </div>
 
-                <p className="mt-12 max-w-3xl text-xs text-ink/50">Last updated: {lastUpdated}</p>
+                <p className="mt-12 max-w-3xl text-xs text-ink/50">Last updated: {content.lastUpdated}</p>
 
                 <div className="mt-16 max-w-3xl border-t border-royal/15 pt-10">
                     <p className="font-noto-serif text-2xl text-ink sm:text-3xl">Have questions before you proceed?</p>

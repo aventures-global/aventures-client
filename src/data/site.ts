@@ -53,3 +53,11 @@ export const siteInfo: SiteInfo = {
         { id: 'experts', label: 'Local Experts' },
     ],
 }
+
+/** Values for `{placeholder}` tokens in site page Markdown. */
+export const siteMarkdownVars = {
+    fullName: siteInfo.fullName,
+    email: siteInfo.email,
+    phone: siteInfo.phoneDisplay,
+    address: siteInfo.address,
+}

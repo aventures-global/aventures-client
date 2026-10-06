@@ -1,4 +1,4 @@
-import { aboutSectionPath, aboutTabs, type AboutTabId } from './about'
+import { aboutSectionPath, aboutTabs, type AboutTabId } from './aboutTabs'
 
 export const DEFAULT_OG_IMAGE = '/assets/images/AVENtures-globe.png'
 
