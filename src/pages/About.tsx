@@ -124,9 +124,6 @@ function BehindTheDream() {
                         <p className="text-xs font-medium uppercase tracking-[0.24em] text-gold-deep">The woman behind AVENTURES</p>
                         <h3 className="mt-2 font-noto-serif text-2xl font-semibold text-royal">{founderStory.name}</h3>
                         <p className="mt-1 text-sm text-ink/55">{founderStory.role}</p>
-                        <p className="mt-4 text-sm text-ink/55">
-                            Also founded <RelatedBusinessLink />
-                        </p>
                     </figcaption>
                 </figure>
                 <div className="space-y-10 lg:flex lg:h-full lg:flex-col lg:justify-center lg:gap-10 lg:space-y-0">

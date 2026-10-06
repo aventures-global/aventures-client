@@ -2,7 +2,7 @@ import type { SiteInfo } from '../types/content'
 
 export const relatedBusiness = {
     name: 'REK Global Philippines',
-    url: 'https://www.facebook.com/rekph',
+    url: 'https://rekph.com',
 } as const
 
 const contactEmail =

@@ -4,6 +4,7 @@ import { memo } from 'react'
 import { relatedBusiness } from '../../data/site'
 import type { SiteInfo } from '../../types/content'
 import BrandLogo from '../ui/BrandLogo'
+import { BankOfAmericaIcon, WellsFargoIcon } from '../ui/PaymentIcons'
 import { FacebookIcon, InstagramIcon, TikTokIcon } from '../ui/SocialIcons'
 
 type FooterProps = {
@@ -24,6 +25,11 @@ const otherLinks = [
     { label: 'Privacy Policy', to: '/privacy' },
     { label: 'Terms & Conditions', to: '/terms' },
     { label: 'Sitemaps', to: '/sitemap' },
+] as const
+
+const paymentMethods = [
+    { name: 'Wells Fargo', Icon: WellsFargoIcon },
+    { name: 'Bank of America', Icon: BankOfAmericaIcon },
 ] as const
 
 function displayHandle(handle: string) {
@@ -175,6 +181,21 @@ function Footer({ site }: FooterProps) {
                         </nav>
                     </div>
                 </div>
+            </div>
+
+            <div className="site-container pb-10">
+                <h2 className="mb-3 text-sm font-semibold text-white">Secure Payments</h2>
+                <ul className="flex flex-wrap gap-2.5">
+                    {paymentMethods.map(({ name, Icon }) => (
+                        <li
+                            key={name}
+                            className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-white/60"
+                        >
+                            <Icon size={16} className="shrink-0 text-white/60" />
+                            {name}
+                        </li>
+                    ))}
+                </ul>
             </div>
 
             <div className="border-t border-white/15">
