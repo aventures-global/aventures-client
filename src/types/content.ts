@@ -1,6 +1,8 @@
 export type Partner = {
     id: string
     name: string
+    url: string
+    description: string
     logoSrc: string
 }
 

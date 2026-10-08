@@ -1,7 +1,6 @@
 import { Mail, MapPin, Phone } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { memo } from 'react'
-import { relatedBusiness } from '../../data/site'
 import type { SiteInfo } from '../../types/content'
 import BrandLogo from '../ui/BrandLogo'
 import { BankOfAmericaIcon, WellsFargoIcon } from '../ui/PaymentIcons'
@@ -159,22 +158,6 @@ function Footer({ site }: FooterProps) {
                                     >
                                         <TikTokIcon size={16} className="shrink-0 text-white/80" />
                                         {displayHandle(site.socialHandles.tiktok)}
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-
-                        <nav aria-label="Partners" className="mt-2.5">
-                            <h2 className="mb-2.5 text-sm font-semibold text-white">Partners</h2>
-                            <ul className="space-y-2.5">
-                                <li>
-                                    <a
-                                        href={relatedBusiness.url}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className={navClass}
-                                    >
-                                        {relatedBusiness.name}
                                     </a>
                                 </li>
                             </ul>

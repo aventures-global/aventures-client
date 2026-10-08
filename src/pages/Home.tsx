@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import {
     getFaqs,
     getOffers,
+    getPartners,
     getSite,
     getTestimonials,
 } from '../api'
@@ -11,6 +12,7 @@ import Contact from '../components/home/Contact'
 import Destinations from '../components/home/Destinations'
 import Hero from '../components/home/Hero'
 import Offers from '../components/home/Offers'
+import Partners from '../components/home/Partners'
 import Testimonials from '../components/home/Testimonials'
 import TravelerQuiz from '../components/home/TravelerQuiz'
 import WhyUs from '../components/home/WhyUs'
@@ -20,7 +22,7 @@ import Seo from '../components/seo/Seo'
 import TravelAgencyJsonLd from '../components/seo/TravelAgencyJsonLd'
 import { getSeoForPath } from '../data/seo'
 import { useSitePage } from '../hooks/useSitePage'
-import type { FaqItem, ServiceOffer, SiteInfo, Testimonial } from '../types/content'
+import type { FaqItem, Partner, ServiceOffer, SiteInfo, Testimonial } from '../types/content'
 
 export default function Home() {
     const location = useLocation()
@@ -28,6 +30,7 @@ export default function Home() {
     const [site, setSite] = useState<SiteInfo | null>(null)
     const [offers, setOffers] = useState<ServiceOffer[]>([])
     const [testimonials, setTestimonials] = useState<Testimonial[]>([])
+    const [partners, setPartners] = useState<Partner[]>([])
     const [topFaqs, setTopFaqs] = useState<FaqItem[] | null>(null)
 
     useEffect(() => {
@@ -36,6 +39,9 @@ export default function Home() {
         getTestimonials()
             .then(setTestimonials)
             .catch(() => setTestimonials([]))
+        getPartners()
+            .then(setPartners)
+            .catch(() => setPartners([]))
         getFaqs()
             .then((data) => setTopFaqs(data.top))
             .catch(() => setTopFaqs([]))
@@ -64,6 +70,7 @@ export default function Home() {
                     <About content={content.story} />
                     <Offers offers={offers} />
                     <WhyUs content={content.whyUs} />
+                    {partners.length > 0 && <Partners partners={partners} />}
                     <TravelerQuiz />
                     <Testimonials testimonials={testimonials} />
                     {site && <Contact site={site} topFaqs={topFaqs} />}
