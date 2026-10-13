@@ -64,6 +64,10 @@
       "destination": "/index.html"
     },
     {
+      "source": "/partners",
+      "destination": "/index.html"
+    },
+    {
       "source": "/faq",
       "destination": "/index.html"
     },

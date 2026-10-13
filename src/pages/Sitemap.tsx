@@ -20,6 +20,7 @@ const siteLinks: SitemapLink[] = [
     { label: 'Shop', to: '/shop' },
     { label: 'Start your AVENture', to: '/start-your-aventure' },
     { label: 'Why travel with us?', to: '/#why' },
+    { label: 'Partners', to: '/partners' },
     { label: 'Contact', to: '/#contact' },
     { label: 'FAQs', to: '/faq' },
     { label: 'Ask AVENtures', to: '/ask' },

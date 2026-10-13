@@ -71,6 +71,7 @@ const staticPaths = [
     '/services/visa/r1-r2',
     '/services/visa/p1-p2',
     '/services/visa/e2',
+    '/partners',
     '/faq',
     '/ask',
     '/privacy',

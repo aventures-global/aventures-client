@@ -14,6 +14,7 @@ import Login from './pages/Login'
 import MerchDetail from './pages/MerchDetail'
 import NotFound from './pages/NotFound'
 import Onboarding from './pages/Onboarding'
+import Partners from './pages/Partners'
 import Privacy from './pages/Privacy'
 import ResetPassword from './pages/ResetPassword'
 import Shop from './pages/Shop'
@@ -65,6 +66,7 @@ function AnimatedRoutes() {
                     <Route path="/inquire" element={<Inquire />} />
                     <Route path="/visa-assistance" element={<VisaAssistance />} />
                     <Route path="/services/visa/:slug" element={<VisaService />} />
+                    <Route path="/partners" element={<Partners />} />
                     <Route path="/faq" element={<Faq />} />
                     <Route path="/ask" element={<Ask />} />
                     <Route path="/privacy" element={<Privacy />} />

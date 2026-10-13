@@ -66,6 +66,11 @@ const routeCopy: Record<string, SeoRouteCopy> = {
         description:
             'Find the AVENTURES U.S. visa service that fits your travel purpose, from tourist and fiancé(e) visas to J-1, R-1, P-1, and E-2.',
     },
+    '/partners': {
+        title: 'Our Partners — AVENtures',
+        description:
+            'The firms AVENTURES works alongside for U.S. visa processing, immigration consulting, and travel support.',
+    },
     '/faq': {
         title: 'FAQs — AVENtures',
         description:

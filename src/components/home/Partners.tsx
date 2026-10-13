@@ -1,21 +1,21 @@
-import { ArrowRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { motion } from 'motion/react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import type { Partner } from '../../types/content'
-import SafeImage from '../ui/SafeImage'
+import PartnerCard from '../partners/PartnerCard'
 
 type PartnersProps = {
     partners: Partner[]
 }
 
-function initials(name: string) {
-    const words = name.trim().split(/\s+/).filter(Boolean)
-    return words
-        .slice(0, 2)
-        .map((word) => word.charAt(0).toUpperCase())
-        .join('')
-}
+const VISIBLE_COUNT = 3
+
+const itemWidthClass = 'w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]'
 
 export default function Partners({ partners }: PartnersProps) {
+    const isCarousel = partners.length > VISIBLE_COUNT
+
     return (
         <section id="partners" className="bg-white py-24 sm:py-28">
             <div className="site-container">
@@ -33,55 +33,123 @@ export default function Partners({ partners }: PartnersProps) {
                     </p>
                 </motion.div>
 
-                <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2 lg:gap-8">
-                    {partners.map((partner, index) => (
-                        <motion.article
-                            key={partner.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: index * 0.08 }}
-                            className="flex flex-col rounded-2xl border border-black/[0.06] bg-white/90 p-7 shadow-[0_18px_45px_rgba(31,39,51,0.10),0_3px_10px_rgba(31,39,51,0.06)] transition duration-500 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(31,39,51,0.14),0_5px_14px_rgba(31,39,51,0.07)] sm:p-8"
+                {isCarousel ? (
+                    <PartnerCarousel partners={partners} />
+                ) : (
+                    <div className="mx-auto mt-12 flex max-w-6xl flex-wrap justify-center gap-6">
+                        {partners.map((partner, index) => (
+                            <RevealItem key={partner.id} index={index} className={itemWidthClass}>
+                                <PartnerCard partner={partner} />
+                            </RevealItem>
+                        ))}
+                    </div>
+                )}
+
+                {isCarousel ? (
+                    <div className="mt-10 text-center">
+                        <Link
+                            to="/partners"
+                            className="inline-flex items-center gap-3 border-b border-gold-deep pb-1.5 text-sm font-medium uppercase tracking-[0.18em] text-royal transition-colors hover:text-gold-deep"
                         >
-                            <div className="flex h-16 items-center">
-                                {partner.logoSrc ? (
-                                    <SafeImage
-                                        src={partner.logoSrc}
-                                        alt={`${partner.name} logo`}
-                                        className="h-full w-40"
-                                        imgClassName="object-contain object-left"
-                                    />
-                                ) : (
-                                    <span
-                                        className="flex h-16 w-16 items-center justify-center rounded-full bg-royal font-noto-serif text-xl text-cream shadow-md"
-                                        aria-hidden
-                                    >
-                                        {initials(partner.name)}
-                                    </span>
-                                )}
-                            </div>
-                            <h3 className="mt-6 font-noto-serif text-2xl text-royal">{partner.name}</h3>
-                            {partner.description ? (
-                                <p className="mt-3 flex-1 text-sm leading-7 text-ink/60">{partner.description}</p>
-                            ) : (
-                                <div className="flex-1" />
-                            )}
-                            {partner.url ? (
-                                <a
-                                    href={partner.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="mt-7 inline-flex items-center gap-3 self-start border-b border-gold-deep pb-1.5 text-sm font-medium uppercase tracking-[0.18em] text-royal transition-colors hover:text-gold-deep"
-                                >
-                                    Visit site
-                                    <ArrowRight size={16} aria-hidden />
-                                    <span className="sr-only">(opens {partner.name} in a new tab)</span>
-                                </a>
-                            ) : null}
-                        </motion.article>
-                    ))}
-                </div>
+                            See all partners
+                            <ArrowRight size={16} aria-hidden />
+                        </Link>
+                    </div>
+                ) : null}
             </div>
         </section>
+    )
+}
+
+function RevealItem({ index, className, children }: { index: number; className: string; children: ReactNode }) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: Math.min(index, VISIBLE_COUNT - 1) * 0.08 }}
+            className={className}
+        >
+            {children}
+        </motion.div>
+    )
+}
+
+function PartnerCarousel({ partners }: PartnersProps) {
+    const trackRef = useRef<HTMLDivElement>(null)
+    const [canPrev, setCanPrev] = useState(false)
+    const [canNext, setCanNext] = useState(true)
+
+    const updateEdges = useCallback(() => {
+        const track = trackRef.current
+        if (!track) return
+        // A couple of pixels of slack absorbs sub-pixel rounding at the ends.
+        setCanPrev(track.scrollLeft > 2)
+        setCanNext(track.scrollLeft < track.scrollWidth - track.clientWidth - 2)
+    }, [])
+
+    useEffect(() => {
+        updateEdges()
+        window.addEventListener('resize', updateEdges)
+        return () => window.removeEventListener('resize', updateEdges)
+    }, [updateEdges, partners.length])
+
+    const move = (direction: -1 | 1) => {
+        const track = trackRef.current
+        track?.scrollBy({ left: direction * track.clientWidth, behavior: 'smooth' })
+    }
+
+    return (
+        <div className="relative mx-auto mt-12 max-w-6xl sm:px-14">
+            <CarouselArrow label="Previous partners" onClick={() => move(-1)} disabled={!canPrev} className="left-0">
+                <ArrowLeft size={20} />
+            </CarouselArrow>
+            {/* Vertical padding keeps the card hover lift and shadows from being clipped by the scroll container. */}
+            <div
+                ref={trackRef}
+                onScroll={updateEdges}
+                className="no-scrollbar -my-4 flex snap-x snap-mandatory gap-6 overflow-x-auto py-4"
+                aria-label="Partners"
+            >
+                {partners.map((partner, index) => (
+                    <RevealItem
+                        key={partner.id}
+                        index={index}
+                        className="shrink-0 snap-start basis-[85%] md:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-16px)]"
+                    >
+                        <PartnerCard partner={partner} />
+                    </RevealItem>
+                ))}
+            </div>
+            <CarouselArrow label="Next partners" onClick={() => move(1)} disabled={!canNext} className="right-0">
+                <ArrowRight size={20} />
+            </CarouselArrow>
+        </div>
+    )
+}
+
+function CarouselArrow({
+    children,
+    label,
+    onClick,
+    disabled,
+    className,
+}: {
+    children: ReactNode
+    label: string
+    onClick: () => void
+    disabled: boolean
+    className: string
+}) {
+    return (
+        <button
+            type="button"
+            aria-label={label}
+            onClick={onClick}
+            disabled={disabled}
+            className={`absolute top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-royal/20 bg-white text-royal shadow-md transition hover:border-gold-deep hover:text-gold-deep disabled:pointer-events-none disabled:opacity-35 sm:flex ${className}`}
+        >
+            {children}
+        </button>
     )
 }
