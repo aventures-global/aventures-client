@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { getSite } from '../../api'
 import { ASK_AVENTURES_HREF } from '../../data/visaFinder'
 import { getSeoForPath } from '../../data/seo'
-import { siteMarkdownVars } from '../../data/site'
+import { markdownVarsFor, siteMarkdownVars } from '../../data/site'
 import MiniMarkdown from '../../lib/miniMarkdown'
 import type { SiteInfo } from '../../types/content'
 import type { LegalPageContent } from '../../types/sitePages'
@@ -34,6 +34,7 @@ export default function LegalPage({ path, title, content, sectionExtras = {} }: 
     useEffect(() => {
         void getSite().then(setSite)
     }, [])
+    const vars = site ? markdownVarsFor(site) : siteMarkdownVars
 
     return (
         <div className="luxury-paper font-poppins flex min-h-svh flex-col">
@@ -44,7 +45,7 @@ export default function LegalPage({ path, title, content, sectionExtras = {} }: 
                 <h1 className="mt-4 font-noto-serif text-4xl text-ink sm:text-5xl">{title}</h1>
                 <p className="mt-5 font-poppins text-xl text-royal sm:text-2xl">{content.subtitle}</p>
                 <div className="mt-3 max-w-3xl space-y-4 text-base leading-8 text-ink/60">
-                    <MiniMarkdown text={content.intro} vars={siteMarkdownVars} linkClassName={legalLinkClass} />
+                    <MiniMarkdown text={content.intro} vars={vars} linkClassName={legalLinkClass} />
                 </div>
 
                 <nav aria-label="Legal pages" className="mt-8 flex flex-wrap gap-2">
@@ -68,7 +69,7 @@ export default function LegalPage({ path, title, content, sectionExtras = {} }: 
                 <div className="mt-12 max-w-3xl space-y-12">
                     {content.sections.map((section) => (
                         <LegalSection key={section.id} id={section.id} label={section.label} title={section.title}>
-                            <MiniMarkdown text={section.body} vars={siteMarkdownVars} linkClassName={legalLinkClass} />
+                            <MiniMarkdown text={section.body} vars={vars} linkClassName={legalLinkClass} />
                             {sectionExtras[section.id]}
                         </LegalSection>
                     ))}

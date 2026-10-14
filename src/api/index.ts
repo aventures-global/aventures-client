@@ -1,6 +1,7 @@
 import { offers } from '../data/offers'
-import { siteInfo } from '../data/site'
+import { siteInfo, withBusinessSettings } from '../data/site'
 import type {
+    BusinessSettings,
     FaqData,
     MerchCategory,
     MerchProduct,
@@ -18,8 +19,14 @@ import { defaultSitePages } from '../data/sitePages'
 import { buildVisaCatalog } from '../data/visaCatalog'
 import { apiFetch } from '../lib/apiClient'
 
-export async function getSite(): Promise<SiteInfo> {
-    return siteInfo
+let sitePromise: Promise<SiteInfo> | null = null
+
+/** Fetched once per page load; falls back to the built-in details if the API is unreachable. */
+export function getSite(): Promise<SiteInfo> {
+    sitePromise ??= apiFetch<BusinessSettings>('/api/settings/business')
+        .then((settings) => withBusinessSettings(siteInfo, settings))
+        .catch(() => siteInfo)
+    return sitePromise
 }
 
 /** Falls back to the built-in copy so the page still renders if the API is unreachable. */

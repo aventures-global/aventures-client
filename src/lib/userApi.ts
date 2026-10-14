@@ -7,7 +7,7 @@ export type AppUser = {
     lastName: string | null
     phone: string | null
     profilePicture: string | null
-    role: 'CUSTOMER' | 'STAFF' | 'ADMIN'
+    role: 'CUSTOMER' | 'STAFF' | 'ADMIN' | 'SUPER_ADMIN'
     createdAt: string
     updatedAt: string
 }

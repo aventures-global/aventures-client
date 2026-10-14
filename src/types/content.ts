@@ -117,6 +117,19 @@ export type SiteInfo = {
     whyUsPoints: WhyUsPoint[]
 }
 
+/** Contact details and social links editable in the admin site (Settings, Business). */
+export type BusinessSettings = {
+    email: string
+    phoneDisplay: string
+    addressLines: string[]
+    facebookUrl: string
+    instagramUrl: string
+    tiktokUrl: string
+    facebookHandle: string
+    instagramHandle: string
+    tiktokHandle: string
+}
+
 export type FaqItem = {
     id: string
     question: string

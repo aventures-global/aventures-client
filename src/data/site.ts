@@ -1,4 +1,4 @@
-import type { SiteInfo } from '../types/content'
+import type { BusinessSettings, SiteInfo } from '../types/content'
 
 const contactEmail =
     (import.meta.env.VITE_CONTACT_EMAIL as string | undefined)?.trim() || 'admin@aventurestravel.com'
@@ -49,10 +49,35 @@ export const siteInfo: SiteInfo = {
     ],
 }
 
-/** Values for `{placeholder}` tokens in site page Markdown. */
-export const siteMarkdownVars = {
-    fullName: siteInfo.fullName,
-    email: siteInfo.email,
-    phone: siteInfo.phoneDisplay,
-    address: siteInfo.address,
+export function withBusinessSettings(base: SiteInfo, settings: BusinessSettings): SiteInfo {
+    const [street, city] = settings.addressLines
+    return {
+        ...base,
+        email: settings.email,
+        phone: settings.phoneDisplay.replace(/[^\d+]/g, ''),
+        phoneDisplay: settings.phoneDisplay,
+        address: settings.addressLines.join(', '),
+        addressLines: settings.addressLines,
+        heroFacts: [[street, city].filter(Boolean).join(', '), settings.phoneDisplay, ...base.heroFacts.slice(2)],
+        facebookUrl: settings.facebookUrl,
+        instagramUrl: settings.instagramUrl,
+        tiktokUrl: settings.tiktokUrl,
+        socialHandles: {
+            facebook: settings.facebookHandle,
+            instagram: settings.instagramHandle,
+            tiktok: settings.tiktokHandle,
+        },
+    }
 }
+
+/** Values for `{placeholder}` tokens in site page Markdown. */
+export function markdownVarsFor(site: SiteInfo) {
+    return {
+        fullName: site.fullName,
+        email: site.email,
+        phone: site.phoneDisplay,
+        address: site.address,
+    }
+}
+
+export const siteMarkdownVars = markdownVarsFor(siteInfo)

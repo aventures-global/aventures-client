@@ -127,39 +127,25 @@ function Footer({ site }: FooterProps) {
                         <nav aria-label="Social media">
                             <h2 className={headingClass}>Social</h2>
                             <ul className="space-y-2.5">
-                                <li>
-                                    <a
-                                        href={site.facebookUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className={`${navClass} inline-flex items-center gap-2.5`}
-                                    >
-                                        <FacebookIcon size={16} className="shrink-0 text-white/80" />
-                                        {displayHandle(site.socialHandles.facebook)}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href={site.instagramUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className={`${navClass} inline-flex items-center gap-2.5`}
-                                    >
-                                        <InstagramIcon size={16} className="shrink-0 text-white/80" />
-                                        {displayHandle(site.socialHandles.instagram)}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href={site.tiktokUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className={`${navClass} inline-flex items-center gap-2.5`}
-                                    >
-                                        <TikTokIcon size={16} className="shrink-0 text-white/80" />
-                                        {displayHandle(site.socialHandles.tiktok)}
-                                    </a>
-                                </li>
+                                {[
+                                    { url: site.facebookUrl, handle: site.socialHandles.facebook, Icon: FacebookIcon },
+                                    { url: site.instagramUrl, handle: site.socialHandles.instagram, Icon: InstagramIcon },
+                                    { url: site.tiktokUrl, handle: site.socialHandles.tiktok, Icon: TikTokIcon },
+                                ]
+                                    .filter((social) => social.url)
+                                    .map(({ url, handle, Icon }) => (
+                                        <li key={url}>
+                                            <a
+                                                href={url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className={`${navClass} inline-flex items-center gap-2.5`}
+                                            >
+                                                <Icon size={16} className="shrink-0 text-white/80" />
+                                                {displayHandle(handle)}
+                                            </a>
+                                        </li>
+                                    ))}
                             </ul>
                         </nav>
                     </div>
