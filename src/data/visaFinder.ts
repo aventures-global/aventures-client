@@ -29,7 +29,7 @@ export type VisaPage = {
 }
 
 /** R2 folder holding the printable checklists. Kept literal because the server seed imports this file. */
-const CHECKLIST_DIR = 'https://pub-99ebb469dda04547813e7149f4af3469.r2.dev/visa-checklists'
+const CHECKLIST_DIR = 'https://assets.aventurestravel.com/visa-checklists'
 
 export const ASK_AVENTURES_HREF = '/ask'
 
