@@ -17,6 +17,8 @@ import Onboarding from './pages/Onboarding'
 import Partners from './pages/Partners'
 import Privacy from './pages/Privacy'
 import ResetPassword from './pages/ResetPassword'
+import SharedDocument from './pages/SharedDocument'
+import SharedQuotation from './pages/SharedQuotation'
 import Shop from './pages/Shop'
 import Signup from './pages/Signup'
 import Sitemap from './pages/Sitemap'
@@ -54,6 +56,8 @@ function AnimatedRoutes() {
                     <Route path="/shop" element={<Shop />} />
                     <Route path="/shop/:slug" element={<MerchDetail />} />
                     <Route path="/cart" element={<Cart />} />
+                    <Route path="/shared/:token" element={<SharedDocument />} />
+                    <Route path="/quotes/shared/:token" element={<SharedQuotation />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/verify-email" element={<VerifyEmail />} />
