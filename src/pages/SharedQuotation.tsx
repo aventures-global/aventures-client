@@ -6,6 +6,7 @@ import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 import Seo from '../components/seo/Seo'
 import { apiFetch, getApiUrl } from '../lib/apiClient'
+import { useAuth } from '../lib/auth'
 import type { SiteInfo } from '../types/content'
 
 type ShareLookup = {
@@ -35,16 +36,27 @@ type ShareLookup = {
                 unit: string
                 line: string
             }>
+            booking: {
+                paymentStatus: string
+                currency: string
+                remainingCents: number
+                remaining: string
+                payable: boolean
+            } | null
         }
     }
 }
 
 export default function SharedQuotation() {
     const { token = '' } = useParams()
+    const { token: authToken, isLoggedIn, logout } = useAuth()
     const [site, setSite] = useState<SiteInfo | null>(null)
     const [data, setData] = useState<ShareLookup | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
+    const [paying, setPaying] = useState(false)
+    const [payError, setPayError] = useState<string | null>(null)
+    const [wrongAccount, setWrongAccount] = useState(false)
 
     useEffect(() => {
         void getSite().then(setSite)
@@ -73,6 +85,34 @@ export default function SharedQuotation() {
     }, [token])
 
     const quote = data?.share.quotation
+    const booking = quote?.booking
+    const loginNext = `/quotes/shared/${encodeURIComponent(token)}`
+
+    async function handlePay() {
+        setPayError(null)
+        setWrongAccount(false)
+
+        if (!isLoggedIn || !authToken) {
+            window.location.assign(`/login?next=${encodeURIComponent(loginNext)}`)
+            return
+        }
+
+        setPaying(true)
+        try {
+            const result = await apiFetch<{ url: string }>(
+                `/api/quotation-shares/${encodeURIComponent(token)}/checkout-session`,
+                { method: 'POST', token: authToken },
+            )
+            window.location.assign(result.url)
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'Unable to start payment'
+            if (message.toLowerCase().includes('issued to') || message.toLowerCase().includes('forbidden')) {
+                setWrongAccount(true)
+            }
+            setPayError(message)
+            setPaying(false)
+        }
+    }
 
     return (
         <div className="luxury-paper font-poppins flex min-h-svh flex-col">
@@ -149,21 +189,81 @@ export default function SharedQuotation() {
                                     ))}
                                 </ul>
 
+                                {booking?.payable ? (
+                                    <div className="mt-8 border-t border-royal/10 pt-6">
+                                        <p className="text-sm text-ink/60">
+                                            Remaining balance{' '}
+                                            <span className="font-medium text-royal">{booking.remaining}</span>
+                                        </p>
+                                        <button
+                                            type="button"
+                                            disabled={paying}
+                                            onClick={() => void handlePay()}
+                                            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-[3px] bg-royal px-6 py-3.5 text-sm font-medium uppercase tracking-[0.14em] text-cream transition-colors duration-300 hover:bg-gold-deep hover:text-royal disabled:cursor-wait disabled:opacity-70"
+                                        >
+                                            {paying
+                                                ? 'Redirecting…'
+                                                : isLoggedIn
+                                                  ? `Pay remaining ${booking.remaining}`
+                                                  : 'Sign in to pay'}
+                                        </button>
+                                        {!isLoggedIn ? (
+                                            <p className="mt-3 text-center text-xs text-ink/50">
+                                                Use the account this quotation was issued to.
+                                            </p>
+                                        ) : null}
+                                        {wrongAccount ? (
+                                            <div className="mt-4 rounded-[3px] border border-royal/15 bg-royal/[0.04] px-4 py-3 text-sm text-ink/70">
+                                                <p>
+                                                    This quotation belongs to a different account. Sign out and sign in
+                                                    with the assigned customer account to pay.
+                                                </p>
+                                                <button
+                                                    type="button"
+                                                    className="mt-2 text-sm font-medium text-royal underline decoration-gold-deep underline-offset-4"
+                                                    onClick={() =>
+                                                        void logout().then(() => {
+                                                            window.location.assign(
+                                                                `/login?next=${encodeURIComponent(loginNext)}`,
+                                                            )
+                                                        })
+                                                    }
+                                                >
+                                                    Switch account
+                                                </button>
+                                            </div>
+                                        ) : null}
+                                        {payError && !wrongAccount ? (
+                                            <p className="mt-3 text-center text-sm text-red-800">{payError}</p>
+                                        ) : null}
+                                    </div>
+                                ) : booking && booking.remainingCents <= 0 ? (
+                                    <p className="mt-8 text-center text-sm text-ink/55">This quotation is paid in full.</p>
+                                ) : (
+                                    <p className="mt-8 text-center text-sm text-ink/50">
+                                        Online payment is not available for this quotation yet.
+                                    </p>
+                                )}
+
                                 {quote.hasPdf ? (
                                     <a
                                         href={getApiUrl(
                                             `/api/quotation-shares/${encodeURIComponent(token)}/pdf`,
                                         )}
-                                        className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-[3px] bg-royal px-6 py-3.5 text-sm font-medium uppercase tracking-[0.14em] text-cream transition-colors duration-300 hover:bg-gold-deep hover:text-royal"
+                                        className={`inline-flex w-full items-center justify-center gap-2 rounded-[3px] px-6 py-3.5 text-sm font-medium uppercase tracking-[0.14em] transition-colors duration-300 ${
+                                            booking?.payable
+                                                ? 'mt-3 border border-royal/20 bg-transparent text-royal hover:border-royal/40'
+                                                : 'mt-8 bg-royal text-cream hover:bg-gold-deep hover:text-royal'
+                                        }`}
                                     >
                                         <Download size={16} strokeWidth={1.6} />
                                         Download PDF
                                     </a>
-                                ) : (
+                                ) : !booking?.payable ? (
                                     <p className="mt-8 text-center text-sm text-ink/50">
                                         PDF is not available for this quotation yet.
                                     </p>
-                                )}
+                                ) : null}
                             </div>
                         )}
                     </div>
