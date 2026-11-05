@@ -1,5 +1,7 @@
 import { apiFetch } from './apiClient'
 
+export type PreferredCurrency = 'USD' | 'PHP'
+
 export type AppUser = {
     id: string
     email: string | null
@@ -7,9 +9,17 @@ export type AppUser = {
     lastName: string | null
     phone: string | null
     profilePicture: string | null
+    preferredCurrency: PreferredCurrency
     role: 'CUSTOMER' | 'STAFF' | 'ADMIN' | 'SUPER_ADMIN'
     createdAt: string
     updatedAt: string
+}
+
+export type ProfileUpdateInput = {
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    preferredCurrency?: PreferredCurrency
 }
 
 function splitName(name?: string | null) {
@@ -45,5 +55,14 @@ export async function bootstrapUser(
 
 export async function fetchMe(token: string) {
     const result = await apiFetch<{ user: AppUser }>('/api/me', { token })
+    return result.user
+}
+
+export async function updateMe(token: string, input: ProfileUpdateInput) {
+    const result = await apiFetch<{ user: AppUser }>('/api/me', {
+        method: 'PATCH',
+        token,
+        body: JSON.stringify(input),
+    })
     return result.user
 }

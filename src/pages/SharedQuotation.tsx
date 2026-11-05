@@ -49,7 +49,7 @@ type ShareLookup = {
 
 export default function SharedQuotation() {
     const { token = '' } = useParams()
-    const { token: authToken, isLoggedIn, logout } = useAuth()
+    const { token: authToken, isLoggedIn, logout, appUser } = useAuth()
     const [site, setSite] = useState<SiteInfo | null>(null)
     const [data, setData] = useState<ShareLookup | null>(null)
     const [error, setError] = useState<string | null>(null)
@@ -195,6 +195,29 @@ export default function SharedQuotation() {
                                             Remaining balance{' '}
                                             <span className="font-medium text-royal">{booking.remaining}</span>
                                         </p>
+                                        {isLoggedIn &&
+                                        appUser?.preferredCurrency === 'PHP' &&
+                                        booking.currency.toUpperCase() === 'USD' ? (
+                                            <p className="mt-2 text-xs leading-relaxed text-ink/50">
+                                                You’ll be offered PHP at checkout (converted by Stripe).{' '}
+                                                <Link
+                                                    to="/profile"
+                                                    className="text-royal underline decoration-gold-deep underline-offset-2"
+                                                >
+                                                    Change preference
+                                                </Link>
+                                            </p>
+                                        ) : isLoggedIn ? (
+                                            <p className="mt-2 text-xs text-ink/45">
+                                                Paying in {booking.currency}.{' '}
+                                                <Link
+                                                    to="/profile"
+                                                    className="text-royal underline decoration-gold-deep underline-offset-2"
+                                                >
+                                                    Prefer PHP?
+                                                </Link>
+                                            </p>
+                                        ) : null}
                                         <button
                                             type="button"
                                             disabled={paying}

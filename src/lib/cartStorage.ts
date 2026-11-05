@@ -30,5 +30,10 @@ export function parsePrice(price: string): number {
 }
 
 export function formatMoney(amount: number): string {
-    return `$${amount.toFixed(amount % 1 === 0 ? 0 : 2)}`
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(amount)
 }

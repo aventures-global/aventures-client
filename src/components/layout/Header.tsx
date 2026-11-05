@@ -1,4 +1,4 @@
-import { LogOut, Menu, ShoppingBag, X } from 'lucide-react'
+import { LogOut, Menu, ShoppingBag, UserRound, X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import {
     useEffect,
@@ -146,6 +146,16 @@ function AccountMenu({
                                 <p className="mt-0.5 truncate text-xs text-ink/50">{email}</p>
                             ) : null}
                         </div>
+
+                        <Link
+                            to="/profile"
+                            role="menuitem"
+                            className="flex items-center gap-2.5 px-4 py-3 text-sm text-ink/75 transition hover:bg-royal/[0.05] hover:text-royal"
+                            onClick={() => setMenuOpen(false)}
+                        >
+                            <UserRound size={15} strokeWidth={1.5} aria-hidden />
+                            <span className="flex-1">Profile</span>
+                        </Link>
 
                         <Link
                             to="/cart"
@@ -366,13 +376,22 @@ export default function Header() {
                                         Log In
                                     </Link>
                                 ) : (
-                                    <Link
-                                        to="/cart"
-                                        onClick={() => setDrawerOpen(false)}
-                                        className="inline-flex min-h-11 items-center text-sm font-medium text-royal transition hover:text-[#9b7512]"
-                                    >
-                                        View Cart
-                                    </Link>
+                                    <div className="flex flex-col gap-2">
+                                        <Link
+                                            to="/profile"
+                                            onClick={() => setDrawerOpen(false)}
+                                            className="inline-flex min-h-11 items-center text-sm font-medium text-royal transition hover:text-[#9b7512]"
+                                        >
+                                            Profile
+                                        </Link>
+                                        <Link
+                                            to="/cart"
+                                            onClick={() => setDrawerOpen(false)}
+                                            className="inline-flex min-h-11 items-center text-sm font-medium text-royal transition hover:text-[#9b7512]"
+                                        >
+                                            View Cart
+                                        </Link>
+                                    </div>
                                 )}
                             </div>
                         </div>

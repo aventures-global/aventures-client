@@ -35,6 +35,7 @@ type AuthContextValue = {
     error: string | null
     otp: string | null
     setVerificationCode: (otp: string | null) => void
+    setAppUser: (user: AppUser | null) => void
     login: (input: { email: string; password: string }) => Promise<void>
     signup: (input: {
         name: string
@@ -205,6 +206,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             error,
             otp,
             setVerificationCode: setOtp,
+            setAppUser,
             login,
             signup,
             loginWithGoogle,
