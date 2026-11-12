@@ -47,6 +47,7 @@ function matchesQuery(tour: Tour, query: string): boolean {
 
     const haystack = [
         tour.title,
+        tour.shortTitle ?? '',
         tour.tagline,
         tour.shortDescription,
         tour.location,

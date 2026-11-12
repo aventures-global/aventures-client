@@ -40,6 +40,8 @@ export type Tour = {
     id: string
     slug: string
     title: string
+    /** Optional short label for home showcase cards; blank falls back to title. */
+    shortTitle?: string
     tagline: string
     shortDescription: string
     coverImage: string

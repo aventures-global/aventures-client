@@ -10,6 +10,7 @@ const FEATURED_LIMIT = 3
 type Destination = {
     rank: string
     name: string
+    cardTitle: string
     location: string
     description: string
     image: string
@@ -22,9 +23,11 @@ function monthEditLabel(date = new Date()) {
 }
 
 function toDestination(tour: Tour, index: number): Destination {
+    const shortTitle = tour.shortTitle?.trim()
     return {
         rank: String(index + 1).padStart(2, '0'),
         name: tour.title,
+        cardTitle: shortTitle || tour.title,
         location: tour.location,
         description: tour.shortDescription || tour.tagline,
         image: tour.coverImage,
@@ -136,7 +139,7 @@ function DestinationCard({
 
             <div className="pointer-events-none absolute inset-0 hidden items-center justify-center transition duration-500 lg:flex lg:group-hover:-translate-y-4 lg:group-hover:opacity-0">
                 <h3 className="max-w-[11em] px-6 text-center font-lejour text-3xl leading-tight text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)] lg:text-4xl">
-                    {destination.name}
+                    {destination.cardTitle}
                 </h3>
             </div>
 
@@ -149,7 +152,7 @@ function DestinationCard({
                     {destination.location}
                 </p>
                 <h3 className="mt-3 font-lejour text-2xl text-white sm:text-3xl lg:hidden">
-                    {destination.name}
+                    {destination.cardTitle}
                 </h3>
                 <p className="mt-3 max-w-md text-sm leading-6 text-white/80 sm:leading-7">
                     {destination.description}

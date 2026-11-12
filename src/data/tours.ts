@@ -51,6 +51,7 @@ export const tours: Tour[] = [
         id: 'philippine-discovery',
         slug: 'philippine-discovery',
         title: 'Philippine Discovery',
+        shortTitle: 'Palawan',
         tagline: 'Curated multi-island adventure',
         shortDescription:
             'Limestone lagoons, island hopping, and refined coastal stays across Palawan.',
@@ -69,6 +70,7 @@ export const tours: Tour[] = [
         id: 'cebu-tour',
         slug: 'cebu-tour',
         title: 'Cebu Tour',
+        shortTitle: 'Cebu',
         tagline: 'Coastlines, culture & city lights',
         shortDescription:
             'From Magellan’s Cross to turquoise shores — Cebu’s highlights in one elegant itinerary.',
@@ -87,6 +89,7 @@ export const tours: Tour[] = [
         id: 'boracay-serenity',
         slug: 'boracay-serenity',
         title: 'Boracay Serenity',
+        shortTitle: 'Boracay',
         tagline: 'White sand, soft evenings',
         shortDescription:
             'Unhurried days on Station 1 beaches with sailing at sunset and quiet luxury stays.',
@@ -105,6 +108,7 @@ export const tours: Tour[] = [
         id: 'south-korea-kwave',
         slug: 'south-korea-kwave',
         title: 'South Korea — Experience the K-Wave',
+        shortTitle: 'South Korea',
         tagline: 'Culture, cuisine & city nights',
         shortDescription:
             'Seoul’s skyline, historic palaces, and K-culture highlights — crafted for first-timers and return explorers.',
@@ -123,6 +127,7 @@ export const tours: Tour[] = [
         id: 'japan-tradition',
         slug: 'japan-tradition',
         title: 'Japan — Where Tradition Meets Tomorrow',
+        shortTitle: 'Japan',
         tagline: 'Temples, cities & timeless craft',
         shortDescription:
             'From timeless temples and breathtaking landscapes to vibrant cities and unforgettable experiences — a private Japan journey for first-timers and return explorers.',
@@ -141,6 +146,7 @@ export const tours: Tour[] = [
         id: 'usa-dream-big',
         slug: 'usa-dream-big',
         title: 'USA — Dream Big, Travel Further',
+        shortTitle: 'USA',
         tagline: 'Iconic cities & open horizons',
         shortDescription:
             'Experience iconic cities, stunning landscapes, and endless adventures across the USA — coast to coast, paced for discovery and comfort.',
@@ -159,6 +165,7 @@ export const tours: Tour[] = [
         id: 'thailand-calling',
         slug: 'thailand-calling',
         title: 'Thailand — Culture, Cuisine & Beaches',
+        shortTitle: 'Thailand',
         tagline: 'Temples, flavors & island light',
         shortDescription:
             'Experience the perfect mix of vibrant culture, mouthwatering Thai cuisine, breathtaking temples, and stunning beaches — all in one unforgettable adventure.',
@@ -177,6 +184,7 @@ export const tours: Tour[] = [
         id: 'indonesia-escape',
         slug: 'indonesia-escape',
         title: 'Indonesia — Your Tropical Adventure Awaits',
+        shortTitle: 'Indonesia',
         tagline: 'Beaches, islands & vibrant culture',
         shortDescription:
             'Escape to Indonesia and discover stunning beaches, lush landscapes, vibrant culture, and unforgettable island experiences — from Bali’s beauty to hidden tropical gems.',
@@ -195,6 +203,7 @@ export const tours: Tour[] = [
         id: 'europe-journeys',
         slug: 'europe-journeys',
         title: 'Europe — Every City Tells a Story',
+        shortTitle: 'Europe',
         tagline: 'Landmarks, streets & rich history',
         shortDescription:
             'Explore iconic landmarks, charming streets, rich history, and breathtaking scenery across some of Europe’s most beautiful destinations.',
@@ -213,6 +222,7 @@ export const tours: Tour[] = [
         id: 'siargao-island',
         slug: 'siargao-island',
         title: 'Siargao — Island Life & Surf',
+        shortTitle: 'Siargao',
         tagline: 'Waves, lagoons & laid-back days',
         shortDescription:
             'Surf breaks, rock pools, and palm-lined roads on the Philippines’ easygoing surf island — paced for beginners and seasoned islanders alike.',
@@ -231,6 +241,7 @@ export const tours: Tour[] = [
         id: 'bohol-countryside',
         slug: 'bohol-countryside',
         title: 'Bohol — Hills, River & Shore',
+        shortTitle: 'Bohol',
         tagline: 'Chocolate Hills & Panglao beaches',
         shortDescription:
             'The Chocolate Hills, tarsier sanctuaries, a slow Loboc River lunch cruise, and Panglao’s white-sand shores in one gentle itinerary.',
@@ -249,6 +260,7 @@ export const tours: Tour[] = [
         id: 'coron-lagoons',
         slug: 'coron-lagoons',
         title: 'Coron — Lagoons & Limestone',
+        shortTitle: 'Coron',
         tagline: 'Clear lakes, wrecks & hidden coves',
         shortDescription:
             'Kayangan Lake, the Twin Lagoon, and world-famous wreck dives — Coron’s limestone islands explored by private bangka.',
@@ -267,6 +279,7 @@ export const tours: Tour[] = [
         id: 'china-tour',
         slug: 'china-tour',
         title: 'China — Ancient Wonders, Modern Cities',
+        shortTitle: 'China',
         tagline: 'Great Wall, palaces & skylines',
         shortDescription:
             'Walk the Great Wall, step inside the Forbidden City, and end with Shanghai’s glittering Bund — imperial history and modern China in one journey.',
@@ -285,6 +298,7 @@ export const tours: Tour[] = [
         id: 'california-coast',
         slug: 'california-coast',
         title: 'California — Golden Coast & City Lights',
+        shortTitle: 'California',
         tagline: 'Bridges, highways & national parks',
         shortDescription:
             'San Francisco’s Golden Gate, the Pacific Coast Highway, Yosemite’s granite valleys, and Southern California sunsets — the West Coast at its most iconic.',
@@ -303,6 +317,7 @@ export const tours: Tour[] = [
         id: 'hokkaido-seasons',
         slug: 'hokkaido-seasons',
         title: 'Hokkaido — Japan’s Four Seasons North',
+        shortTitle: 'Hokkaido',
         tagline: 'Flower fields, snow & hot springs',
         shortDescription:
             'Lavender fields in summer, snowy canals in winter, and steaming onsen all year — Japan’s northern island for travelers who love wide-open landscapes.',
@@ -321,6 +336,7 @@ export const tours: Tour[] = [
         id: 'jeju-island',
         slug: 'jeju-island',
         title: 'Jeju — Korea’s Volcanic Island',
+        shortTitle: 'Jeju',
         tagline: 'Craters, coastlines & black pork',
         shortDescription:
             'Sunrise at Seongsan Ilchulbong, coastal Olle trails, Udo Island’s white beaches, and Jeju black pork — South Korea’s favorite island escape.',
@@ -339,6 +355,7 @@ export const tours: Tour[] = [
         id: 'phuket-phi-phi',
         slug: 'phuket-phi-phi',
         title: 'Phuket & Phi Phi — Andaman Escape',
+        shortTitle: 'Phuket',
         tagline: 'Limestone bays & island days',
         shortDescription:
             'Longtail boats to the Phi Phi Islands, sea-kayaking Phang Nga Bay, and colorful Old Phuket Town — Thailand’s Andaman coast in one easy escape.',
@@ -357,6 +374,7 @@ export const tours: Tour[] = [
         id: 'chiang-mai-highlands',
         slug: 'chiang-mai-highlands',
         title: 'Chiang Mai — Temples & Highlands',
+        shortTitle: 'Chiang Mai',
         tagline: 'Golden temples & mountain air',
         shortDescription:
             'Doi Suthep at sunrise, centuries-old temples in the old city, an ethical elephant sanctuary, and lantern-lit night markets in northern Thailand.',
@@ -375,6 +393,7 @@ export const tours: Tour[] = [
         id: 'labuan-bajo-komodo',
         slug: 'labuan-bajo-komodo',
         title: 'Labuan Bajo — Komodo Islands Voyage',
+        shortTitle: 'Labuan Bajo',
         tagline: 'Dragons, pink sand & phinisi sails',
         shortDescription:
             'Padar Island viewpoints, Komodo dragons, Pink Beach snorkeling, and sunsets aboard a traditional phinisi — Indonesia’s wildest island adventure.',
