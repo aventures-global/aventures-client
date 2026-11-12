@@ -1,39 +1,63 @@
 import { ArrowRight, MapPin } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { getFeaturedTours } from '../../api'
+import type { Tour } from '../../types/content'
 
-const destinations = [
-    {
-        rank: '01',
-        name: 'Kyoto',
-        location: 'Kyoto, Japan',
-        description:
-            'Lantern-lit lanes, timeless temples, quiet gardens, and seasonal dining shaped into a private journey.',
-        image: '/assets/images/japan-tradition.jpg?v=4',
-        href: '/destinations/japan-tradition',
-    },
-    {
-        rank: '02',
-        name: 'Palawan',
-        location: 'Palawan, Philippines',
-        description:
-            'Limestone lagoons, private island-hopping, and refined coastal stays across a remarkable archipelago.',
-        image: '/assets/images/philippine-discovery.jpg?v=5',
-        href: '/destinations/philippine-discovery',
-    },
-    {
-        rank: '03',
-        name: 'Europe',
-        location: 'Western Europe',
-        description:
-            'Storied capitals, countryside escapes, and carefully paced rail journeys with seamless support.',
-        image: '/assets/images/europe-journeys.jpg?v=1',
-        href: '/destinations/europe-journeys',
-    },
-]
+const FEATURED_LIMIT = 3
+
+type Destination = {
+    rank: string
+    name: string
+    location: string
+    description: string
+    image: string
+    href: string
+}
+
+function monthEditLabel(date = new Date()) {
+    const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date)
+    return `${month}’s curated edit`
+}
+
+function toDestination(tour: Tour, index: number): Destination {
+    return {
+        rank: String(index + 1).padStart(2, '0'),
+        name: tour.title,
+        location: tour.location,
+        description: tour.shortDescription || tour.tagline,
+        image: tour.coverImage,
+        href: `/destinations/${tour.slug}`,
+    }
+}
 
 export default function Destinations() {
     const shouldReduceMotion = useReducedMotion()
+    const [destinations, setDestinations] = useState<Destination[] | null>(null)
+    const [hidden, setHidden] = useState(false)
+
+    useEffect(() => {
+        let cancelled = false
+        getFeaturedTours()
+            .then((tours) => {
+                if (cancelled) return
+                const featured = tours.filter((tour) => tour.featured).slice(0, FEATURED_LIMIT)
+                if (featured.length === 0) {
+                    setHidden(true)
+                    return
+                }
+                setDestinations(featured.map(toDestination))
+            })
+            .catch(() => {
+                if (!cancelled) setHidden(true)
+            })
+        return () => {
+            cancelled = true
+        }
+    }, [])
+
+    if (hidden) return null
 
     return (
         <section id="destination-of-the-month" className="bg-oat py-24 sm:py-32">
@@ -41,7 +65,7 @@ export default function Destinations() {
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                         <p className="text-xs font-medium uppercase tracking-[0.3em] text-royal">
-                            October’s curated edit
+                            {monthEditLabel()}
                         </p>
                         <h2 className="mt-3 font-noto-serif text-3xl leading-tight text-ink sm:text-4xl">
                             Top Destinations of the Month
@@ -59,44 +83,47 @@ export default function Destinations() {
                     </Link>
                 </div>
 
-                <motion.div
-                    className="mt-6 grid gap-5 lg:grid-cols-3"
-                    initial={shouldReduceMotion ? false : 'hidden'}
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.18 }}
-                    variants={{
-                        hidden: {},
-                        visible: {
-                            transition: {
-                                delayChildren: 0.08,
-                                staggerChildren: 0.16,
-                            },
-                        },
-                    }}
-                >
-                    {destinations.map((destination) => (
-                        <DestinationCard key={destination.rank} destination={destination} />
-                    ))}
-                </motion.div>
+                {destinations ? (
+                    <div className="mt-6 grid gap-5 lg:grid-cols-3">
+                        {destinations.map((destination, index) => (
+                            <DestinationCard
+                                key={destination.href}
+                                destination={destination}
+                                index={index}
+                                reduceMotion={shouldReduceMotion === true}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="mt-6 grid gap-5 lg:grid-cols-3">
+                        {Array.from({ length: FEATURED_LIMIT }, (_, index) => (
+                            <div
+                                key={index}
+                                className="skeleton-shimmer aspect-[16/10] rounded-[3px] lg:aspect-auto lg:h-[clamp(30rem,calc(100svh-18rem),44rem)]"
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
         </section>
     )
 }
 
-type Destination = (typeof destinations)[number]
-
-function DestinationCard({ destination }: { destination: Destination }) {
+function DestinationCard({
+    destination,
+    index,
+    reduceMotion,
+}: {
+    destination: Destination
+    index: number
+    reduceMotion: boolean
+}) {
     return (
         <motion.article
-            variants={{
-                hidden: { opacity: 0,  y: 40, filter: 'blur(4px)' },
-                visible: {
-                    opacity: 1,
-                    y: 0,
-                    filter: 'blur(0px)',
-                    transition: { duration:1.3, ease: [0.22, 1, 0.36, 1] },
-                },
-            }}
+            initial={reduceMotion ? false : { opacity: 0, y: 40 }}
+            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 1.1, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
             className="group relative aspect-[16/10] overflow-hidden rounded-[3px] bg-royal shadow-[0_18px_55px_rgba(29,42,62,0.14)] lg:aspect-auto lg:h-[clamp(30rem,calc(100svh-18rem),44rem)]"
         >
             <img
@@ -108,7 +135,7 @@ function DestinationCard({ destination }: { destination: Destination }) {
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(14,39,75,0.24)_0%,rgba(8,20,38,0.48)_52%,rgba(0,0,0,0.82)_100%)] opacity-100 transition-opacity duration-1000 ease-out lg:opacity-0 lg:group-hover:opacity-100" />
 
             <div className="pointer-events-none absolute inset-0 hidden items-center justify-center transition duration-500 lg:flex lg:group-hover:-translate-y-4 lg:group-hover:opacity-0">
-                <h3 className="font-lejour text-3xl text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)] sm:text-3xl lg:text-4xl">
+                <h3 className="max-w-[11em] px-6 text-center font-lejour text-3xl leading-tight text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)] lg:text-4xl">
                     {destination.name}
                 </h3>
             </div>

@@ -51,10 +51,10 @@ const about: AboutPageContent = {
         quote: 'Sometimes, the person helping you pursue your dream is someone who once had to pursue one of her own.',
     },
     partner: {
-        caption: 'Co-owner',
+        caption: 'Chief Financial Officer',
         name: 'Rykiel Avendula',
         role: 'Business Development, Marketing, Sales & Digital Operations Lead',
-        bio: `Rykiel Avendula is co-owner of AVENtures Global Resources and Travel Agency. He leads business development, marketing, sales and digital operations, and makes sure every client gets a smooth, well-planned experience from the first inquiry to the trip home.
+        bio: `Rykiel Avendula is Chief Financial Officer of AVENtures Global Resources and Travel Agency. He leads business development, marketing, sales and digital operations, and makes sure every client gets a smooth, well-planned experience from the first inquiry to the trip home.
 
 He brings over 10 years of experience from Rek Global Opportunities and Visa Consultancy Inc., his family’s business. There he worked with clients on international opportunities and saw how much careful guidance means to people planning a move or a journey abroad. That experience shapes how AVENtures works today: personal, responsive and focused on the details.
 
@@ -62,7 +62,7 @@ Rykiel is also a seasoned entrepreneur. In Cebu, he owned and operated a well-kn
 
 He first studied Business Administration (BSBA), majoring in Real Estate Management, before following his passion for food and hospitality and earning a Diploma in Culinary Arts.
 
-Above all, Rykiel is driven by his dedication to his wife and business partner, Mary Kathleen Avendula. Together they built AVENtures on a shared vision, and he is passionate about supporting her and growing the agency into a trusted name for travelers and families. He combines his background in business, technology, sales, hospitality and global services to help every client travel with confidence, whether they’re booking a family vacation, a group tour or support for a journey abroad.`,
+Behind every AVENture is a shared vision—and a partnership dedicated to helping every traveler go with confidence.`,
     },
     origin: {
         eyebrow: 'Our Origin',

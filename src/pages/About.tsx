@@ -139,19 +139,15 @@ function BehindTheDream({
                             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                             className="order-2 lg:order-none lg:row-span-2"
                         >
-                            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gold-deep">{partner.caption}</p>
-                            <h3 className="mt-4 font-noto-serif text-3xl leading-tight text-royal sm:text-4xl">{partner.name}</h3>
-                            <div className="mt-5 h-px w-14 bg-gold-deep" />
-                            <p className="mt-4 text-sm leading-7 text-ink/55 sm:text-base">{partner.role}</p>
                             {lead ? (
-                                <p className="mt-8 text-lg leading-8 text-ink/80 sm:leading-9">{lead}</p>
+                                <p className="text-lg leading-8 text-ink/80 sm:leading-9">{lead}</p>
                             ) : null}
                             <motion.div
                                 initial={{ opacity: 0, y: 16 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true, amount: 0.2 }}
                                 transition={{ duration: 0.5, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-                                className="mt-6 space-y-5"
+                                className={lead ? 'mt-6 space-y-5' : 'space-y-5'}
                             >
                                 {middle.map((paragraph, index) => (
                                     <p key={index} className="leading-8 text-ink/65">{paragraph}</p>
@@ -164,30 +160,27 @@ function BehindTheDream({
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true, amount: 0.3 }}
                             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-                            className="relative order-1 mx-auto w-full max-w-md lg:order-none lg:col-start-2 lg:mx-0 lg:max-w-none"
+                            className="order-1 mx-auto w-full max-w-md border border-royal/10 bg-white p-3 shadow-[0_18px_45px_rgba(22,55,101,0.14)] sm:p-4 lg:order-none lg:col-start-2 lg:mx-0 lg:max-w-none"
                         >
-                            <div aria-hidden className="absolute inset-x-[-0.75rem] top-[-0.75rem] bottom-0 -z-10 bg-royal/10 sm:inset-x-[-1rem] sm:top-[-1rem]" />
-                            <div className="overflow-hidden border-l-2 border-gold-deep bg-royal">
+                            <div className="overflow-hidden bg-royal">
                                 <img
                                     src="/assets/images/rykiel-avendula.jpg"
                                     alt={`${partner.name}, ${partner.role}`}
-                                    className="aspect-[4/5] w-full object-cover object-top"
+                                    className="h-auto w-full"
                                 />
                             </div>
+                            <figcaption className="px-2 pb-5 pt-5 sm:px-3 sm:pb-6 sm:pt-6">
+                                <p className="text-xs font-medium uppercase tracking-[0.24em] text-gold-deep">{partner.caption}</p>
+                                <h3 className="mt-2 font-noto-serif text-2xl font-semibold text-royal">{partner.name}</h3>
+                                <p className="mt-1 text-sm text-ink/55">{partner.role}</p>
+                            </figcaption>
                         </motion.figure>
-
-                        {closing ? (
-                            <motion.p
-                                initial={{ opacity: 0, y: 16 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, amount: 0.35 }}
-                                transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-                                className="order-3 border-l-2 border-gold-deep/50 pl-5 font-noto-serif text-lg italic leading-8 text-royal lg:order-none lg:col-start-2 sm:text-xl sm:leading-9"
-                            >
-                                {closing}
-                            </motion.p>
-                        ) : null}
                     </div>
+                    {closing ? (
+                        <blockquote className="mx-auto mt-16 max-w-4xl text-center font-noto-serif text-2xl font-semibold italic leading-relaxed text-royal sm:text-3xl">
+                            “{closing}”
+                        </blockquote>
+                    ) : null}
                 </div>
             </div>
         </section>
