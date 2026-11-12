@@ -67,10 +67,10 @@ export default function Home() {
             <main>
                 <Hero content={content.hero} />
                 <div className="relative z-10 shadow-[0_-24px_50px_-30px_rgba(22,55,101,0.35)]">
+                    <VisaServices />
                     <Destinations />
                     <About content={content.story} />
                     <Offers offers={offers} />
-                    <VisaServices />
                     <WhyUs content={content.whyUs} />
                     {partners.length > 0 && <Partners partners={partners} />}
                     <TravelerQuiz />
