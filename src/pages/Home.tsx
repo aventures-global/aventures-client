@@ -15,6 +15,7 @@ import Offers from '../components/home/Offers'
 import Partners from '../components/home/Partners'
 import Testimonials from '../components/home/Testimonials'
 import TravelerQuiz from '../components/home/TravelerQuiz'
+import VisaServices from '../components/home/VisaServices'
 import WhyUs from '../components/home/WhyUs'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
@@ -69,6 +70,7 @@ export default function Home() {
                     <Destinations />
                     <About content={content.story} />
                     <Offers offers={offers} />
+                    <VisaServices />
                     <WhyUs content={content.whyUs} />
                     {partners.length > 0 && <Partners partners={partners} />}
                     <TravelerQuiz />

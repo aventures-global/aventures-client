@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { ArrowRight, Check, Compass, Eye, Heart, Mail, MapPin, Phone, Plane, ShieldCheck } from 'lucide-react'
+import { motion } from 'motion/react'
 import { Navigate, NavLink, useParams } from 'react-router-dom'
 import PageShell from '../components/layout/PageShell'
 import JourneyCta from '../components/ui/JourneyCta'
@@ -42,7 +43,7 @@ export default function About() {
 
             <div className="animate-[fade-in_300ms_ease-out]">
                 {section === 'why-us' && <WhyUs whyAventures={content.whyUs} />}
-                {section === 'behind-the-dream' && <BehindTheDream founderStory={content.founder} />}
+                {section === 'behind-the-dream' && <BehindTheDream founderStory={content.founder} partner={content.partner} />}
                 {section === 'origin' && <Origin originStory={content.origin} />}
                 {section === 'transparency' && <Transparency transparency={content.transparency} />}
             </div>
@@ -93,7 +94,18 @@ function WhyUs({ whyAventures }: { whyAventures: AboutPageContent['whyUs'] }) {
     )
 }
 
-function BehindTheDream({ founderStory }: { founderStory: AboutPageContent['founder'] }) {
+function BehindTheDream({
+    founderStory,
+    partner,
+}: {
+    founderStory: AboutPageContent['founder']
+    partner: AboutPageContent['partner']
+}) {
+    const partnerParagraphs = partner.bio.split(/\n\s*\n/).map((paragraph) => paragraph.trim()).filter(Boolean)
+    const [lead, ...rest] = partnerParagraphs
+    const closing = rest.length > 0 ? rest[rest.length - 1] : undefined
+    const middle = rest.length > 1 ? rest.slice(0, -1) : []
+
     return (
         <section id="behind-the-dream" className="py-16 sm:py-24">
             <SectionIntro eyebrow={founderStory.eyebrow} title={founderStory.title}>
@@ -116,6 +128,68 @@ function BehindTheDream({ founderStory }: { founderStory: AboutPageContent['foun
                 </div>
             </div>
             <blockquote className="mx-auto mt-16 max-w-4xl text-center font-noto-serif text-2xl font-semibold italic leading-relaxed text-royal sm:text-3xl">“{founderStory.quote}”</blockquote>
+
+            <div className="relative left-1/2 mt-20 w-screen -translate-x-1/2 bg-[linear-gradient(180deg,rgba(22,55,101,0.045),rgba(248,245,238,0)_72%)] sm:mt-24">
+                <div className="site-container py-16 sm:py-24">
+                    <div className="grid items-start gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-x-16 lg:gap-y-5">
+                        <motion.div
+                            initial={{ opacity: 0, y: 22 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.25 }}
+                            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                            className="order-2 lg:order-none lg:row-span-2"
+                        >
+                            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gold-deep">{partner.caption}</p>
+                            <h3 className="mt-4 font-noto-serif text-3xl leading-tight text-royal sm:text-4xl">{partner.name}</h3>
+                            <div className="mt-5 h-px w-14 bg-gold-deep" />
+                            <p className="mt-4 text-sm leading-7 text-ink/55 sm:text-base">{partner.role}</p>
+                            {lead ? (
+                                <p className="mt-8 text-lg leading-8 text-ink/80 sm:leading-9">{lead}</p>
+                            ) : null}
+                            <motion.div
+                                initial={{ opacity: 0, y: 16 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.2 }}
+                                transition={{ duration: 0.5, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+                                className="mt-6 space-y-5"
+                            >
+                                {middle.map((paragraph, index) => (
+                                    <p key={index} className="leading-8 text-ink/65">{paragraph}</p>
+                                ))}
+                            </motion.div>
+                        </motion.div>
+
+                        <motion.figure
+                            initial={{ opacity: 0, x: 28 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                            className="relative order-1 mx-auto w-full max-w-md lg:order-none lg:col-start-2 lg:mx-0 lg:max-w-none"
+                        >
+                            <div aria-hidden className="absolute inset-x-[-0.75rem] top-[-0.75rem] bottom-0 -z-10 bg-royal/10 sm:inset-x-[-1rem] sm:top-[-1rem]" />
+                            <div className="overflow-hidden border-l-2 border-gold-deep bg-royal">
+                                <img
+                                    src="/assets/images/rykiel-avendula.jpg"
+                                    alt={`${partner.name}, ${partner.role}`}
+                                    className="aspect-[4/5] w-full object-cover object-top"
+                                />
+                            </div>
+                        </motion.figure>
+
+                        {closing ? (
+                            <motion.p
+                                initial={{ opacity: 0, y: 16 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.35 }}
+                                transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+                                className="order-3 border-l-2 border-gold-deep/50 pl-5 font-noto-serif text-lg italic leading-8 text-royal lg:order-none lg:col-start-2 sm:text-xl sm:leading-9"
+                            >
+                                {closing}
+                            </motion.p>
+                        ) : null}
+                    </div>
+                </div>
+            </div>
         </section>
     )
 }

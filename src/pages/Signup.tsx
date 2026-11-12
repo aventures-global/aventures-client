@@ -14,9 +14,10 @@ export default function Signup() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const next = safeNext(searchParams.get('next'))
+    const prefillsEmail = (searchParams.get('email') ?? '').trim()
 
     const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
+    const [email, setEmail] = useState(prefillsEmail)
     const [password, setPassword] = useState('')
     const [submitting, setSubmitting] = useState(false)
     const [formError, setFormError] = useState<string | null>(null)
@@ -70,7 +71,7 @@ export default function Signup() {
 
             <AuthDivider />
             <button type="button" onClick={() => void loginWithGoogle()} className={authGoogleButtonClass}><GoogleMark /> Continue with Google</button>
-            <p className="mt-6 text-center text-sm text-ink/50 [@media(max-height:700px)]:mt-3">Already have an account? <Link to={`/login?next=${encodeURIComponent(next)}`} className={authLinkClass}>Log in</Link></p>
+            <p className="mt-6 text-center text-sm text-ink/50 [@media(max-height:700px)]:mt-3">Already have an account? <Link to={`/login?next=${encodeURIComponent(next)}${email ? `&email=${encodeURIComponent(email)}` : ''}`} className={authLinkClass}>Log in</Link></p>
         </AuthLayout>
     )
 }

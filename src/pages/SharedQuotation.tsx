@@ -23,6 +23,8 @@ type ShareLookup = {
             totalCents: number
             total: string
             customerMessage: string | null
+            customerEmail: string
+            accountLinked: boolean
             validUntil: string | null
             hasPdf: boolean
             items: Array<{
@@ -87,13 +89,20 @@ export default function SharedQuotation() {
     const quote = data?.share.quotation
     const booking = quote?.booking
     const loginNext = `/quotes/shared/${encodeURIComponent(token)}`
+    const quoteEmail = quote?.customerEmail?.trim() ?? ''
+
+    function authHref(path: '/signup' | '/login') {
+        const params = new URLSearchParams({ next: loginNext })
+        if (quoteEmail) params.set('email', quoteEmail)
+        return `${path}?${params.toString()}`
+    }
 
     async function handlePay() {
         setPayError(null)
         setWrongAccount(false)
 
         if (!isLoggedIn || !authToken) {
-            window.location.assign(`/login?next=${encodeURIComponent(loginNext)}`)
+            window.location.assign(authHref('/signup'))
             return
         }
 
@@ -228,27 +237,45 @@ export default function SharedQuotation() {
                                                 ? 'Redirecting…'
                                                 : isLoggedIn
                                                   ? `Pay remaining ${booking.remaining}`
-                                                  : 'Sign in to pay'}
+                                                  : 'Create account to pay'}
                                         </button>
                                         {!isLoggedIn ? (
                                             <p className="mt-3 text-center text-xs text-ink/50">
-                                                Use the account this quotation was issued to.
+                                                Use the email this quotation was sent to
+                                                {quoteEmail ? (
+                                                    <>
+                                                        {' '}
+                                                        (<span className="font-medium text-ink/70">{quoteEmail}</span>)
+                                                    </>
+                                                ) : null}
+                                                .{' '}
+                                                <Link
+                                                    to={authHref('/login')}
+                                                    className="text-royal underline decoration-gold-deep underline-offset-2"
+                                                >
+                                                    Already have an account?
+                                                </Link>
                                             </p>
                                         ) : null}
                                         {wrongAccount ? (
                                             <div className="mt-4 rounded-[3px] border border-royal/15 bg-royal/[0.04] px-4 py-3 text-sm text-ink/70">
                                                 <p>
                                                     This quotation belongs to a different account. Sign out and sign in
-                                                    with the assigned customer account to pay.
+                                                    with the email it was issued to
+                                                    {quoteEmail ? (
+                                                        <>
+                                                            {' '}
+                                                            (<span className="font-medium">{quoteEmail}</span>)
+                                                        </>
+                                                    ) : null}
+                                                    .
                                                 </p>
                                                 <button
                                                     type="button"
                                                     className="mt-2 text-sm font-medium text-royal underline decoration-gold-deep underline-offset-4"
                                                     onClick={() =>
                                                         void logout().then(() => {
-                                                            window.location.assign(
-                                                                `/login?next=${encodeURIComponent(loginNext)}`,
-                                                            )
+                                                            window.location.assign(authHref('/login'))
                                                         })
                                                     }
                                                 >

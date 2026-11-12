@@ -50,6 +50,20 @@ const about: AboutPageContent = {
         whyItMatters: 'Every application belongs to a person: a family waiting, a relationship worth pursuing, a future being planned, or a dream that took years to build. That is why AVENTURES aims to provide hands-on service, careful preparation, clear guidance, and personal attention.',
         quote: 'Sometimes, the person helping you pursue your dream is someone who once had to pursue one of her own.',
     },
+    partner: {
+        caption: 'Co-owner',
+        name: 'Rykiel Avendula',
+        role: 'Business Development, Marketing, Sales & Digital Operations Lead',
+        bio: `Rykiel Avendula is co-owner of AVENtures Global Resources and Travel Agency. He leads business development, marketing, sales and digital operations, and makes sure every client gets a smooth, well-planned experience from the first inquiry to the trip home.
+
+He brings over 10 years of experience from Rek Global Opportunities and Visa Consultancy Inc., his family’s business. There he worked with clients on international opportunities and saw how much careful guidance means to people planning a move or a journey abroad. That experience shapes how AVENtures works today: personal, responsive and focused on the details.
+
+Rykiel is also a seasoned entrepreneur. In Cebu, he owned and operated a well-known internet café with 200 computer stations, which gave him strong experience in technology, daily operations and serving a high volume of customers. With his wife, he also owned and ran Kikay’s Lechon House, where he learned the value of true hospitality. He also worked as a Sales Representative selling cars at Lapu-Lapu Autosales and Trading in the Philippines, which sharpened his skills in client relationships and negotiation.
+
+He first studied Business Administration (BSBA), majoring in Real Estate Management, before following his passion for food and hospitality and earning a Diploma in Culinary Arts.
+
+Above all, Rykiel is driven by his dedication to his wife and business partner, Mary Kathleen Avendula. Together they built AVENtures on a shared vision, and he is passionate about supporting her and growing the agency into a trusted name for travelers and families. He combines his background in business, technology, sales, hospitality and global services to help every client travel with confidence, whether they’re booking a family vacation, a group tour or support for a journey abroad.`,
+    },
     origin: {
         eyebrow: 'Our Origin',
         title: 'Travel should feel exciting—not overwhelming.',

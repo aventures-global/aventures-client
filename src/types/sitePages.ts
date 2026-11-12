@@ -22,6 +22,12 @@ export type AboutPageContent = {
         whyItMatters: string
         quote: string
     }
+    partner: {
+        caption: string
+        name: string
+        role: string
+        bio: string
+    }
     origin: {
         eyebrow: string
         title: string

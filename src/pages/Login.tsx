@@ -15,7 +15,8 @@ export default function Login() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const next = safeNext(searchParams.get('next'))
-    const [email, setEmail] = useState('')
+    const prefillsEmail = (searchParams.get('email') ?? '').trim()
+    const [email, setEmail] = useState(prefillsEmail)
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const [submitting, setSubmitting] = useState(false)
@@ -32,7 +33,10 @@ export default function Login() {
             const message = err instanceof Error ? err.message : 'Login failed'
             setFormError(message)
             if (message.toLowerCase().includes('verif')) {
-                navigate(`/verify-email?email=${encodeURIComponent(email)}`, { replace: true })
+                navigate(
+                    `/verify-email?email=${encodeURIComponent(email)}&next=${encodeURIComponent(next)}`,
+                    { replace: true },
+                )
             }
         } finally {
             setSubmitting(false)
@@ -70,7 +74,7 @@ export default function Login() {
 
             <AuthDivider />
             <button type="button" onClick={() => void loginWithGoogle()} className={authGoogleButtonClass}><GoogleMark /> Continue with Google</button>
-            <p className="mt-6 text-center text-sm text-ink/50 [@media(max-height:700px)]:mt-3">New here? <Link to={`/signup?next=${encodeURIComponent(next)}`} className={authLinkClass}>Create an account</Link></p>
+            <p className="mt-6 text-center text-sm text-ink/50 [@media(max-height:700px)]:mt-3">New here? <Link to={`/signup?next=${encodeURIComponent(next)}${email ? `&email=${encodeURIComponent(email)}` : ''}`} className={authLinkClass}>Create an account</Link></p>
         </AuthLayout>
     )
 }

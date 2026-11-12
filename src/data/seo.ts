@@ -14,7 +14,7 @@ const aboutDescriptions: Record<AboutTabId, string> = {
     'why-us':
         'Visa assistance, airfare, hotels, and curated trips handled by one AVENtures team, from the first plan through departure.',
     'behind-the-dream':
-        'Mary Kathleen Kayce Avendula, CEO of AVENtures, and the visa and travel experience that shaped the company.',
+        'Mary Kathleen Kayce Avendula, CEO of AVENtures, and co-owner Rykiel Avendula, whose shared visa and travel experience shaped the company.',
     origin:
         'AVENtures began in Sacramento to plan Philippines and California trips as one journey, including airfare, hotels, and visas.',
     transparency:
